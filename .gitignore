@@ -1,0 +1,20 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environments
+.env
+.env.local
+
+# Backups & Data exports
+*.json_export
+BellaPro_Backup_*.json
+
+# Antigravity/AI System folders
+.gemini/
+.system_generated/
+brain/
+
+# Temp files
+tmp/
+*.log

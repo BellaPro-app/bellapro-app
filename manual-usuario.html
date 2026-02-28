@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual BellaPro | Centro de Ayuda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0a0506;
+            --surface-color: #1a1112;
+            --surface-light: #251a1b;
+            --primary-color: #EC4899;
+            --primary-gradient: linear-gradient(135deg, #EC4899 0%, #db271d 100%);
+            --text-primary: #ffffff;
+            --text-secondary: #fce7f3;
+            --border-radius: 24px;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Hero Header */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.15), transparent);
+            border-radius: var(--border-radius);
+            margin-bottom: 60px;
+            border: var(--glass-border);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Sidebar / TOC */
+        .manual-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+        }
+
+        .toc {
+            position: sticky;
+            top: 40px;
+            height: fit-content;
+        }
+
+        .toc h4 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 12px;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .toc a:hover {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        /* Content */
+        .content section {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            border: var(--glass-border);
+            transition: 0.3s;
+        }
+
+        .content section:hover {
+            border-color: rgba(255, 45, 85, 0.3);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2 i {
+            color: var(--primary-color);
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .feature-card {
+            background: var(--surface-light);
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .step-num {
+            min-width: 36px;
+            height: 36px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            box-shadow: 0 5px 15px rgba(255, 45, 85, 0.3);
+        }
+
+        .pro-tip {
+            background: rgba(197, 160, 89, 0.1);
+            padding: 24px;
+            border-radius: 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            display: flex;
+            gap: 15px;
+        }
+
+        .pro-tip i {
+            color: #c5a059;
+            font-size: 20px;
+        }
+
+        .screenshot-box {
+            background: #000;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .screenshot-box i {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            border-top: var(--glass-border);
+        }
+
+        @media (max-width: 992px) {
+            .manual-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                display: none;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+        }
+
+        /* Estilos de Impresión (PDF) */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .hero {
+                background: white !important;
+                border: 1px solid #eee !important;
+                color: black !important;
+                backdrop-filter: none !important;
+                padding: 40px 0 !important;
+                page-break-after: always;
+            }
+
+            .logo-box {
+                box-shadow: none !important;
+                border: 1px solid #ff2d55 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .subtitle {
+                color: #ff2d55 !important;
+            }
+
+            .toc {
+                display: none !important;
+            }
+
+            .manual-grid {
+                display: block !important;
+            }
+
+            .content section {
+                background: white !important;
+                border: 1px solid #eee !important;
+                color: black !important;
+                padding: 30px !important;
+                page-break-inside: avoid;
+                margin-bottom: 20px !important;
+            }
+
+            h2,
+            h3,
+            strong {
+                color: white !important;
+            }
+
+            h2 i {
+                display: none;
+            }
+
+            p,
+            li {
+                color: #333 !important;
+            }
+
+            .feature-card,
+            .step,
+            .pro-tip {
+                background: #f9f9f9 !important;
+                border: 1px solid #eee !important;
+                color: black !important;
+                page-break-inside: avoid;
+            }
+
+            .step-num {
+                background: #ff2d55 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .screenshot-box {
+                border: 1px solid #eee !important;
+                background: white !important;
+            }
+
+            footer {
+                border-top: 1px solid #eee !important;
+                color: #999 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- HERO -->
+        <header class="hero">
+            <img src="assets/logo/logo.png" alt="BellaPro Logo"
+                style="width: 150px; height: auto; margin-bottom: 20px;">
+            <p class="subtitle">Guía del Estilista Pro | Éxito en tu Salón</p>
+            <div style="margin-top: 20px;">
+                <a href="https://wa.me/5491132094505?text=Hola!%20Deseo%20adquirir%20mi%20licencia%20BellaPro"
+                    style="background: var(--primary-gradient); color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block;">
+                    Soporte & Ventas
+                </a>
+            </div>
+        </header>
+
+        <div class="manual-grid">
+            <!-- NAV lateral (desktop) -->
+            <aside class="toc">
+                <h4>CONTENIDO</h4>
+                <ul>
+                    <li><a href="#instalacion"><i class="fas fa-mobile-alt"></i> Instalación PWA</a></li>
+                    <li><a href="#seguridad"><i class="fas fa-shield-alt"></i> Seguridad Cloud</a></li>
+                    <li><a href="#agenda"><i class="fas fa-calendar-check"></i> Gestión de Agenda</a></li>
+                    <li><a href="#whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp & Tickets</a></li>
+                    <li><a href="#finanzas"><i class="fas fa-chart-pie"></i> Control de Caja</a></li>
+                    <li><a href="#stock"><i class="fas fa-boxes"></i> Inventario Pro</a></li>
+                    <li><a href="#backup"><i class="fas fa-cloud-download-alt"></i> Respaldos</a></li>
+                </ul>
+            </aside>
+
+            <!-- CONTENIDO PRINCIPAL -->
+            <main class="content">
+                <section id="instalacion">
+                    <h2><i class="fas fa-rocket"></i> Instalación Instantánea</h2>
+                    <p>BellaPro usa tecnología PWA. No necesitas descargar nada de la App Store; se instala directamente
+                        desde tu navegador.</p>
+
+                    <div class="feature-card">
+                        <h3>En tu PC (Chrome / Edge)</h3>
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <div>Haz clic en el icono de la computadora con flecha en la barra de direcciones.</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <div>Selecciona <strong>"Instalar"</strong> para crear un acceso directo en tu escritorio.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>En tu Smartphone</h3>
+                        <div class="step">
+                            <div class="step-num">A</div>
+                            <div><strong>Android:</strong> Menú `⋮` > "Añadir a pantalla de inicio".</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">i</div>
+                            <div><strong>iPhone:</strong> Toca "Compartir" > "Añadir a pantalla de inicio".</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seguridad">
+                    <h2><i class="fas fa-user-lock"></i> Seguridad & Acceso</h2>
+                    <p>Tus datos son privados y están cifrados mediante Google Firebase.</p>
+                    <div class="pro-tip">
+                        <i class="fas fa-crown"></i>
+                        <div>
+                            <strong>Acceso Exclusivo:</strong> Tu cuenta es única para tu salón. Nadie externo puede ver
+                            tus finanzas o base de clientes aunque conozca el enlace. Tu Licencia Vitalicia garantiza
+                            acceso permanente sin suscripciones.
+                        </div>
+                    </div>
+                </section>
+
+                <section id="agenda">
+                    <h2><i class="fas fa-calendar-alt"></i> Agenda Inteligente</h2>
+                    <p>El sistema de turnos está diseñado para ser rápido. Puedes ver tus turnos del día en la pantalla
+                        de inicio o la agenda completa en la sección Turnos.</p>
+                    <div class="step">
+                        <div class="step-num">+</div>
+                        <div><strong>Nuevo Turno:</strong> Selecciona cliente, el servicio pre-cargado, elige día y hora
+                            en el selector visual y asigna el valor.</div>
+                    </div>
+                    <div class="screenshot-box" style="padding: 10px; border-style: solid;">
+                        <img src="assets/manual/agenda.png" alt="Captura de Agenda BellaPro"
+                            style="width: 100%; border-radius: 12px; display: block;">
+                    </div>
+                </section>
+
+                <section id="whatsapp">
+                    <h2><i class="fab fa-whatsapp"></i> Comunicación Directa</h2>
+                    <p>Automatizamos los mensajes comunes para que ahorres tiempo y reduzcas ausencias.</p>
+                    <div class="feature-card">
+                        <h3>Recordatorios</h3>
+                        <p>Toca el logo de WhatsApp en cualquier turno para enviar un mensaje con la fecha, hora y
+                            servicio a la clienta.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Tickets Digitales</h3>
+                        <p>Envía un comprobante profesional por WhatsApp al finalizar el trabajo, con el logo de tu
+                            salón y el detalle del costo.</p>
+                    </div>
+                </section>
+
+                <section id="finanzas">
+                    <h2><i class="fas fa-hand-holding-usd"></i> Control Financiero</h2>
+                    <p>BellaPro calcula tus ingresos automáticamente según los turnos realizados.</p>
+                    <div class="feature-card">
+                        <h3>Balance Neto</h3>
+                        <p>Registra gastos operativos (materiales, alquiler) para obtener tu ganancia real en tiempo
+                            real.</p>
+                    </div>
+                    <div class="screenshot-box" style="padding: 10px; border-style: solid;">
+                        <img src="assets/manual/finanzas.png" alt="Captura de Finanzas BellaPro"
+                            style="width: 100%; border-radius: 12px; display: block;">
+                    </div>
+                </section>
+
+                <section id="stock">
+                    <h2><i class="fas fa-box-open"></i> Inventario</h2>
+                    <p>No te quedes sin stock en medio de una tintura. Configura alertas de stock mínimo.</p>
+                    <p>Los productos se marcarán en <strong>rojo</strong> cuando alcancen el nivel crítico configurado.
+                    </p>
+                </section>
+
+                <section id="backup">
+                    <h2><i class="fas fa-shield-alt"></i> Tus Datos, Tu Control</h2>
+                    <p>Aunque BellaPro sincroniza en la nube, siempre puedes tener una copia física de tus datos.</p>
+                    <div class="feature-card">
+                        <h3>Exportar</h3>
+                        <p>En Ajustes, usa "Exportar JSON" para descargar un archivo con todos tus clientes y turnos.
+                        </p>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <footer>
+            <p>BellaPro systems © 2026 | Desarrollado para la excelencia en estética</p>
+        </footer>
+    </div>
+</body>
+
+</html>

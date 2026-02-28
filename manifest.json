@@ -1,0 +1,27 @@
+{
+  "name": "BellaPro Gestión",
+  "short_name": "BellaPro",
+  "description": "Gestión integral de peluquería y salón de belleza",
+  "id": "bellapro-v1",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0506",
+  "theme_color": "#0a0506",
+  "icons": [
+    {
+      "src": "assets/logo/logo.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

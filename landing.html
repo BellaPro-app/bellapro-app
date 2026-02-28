@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BellaPro - Gestión Premium para Salones de Belleza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #EC4899;
+            --primary-gradient: linear-gradient(135deg, #EC4899 0%, #db271d 100%);
+            --bg: #0a0506;
+            --surface: #1a1112;
+            --surface-light: #251a1b;
+            --text-p: #ffffff;
+            --text-s: #fce7f3;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+        body {
+            background: var(--bg);
+            color: var(--text-p);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 5, 6, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+
+
+        .btn-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .btn-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 45, 85, 0.4);
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 8% 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 650px;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(40px, 8vw, 72px);
+            line-height: 1.1;
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .hero p {
+            font-size: clamp(18px, 2vw, 22px);
+            color: var(--text-s);
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+
+        .text-gradient {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-main {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            display: inline-block;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(255, 45, 85, 0.2);
+        }
+
+        .btn-main:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 45, 85, 0.3);
+        }
+
+        .hero-visual {
+            position: absolute;
+            right: -5%;
+            top: 55%;
+            transform: translateY(-50%);
+            width: 50vw;
+            height: 50vw;
+            background: var(--primary);
+            border-radius: 50%;
+            filter: blur(160px);
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        /* Stats Strip */
+        .stats {
+            padding: 40px 8%;
+            background: var(--surface);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            display: block;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-s);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Features */
+        .features {
+            padding: 100px 8%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .f-card {
+            background: var(--surface);
+            padding: 50px 40px;
+            border-radius: 40px;
+            border: var(--glass-border);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .f-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 45, 85, 0.3);
+            background: var(--surface-light);
+        }
+
+        .f-card i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .f-card h3 {
+            margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .f-card p {
+            color: var(--text-s);
+            font-size: 16px;
+        }
+
+        /* Product Showcase */
+        .showcase {
+            padding: 100px 8%;
+            text-align: center;
+        }
+
+        .section-tag {
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .showcase h2 {
+            font-size: clamp(32px, 5vw, 48px);
+            margin-bottom: 60px;
+        }
+
+        .mockup-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 40px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-ui {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 30px;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-ui::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            filter: blur(100px);
+            opacity: 0.2;
+        }
+
+        .ui-mock {
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .ui-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: left;
+        }
+
+        /* Installation Section */
+        .install-info {
+            padding: 100px 8%;
+            background: linear-gradient(to bottom, var(--bg), var(--surface-light));
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            flex-wrap: wrap;
+        }
+
+        .install-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .install-text h2 {
+            font-size: 40px;
+            margin-bottom: 25px;
+        }
+
+        .install-steps {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .install-steps li {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .install-steps i {
+            color: var(--primary);
+            font-size: 20px;
+            margin-top: 5px;
+        }
+
+        /* CTA Box */
+        .cta-section {
+            padding: 100px 8%;
+        }
+
+        .cta-box {
+            background: var(--primary-gradient);
+            padding: 80px 40px;
+            text-align: center;
+            border-radius: 60px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(255, 45, 85, 0.3);
+        }
+
+        .cta-box h2 {
+            font-size: clamp(32px, 5vw, 56px);
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta-box p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary);
+            padding: 20px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 18px;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .btn-white:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        footer {
+            padding: 80px 8% 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            color: var(--text-s);
+        }
+
+        .footer-logo {
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        /* WhatsApp Floating Button */
+        .wa-float {
+            position: fixed;
+            width: 65px;
+            height: 65px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.5);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .wa-float:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 8%;
+            text-align: center;
+        }
+
+        .pricing-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .price-card {
+            background: var(--surface);
+            padding: 50px 40px;
+            border-radius: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            max-width: 400px;
+            width: 100%;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .price-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(255, 45, 85, 0.2);
+        }
+
+        .price-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .price-card .price {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 20px 0;
+            color: var(--text-p);
+        }
+
+        .price-card .price span {
+            font-size: 18px;
+            opacity: 0.6;
+            font-weight: 400;
+        }
+
+        .price-list {
+            list-style: none;
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .price-list li {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 12px;
+            font-size: 15px;
+            opacity: 0.8;
+        }
+
+        .price-list i {
+            color: var(--primary);
+        }
+
+        @media (max-width: 992px) {
+            .hero {
+                text-align: center;
+                justify-content: center;
+            }
+
+            .hero-content {
+                margin: 0 auto;
+            }
+
+            .hero-btns {
+                justify-content: center;
+            }
+
+            .ui-mock {
+                grid-template-columns: 1fr;
+            }
+
+            .price-card.featured {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-main {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <img src="assets/logo/logo.png" alt="BellaPro Logo" style="height: 45px; width: auto;">
+        </div>
+        <a href="https://wa.me/5491132094505?text=Hola!%20Me%20interesa%20adquirir%20la%20licencia%20de%20BellaPro"
+            class="btn-header" target="_blank">Obtener Licencia</a>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <span class="section-tag">Gestión Premium v1.0</span>
+            <h1>Lleva tu salón al <span class="text-gradient">Nivel Pro</span></h1>
+            <p>La herramienta definitiva para estilistas que buscan elegancia, control financiero y una agenda
+                impecable.</p>
+            <div class="hero-btns">
+                <a href="#precio" class="btn-main">Ver Precio</a>
+                <a href="./index.html?demo=true" class="btn-main"
+                    style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none;">Probar
+                    Demo</a>
+            </div>
+        </div>
+        <div class="hero-visual"></div>
+    </header>
+
+    <section class="stats">
+        <div class="stat-item">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">Privado & Seguro</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">Cloud</span>
+            <span class="stat-label">Sincronización Total</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">0</span>
+            <span class="stat-label">Complicaciones</span>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="f-card">
+            <i class="fab fa-whatsapp"></i>
+            <h3>WhatsApp Automático</h3>
+            <p>Envía recordatorios de turnos y tickets virtuales de cobro con un solo toque. Profesionalismo que
+                fideliza.</p>
+        </div>
+        <div class="f-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Finanzas de Élite</h3>
+            <p>Visualiza tus ingresos, egresos y balance neto con gráficos inteligentes. El control total de tu caja.
+            </p>
+        </div>
+        <div class="f-card">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Seguridad Firebase</h3>
+            <p>Tus datos viajan encriptados a la nube. Accede desde cualquier dispositivo con tu contraseña personal.
+            </p>
+        </div>
+    </section>
+
+    <section class="install-info">
+        <div class="install-text">
+            <span class="section-tag">Tecnología PWA</span>
+            <h2>Instalación instantánea, sin App Store.</h2>
+            <p>BellaPro no requiere descargas lentas. Se instala como un acceso directo inteligente en tu pantalla de
+                inicio.</p>
+            <ul class="install-steps">
+                <li><i class="fas fa-check-circle"></i> <strong>PC:</strong> Haz clic en el icono de instalar en la
+                    barra de Chrome.</li>
+                <li><i class="fas fa-check-circle"></i> <strong>Móvil:</strong> Toca "Agregar a inicio" y listo.</li>
+                <li><i class="fas fa-check-circle"></i> <strong>Icono Propio:</strong> Aparece en tu menú como cualquier
+                    otra app.</li>
+            </ul>
+        </div>
+        <div style="flex: 1; min-width: 300px;">
+            <div class="ui-card" style="background: var(--surface-light); border-left: 5px solid var(--primary);">
+                <i class="fas fa-magic" style="font-size: 30px; color: var(--primary); margin-bottom: 15px;"></i>
+                <h4>¿Por qué es mejor?</h4>
+                <p style="margin-top: 10px; font-size: 15px; opacity: 0.8;">Ocupa menos de 1MB de espacio, es ultra
+                    rápida y siempre está actualizada. Es la tecnología que usan las apps más modernas del mundo.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="precio">
+        <span class="section-tag">Inversión para siempre</span>
+        <h2>Tu salón con <span class="text-gradient">Licencia Vitalicia</span></h2>
+
+        <div class="pricing-grid">
+            <div class="price-card featured" style="max-width: 500px;">
+                <div
+                    style="position: absolute; top: 15px; right: 25px; background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">
+                    OFERTA ÚNICA</div>
+                <h3>Acceso de por Vida</h3>
+                <div class="price">$149.000 <span>/ pago único</span></div>
+                <p style="font-size: 15px; color: var(--text-s); margin-bottom: 20px;">Sin mensualidades, sin costos
+                    ocultos. La herramienta es tuya para siempre.</p>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> Gestión de Clientes y Turnos Ilimitados</li>
+                    <li><i class="fas fa-check"></i> Sincronización Cloud Permanente (Firestore)</li>
+                    <li><i class="fas fa-check"></i> WhatsApp Automático de por vida</li>
+                    <li><i class="fas fa-check"></i> Actualizaciones y Soporte VIP</li>
+                    <li><i class="fas fa-check"></i> Control Financiero e Inventario Pro</li>
+                </ul>
+                <a href="https://wa.me/5491132094505?text=Hola!%20Quiero%20adquirir%20la%20Licencia%20Vitalicia%20de%20BellaPro"
+                    target="_blank" class="btn-main" style="width: 100%; text-align: center;">Adquirir Licencia
+                    Vitalicia</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="showcase">
+        <span class="section-tag">Interfaz de Usuario</span>
+        <h2>Diseñada para el <span class="text-gradient">Minimalismo</span></h2>
+        <div class="mockup-container">
+            <div class="glass-ui">
+                <div class="ui-mock">
+                    <div class="ui-card">
+                        <div style="font-size: 12px; margin-bottom: 10px; opacity: 0.6;">INGRESOS SEMANALES</div>
+                        <div style="font-size: 28px; font-weight: 700; color: var(--primary);">$152.400</div>
+                        <div style="margin-top: 20px; height: 100px; display: flex; align-items: flex-end; gap: 5px;">
+                            <div style="flex: 1; background: var(--primary-gradient); height: 40%; border-radius: 4px;">
+                            </div>
+                            <div style="flex: 1; background: var(--primary-gradient); height: 70%; border-radius: 4px;">
+                            </div>
+                            <div style="flex: 1; background: var(--primary-gradient); height: 90%; border-radius: 4px;">
+                            </div>
+                            <div style="flex: 1; background: var(--primary-gradient); height: 60%; border-radius: 4px;">
+                            </div>
+                            <div
+                                style="flex: 1; background: var(--primary-gradient); height: 100%; border-radius: 4px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-card">
+                        <div style="font-size: 12px; margin-bottom: 15px; opacity: 0.6;">PRÓXIMO TURNO</div>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div
+                                style="width: 40px; height: 40px; border-radius: 50%; background: #333; overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div>
+                                <div style="font-weight: 700;">Luciana Gomez</div>
+                                <div style="font-size: 13px; color: var(--primary);">Corte & Mechas</div>
+                            </div>
+                        </div>
+                        <div
+                            style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 12px; opacity: 0.6;">
+                            <span>Hoy 16:30hs</span>
+                            <span>$12.500</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="contacto">
+        <div class="cta-box">
+            <h2>¿Lista para el próximo nivel?</h2>
+            <p>BellaPro es la inversión más rentable para tu salón. Recupera el valor en la primera semana con una
+                gestión impecable.</p>
+            <a href="https://wa.me/5491132094505?text=Hola!%20Me%20interesa%20adquirir%20la%20licencia%20de%20BellaPro"
+                class="btn-white" target="_blank">Solicitar Licencia Personal</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo footer-logo">
+            <img src="assets/logo/logo.png" alt="BellaPro Logo" style="height: 60px; width: auto;">
+        </div>
+        <p>BellaPro V1.0 | Gestión Premium para Centros de Estética y Peluquerías.</p>
+        <p style="margin-top: 15px; font-size: 13px; opacity: 0.5;">2026 © BellaPro Systems Inc.</p>
+    </footer>
+
+    <a href="https://wa.me/5491132094505?text=Hola!%20Quiero%20más%20información%20sobre%20BellaPro" class="wa-float"
+        target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</body>
+
+</html>
