@@ -21,16 +21,16 @@ const app = {
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URL(window.location.href).searchParams;
         this.demoMode = urlParams.get('demo') === 'true';
 
         if (this.demoMode) {
+            console.log("BellaPro: Modo Demo Iniciando...");
             this.showApp();
             await database.init();
-            await this.seed(); // Forzar datos semilla en demo
+            await this.seed();
             this.events();
             this.render();
-            console.log("BellaPro: Modo Demo Activo");
             return;
         }
 
@@ -60,17 +60,21 @@ const app = {
     showApp() {
         const auth = document.getElementById('auth-container');
         const main = document.getElementById('main-app');
+        const badge = document.getElementById('demo-badge');
+
         if (auth) {
             auth.classList.add('hidden');
-            auth.style.display = 'none';
+            auth.style.setProperty('display', 'none', 'important');
         }
         if (main) {
             main.classList.remove('hidden');
-            main.style.display = 'flex';
+            main.style.setProperty('display', 'flex', 'important');
+            main.style.opacity = '1';
+            main.style.visibility = 'visible';
         }
-        if (this.demoMode) {
-            const badge = document.getElementById('demo-badge');
-            if (badge) badge.classList.remove('hidden');
+        if (this.demoMode && badge) {
+            badge.classList.remove('hidden');
+            badge.style.setProperty('display', 'block', 'important');
         }
     },
 
