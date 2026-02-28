@@ -36,27 +36,41 @@ const app = {
 
         firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
+                console.log("BellaPro: Usuario detectado:", user.email);
                 this.user = user;
                 this.dbCloud = firebase.firestore();
 
                 try {
+                    console.log("BellaPro: Buscando perfil en Firestore...");
                     const userDoc = await this.dbCloud.collection('users').doc(user.uid).get();
                     const userData = userDoc.exists ? userDoc.data() : null;
 
-                    // Si el usuario existe pero no está aprobado (y no es el dueño original o demo)
+                    if (userData) {
+                        console.log("BellaPro: Perfil encontrado. Aprobado:", userData.config ? userData.config.isApproved : 'N/A');
+                    }
+
+                    // Si el usuario existe pero no está aprobado
                     if (userData && userData.config && userData.config.isApproved === false) {
+                        console.log("BellaPro: Acceso bloqueado (Pendiente de Aprobación)");
                         this.showPendingActivation();
                         return;
                     }
 
-                    // Si es un usuario nuevo (sin documento en Firestore), creamos su perfil inicial bloqueado
+                    // Si es un usuario nuevo, creamos su perfil inicial bloqueado
                     if (!userDoc.exists) {
-                        await this.dbCloud.collection('users').doc(user.uid).set({
-                            config: { name: 'Mi Salón BellaPro', isApproved: false },
-                            data: { turnos: [], clientes: [], productos: [], pago: [] },
-                            createdAt: new Date().toISOString()
-                        });
-                        this.showPendingActivation();
+                        console.log("BellaPro: Usuario nuevo. Creando perfil en Firestore...");
+                        try {
+                            await this.dbCloud.collection('users').doc(user.uid).set({
+                                config: { name: 'Mi Salón BellaPro', isApproved: false },
+                                data: { turnos: [], clientes: [], productos: [], pagos: [] },
+                                createdAt: new Date().toISOString()
+                            });
+                            console.log("BellaPro: Perfil creado con éxito.");
+                            this.showPendingActivation();
+                        } catch (setErr) {
+                            console.error("BellaPro: ERROR CRÍTICO al crear perfil:", setErr.message);
+                            this.showAuthError("Error al inicializar tu cuenta: " + setErr.message);
+                        }
                         return;
                     }
 
