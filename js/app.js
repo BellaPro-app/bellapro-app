@@ -42,7 +42,16 @@ const app = {
 
                 try {
                     console.log("BellaPro: Buscando perfil en Firestore...");
-                    const userDoc = await this.dbCloud.collection('users').doc(user.uid).get();
+
+                    // Añadimos un pequeño truco para detectar si Firestore está bloqueado por reglas
+                    const getDocPromise = this.dbCloud.collection('users').doc(user.uid).get();
+
+                    // Si en 10 segundos no responde, avisamos al usuario
+                    const timeoutPromise = new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error("Firestore Timeout: Revisa tus Reglas de Seguridad")), 10000)
+                    );
+
+                    const userDoc = await Promise.race([getDocPromise, timeoutPromise]);
                     const userData = userDoc.exists ? userDoc.data() : null;
 
                     if (userData) {
