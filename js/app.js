@@ -131,15 +131,73 @@ const app = {
         console.log(`BellaPro: Loading ${show ? 'Start' : 'End'}`);
     },
 
-    handleError(title, msg) {
-        alert(`${title}: ${msg}`);
+    authMode: 'login', // 'login' o 'register'
+
+    toggleAuthMode() {
+        this.authMode = (this.authMode === 'login') ? 'register' : 'login';
+        const btn = document.getElementById('btn-auth');
+        const toggle = document.getElementById('auth-toggle');
+        const forgot = document.getElementById('forgot-pass-link');
+        const title = document.querySelector('#auth-container p');
+
+        if (this.authMode === 'register') {
+            btn.innerText = "Crear mi Cuenta Profesional";
+            toggle.innerText = "¿Ya eres usuaria? Entra aquí";
+            forgot.style.display = 'none';
+            if (title) title.innerText = "Regístrate para activar tu licencia de BellaPro.";
+        } else {
+            btn.innerText = "Entrar al Salón";
+            toggle.innerText = "¿No tienes cuenta? Regístrate aquí";
+            forgot.style.display = 'inline-block';
+            if (title) title.innerText = "Gestión Premium para tu Salón. Ingresa para continuar.";
+        }
+    },
+
+    async handleAuthAction() {
+        if (this.authMode === 'login') {
+            await this.login();
+        } else {
+            await this.register();
+        }
+    },
+
+    async register() {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+        const btn = document.getElementById('btn-auth');
+
+        if (!email || !pass) {
+            this.showAuthError("Completa todos los campos para registrarte.");
+            return;
+        }
+
+        if (pass.length < 6) {
+            this.showAuthError("La contraseña debe tener al menos 6 caracteres.");
+            return;
+        }
+
+        btn.innerText = "Generando Acceso...";
+        btn.disabled = true;
+
+        try {
+            await firebase.auth().createUserWithEmailAndPassword(email, pass);
+            // Firebase redireccionará automáticamente a través de onAuthStateChanged
+        } catch (error) {
+            btn.innerText = "Crear mi Cuenta Profesional";
+            btn.disabled = false;
+            if (error.code === 'auth/email-already-in-use') {
+                this.showAuthError("Este email ya está registrado. Intenta iniciar sesión.");
+            } else {
+                this.showAuthError("Error al registrar: " + error.message);
+            }
+            console.error(error);
+        }
     },
 
     async login() {
         const email = document.getElementById('auth-email').value;
         const pass = document.getElementById('auth-pass').value;
-        const errEl = document.getElementById('auth-error');
-        const btn = document.getElementById('btn-login');
+        const btn = document.getElementById('btn-auth');
 
         if (!email || !pass) {
             this.showAuthError("Por favor, completa todos los campos.");

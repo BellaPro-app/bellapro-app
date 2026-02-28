@@ -40,10 +40,15 @@
                 <label>Contraseña</label>
                 <input type="password" id="auth-pass" placeholder="••••••••">
             </div>
-            <button class="btn-full" id="btn-login" onclick="app.login()">Entrar al Salón</button>
-            <div style="margin-top: 15px;">
-                <a href="#" onclick="app.forgotPassword()"
-                    style="color: var(--text-secondary); font-size: 13px; text-decoration: none; opacity: 0.8;">¿Olvidaste
+            <button class="btn-full" id="btn-auth" onclick="app.handleAuthAction()">Entrar al Salón</button>
+
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <a href="#" id="auth-toggle" onclick="app.toggleAuthMode()"
+                    style="color: var(--primary-color); font-size: 14px; font-weight: 700; text-decoration: none;">¿No
+                    tienes cuenta? Regístrate aquí</a>
+
+                <a href="#" onclick="app.forgotPassword()" id="forgot-pass-link"
+                    style="color: var(--text-secondary); font-size: 13px; text-decoration: none; opacity: 0.6;">¿Olvidaste
                     tu contraseña?</a>
             </div>
             <p id="auth-error" style="color: var(--error); font-size: 13px; margin-top: 15px; display: none;"></p>
