@@ -767,9 +767,83 @@
     </footer>
 
     <a href="https://wa.me/5491132094505?text=Hola!%20Quiero%20más%20información%20sobre%20BellaPro" class="wa-float"
-        target="_blank">
+        id="wa-main-link" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
+
+    <script>
+        // CONFIGURACIÓN RÁPIDA DE BELLAPRO (Cambia los valores aquí abajo)
+        const BELLA_CONFIG = {
+            precio: "$149.000",
+            valorReal: "$320.000",
+            licenciasRestantes: 3,
+            whatsapp: "5491132094505",
+            mensajeDefault: "Hola! Quiero aprovechar la oferta y activar mi Licencia de BellaPro"
+        };
+
+        // LÓGICA DE ACTUALIZACIÓN DINÁMICA
+        function updateCommercialData() {
+            // Actualizar Precios
+            const priceElements = document.querySelectorAll('.price');
+            priceElements.forEach(el => {
+                if (el.innerText.includes('$')) {
+                    el.innerHTML = `${BELLA_CONFIG.precio} <span style="font-size: 20px;">ARS</span>`;
+                }
+            });
+
+            // Actualizar Licencias Restantes
+            const countdownEl = document.getElementById('countdown');
+            if (countdownEl) {
+                const scarcityText = document.querySelector('.price-card p i.fa-clock')?.parentElement;
+                if (scarcityText) scarcityText.innerHTML = `<i class="fas fa-clock"></i> ¡Quedan solo ${BELLA_CONFIG.licenciasRestantes} licencias con este precio promocional!`;
+            }
+
+            // Actualizar WhatsApp en todos los botones
+            const waLinks = document.querySelectorAll('a[href*="wa.me"]');
+            const isTest = new URLSearchParams(window.location.search).get('simulate') === 'true';
+
+            waLinks.forEach(link => {
+                if (isTest) {
+                    // En modo simulación, el botón de compra te "auto-paga"
+                    link.href = window.location.pathname + "?test_payment=success";
+                    if (link.classList.contains('btn-main') || link.innerText.includes('Licencia')) {
+                        link.innerText = "SIMULAR COMPRA (VER RESULTADO)";
+                        link.style.border = "2px dashed white";
+                    }
+                } else {
+                    const baseText = link.getAttribute('href').split('text=')[1] || BELLA_CONFIG.mensajeDefault;
+                    link.href = `https://wa.me/${BELLA_CONFIG.whatsapp}?text=${baseText}`;
+                }
+            });
+        }
+
+        // Countdown Timer Simple
+        let time = 2872; // Segundos
+        setInterval(() => {
+            const min = Math.floor(time / 60);
+            const sec = time % 60;
+            const el = document.getElementById('countdown');
+            if (el) el.innerText = `${min}:${sec < 10 ? '0' + sec : sec}`;
+            if (time > 0) time--;
+        }, 1000);
+
+        window.onload = () => {
+            updateCommercialData();
+
+            // SIMULACIÓN DE PAGO (SOLO PARA PRUEBAS)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test_payment') === 'success') {
+                const toast = document.createElement('div');
+                toast.style.cssText = "position:fixed; top:80px; left:50%; transform:translateX(-50%); background:#25d366; color:white; padding:20px 40px; border-radius:20px; z-index:3000; box-shadow:0 10px 40px rgba(0,0,0,0.5); text-align:center; border:2px solid white;";
+                toast.innerHTML = `
+                    <h3 style="margin-bottom:10px;">¡Pago Confirmado! ✅</h3>
+                    <p style="font-size:14px; margin-bottom:15px;">Tu Licencia Vitalicia está lista para activarse.</p>
+                    <a href="./index.html" style="background:white; color:#25d366; padding:10px 20px; border-radius:50px; text-decoration:none; font-weight:800; display:inline-block;">CREAR MI CUENTA PROFESIONAL</a>
+                `;
+                document.body.appendChild(toast);
+            }
+        };
+    </script>
 </body>
 
 </html>

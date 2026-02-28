@@ -38,16 +38,36 @@ const app = {
             if (user) {
                 this.user = user;
                 this.dbCloud = firebase.firestore();
-                this.showApp();
+
                 try {
+                    const userDoc = await this.dbCloud.collection('users').doc(user.uid).get();
+                    const userData = userDoc.exists ? userDoc.data() : null;
+
+                    // Si el usuario existe pero no está aprobado (y no es el dueño original o demo)
+                    if (userData && userData.config && userData.config.isApproved === false) {
+                        this.showPendingActivation();
+                        return;
+                    }
+
+                    // Si es un usuario nuevo (sin documento en Firestore), creamos su perfil inicial bloqueado
+                    if (!userDoc.exists) {
+                        await this.dbCloud.collection('users').doc(user.uid).set({
+                            config: { name: 'Mi Salón BellaPro', isApproved: false },
+                            data: { turnos: [], clientes: [], productos: [], pago: [] },
+                            createdAt: new Date().toISOString()
+                        });
+                        this.showPendingActivation();
+                        return;
+                    }
+
+                    this.showApp();
                     await database.init();
-                    await this.pullCloud(); // Sincroniza desde la nube (si existen datos previos)
+                    await this.pullCloud();
                     await this.load();
-                    // SE QUITA: if (this.state.clientes.length === 0) await this.seed();
                     this.events();
                     this.render();
                 } catch (e) {
-                    this.handleError("Error de sincronización", "No se pudieron cargar los datos.");
+                    this.handleError("Error de Acceso", "No Pudimos verificar tu licencia.");
                     console.error("Init error:", e);
                 }
             } else {
@@ -81,6 +101,7 @@ const app = {
     showAuth() {
         const auth = document.getElementById('auth-container');
         const main = document.getElementById('main-app');
+        const pending = document.getElementById('pending-activation');
         if (auth) {
             auth.classList.remove('hidden');
             auth.style.display = 'flex';
@@ -88,6 +109,20 @@ const app = {
         if (main) {
             main.classList.add('hidden');
             main.style.display = 'none';
+        }
+        if (pending) pending.classList.add('hidden');
+    },
+
+    showPendingActivation() {
+        const auth = document.getElementById('auth-container');
+        const main = document.getElementById('main-app');
+        const pending = document.getElementById('pending-activation');
+
+        if (auth) auth.classList.add('hidden');
+        if (main) main.classList.add('hidden');
+        if (pending) {
+            pending.classList.remove('hidden');
+            pending.style.display = 'flex';
         }
     },
 
