@@ -1,7 +1,7 @@
-const CACHE_NAME = 'bellapro-v4';
+const CACHE_NAME = 'bellapro-v5';
 const ASSETS = [
     './',
-    './index.html',
+    './app.html',
     './css/style.css',
     './js/db.js',
     './js/app.js',
@@ -34,7 +34,7 @@ self.addEventListener('fetch', (e) => {
         caches.match(e.request).then(response => {
             return response || fetch(e.request).catch(() => {
                 if (e.request.mode === 'navigate') {
-                    return caches.match('./index.html');
+                    return caches.match('./app.html');
                 }
             });
         })

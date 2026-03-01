@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BellaPro | Gestión Premium para Salones</title>
+    <meta name="description"
+        content="Sistema de gestión integral para peluquerías y centros de estética. Optimiza tus turnos, clientes e inventario con BellaPro.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0506">
+    <link rel="apple-touch-icon" href="assets/logo/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <div id="auth-container" class="hidden"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; background: var(--bg-color);">
+        <img src="assets/logo/logo.png" alt="BellaPro Logo"
+            style="width: 150px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 10px 20px rgba(236, 72, 153, 0.3));">
+        <p style="color: var(--text-secondary); margin-bottom: 30px; max-width: 300px;">Gestión Premium para tu Salón.
+            Ingresa para continuar.</p>
+
+        <div class="glass-card" style="width: 100%; max-width: 350px; padding: 30px;">
+            <div class="form-group" style="text-align: left;">
+                <label>Email</label>
+                <input type="email" id="auth-email" placeholder="tu@email.com">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Contraseña</label>
+                <input type="password" id="auth-pass" placeholder="••••••••">
+            </div>
+            <button class="btn-full" id="btn-auth" onclick="app.handleAuthAction()">Entrar al Salón</button>
+
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <a href="#" id="auth-toggle" onclick="app.toggleAuthMode()"
+                    style="color: var(--primary-color); font-size: 14px; font-weight: 700; text-decoration: none;">¿No
+                    tienes cuenta? Regístrate aquí</a>
+
+                <a href="#" onclick="app.forgotPassword()" id="forgot-pass-link"
+                    style="color: var(--text-secondary); font-size: 13px; text-decoration: none; opacity: 0.6;">¿Olvidaste
+                    tu contraseña?</a>
+            </div>
+            <p id="auth-error" style="color: var(--error); font-size: 13px; margin-top: 15px; display: none;"></p>
+        </div>
+        <p style="margin-top: 30px; font-size: 12px; opacity: 0.5;">2026 © BellaPro Systems</p>
+    </div>
+
+    <div class="app-container hidden" id="main-app">
+        <div id="demo-badge" class="hidden"
+            style="background: var(--primary-gradient); color: white; text-align: center; padding: 8px; font-size: 13px; font-weight: bold; width: 100%; position: sticky; top: 0; z-index: 2000;">
+            💎 MODO DEMO ACTIVO - <a href="index.html#precio" style="color: white; text-decoration: underline;">Comprar
+                Licencia Vitalicia</a>
+        </div>
+        <!-- TOP NAV -->
+        <main class="main-content" id="main-container">
+            <header class="top-bar" id="app-header"
+                style="background: rgba(10, 5, 6, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 20px 24px; margin: -24px -24px 32px;">
+                <div class="profile">
+                    <img id="salon-logo-display"
+                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150"
+                        class="avatar" style="border-color: var(--primary-color);">
+                    <h3 id="salon-title-display"></h3>
+                </div>
+                <div style="text-align: right;">
+                    <div id="app-brand-identity">
+                        <img src="assets/logo/logo.png" alt="Logo" style="width: 50px; height: auto;">
+                    </div>
+                </div>
+            </header>
+
+            <!-- SECTIONS -->
+            <section id="dashboard" class="section active">
+                <div class="welcome">
+                    <h1 id="dash-greeting">¡Hola!</h1>
+                    <p>Tienes <span id="dash-turnos-count" class="text-pink">0</span> turnos para hoy.</p>
+                </div>
+
+                <div class="section-header">
+                    <span>Turnos de hoy</span>
+                    <span class="btn-small" onclick="app.navTo('turnos')">Ver todos</span>
+                </div>
+                <div class="h-scroll" id="dash-turnos-list">
+                    <!-- Dynamic -->
+                </div>
+
+                <div class="section-header">Acciones Rápidas</div>
+                <div class="action-grid">
+                    <div class="action-btn primary" onclick="app.openModal('m-turno')">
+                        <i class="fas fa-calendar-plus"></i> Nuevo Turno
+                    </div>
+                    <div class="action-btn" onclick="app.openModal('m-fin')">
+                        <i class="fas fa-wallet" style="color:var(--primary-color)"></i> Registrar Pago
+                    </div>
+                </div>
+
+                <div class="section-header">Resumen Semanal</div>
+                <div class="glass-card">
+                    <div style="font-size: 11px; opacity: 0.6; margin-bottom: 5px;">TOTAL INGRESOS</div>
+                    <h2 id="dash-money" style="font-size: 32px;">$0</h2>
+                </div>
+            </section>
+
+            <section id="turnos" class="section">
+                <div class="section-header">
+                    <h2 style="font-size: 24px;">Agenda</h2>
+                    <span class="btn-small" onclick="app.openModal('m-turno')">+ Nuevo</span>
+                </div>
+                <div id="full-turnos-list"></div>
+            </section>
+
+            <section id="clientes" class="section">
+                <div class="section-header">
+                    <h2 style="font-size: 24px;">Clientes</h2>
+                    <span class="btn-small" onclick="app.openModal('m-cli')">+ Agregar</span>
+                </div>
+                <div id="full-clientes-list"></div>
+            </section>
+
+            <section id="stock" class="section">
+                <div class="section-header">
+                    <h2 style="font-size: 24px;">Inventario</h2>
+                    <span class="btn-small" onclick="app.openModal('m-prod')">+ Producto</span>
+                </div>
+                <div id="full-stock-list"></div>
+            </section>
+
+            <section id="finanzas" class="section">
+                <div class="section-header">
+                    <h2 style="font-size: 24px;">Rendimiento</h2>
+                    <span class="btn-small" onclick="app.openModal('m-fin')">+ Movimiento</span>
+                </div>
+
+                <div class="action-grid" style="margin-bottom: 20px;">
+                    <div class="glass-card" style="margin-bottom:0; text-align:center;">
+                        <div style="font-size: 10px; opacity: 0.6;">INGRESOS</div>
+                        <h3 id="fin-ing" style="color:var(--success);">$0</h3>
+                    </div>
+                    <div class="glass-card" style="margin-bottom:0; text-align:center;">
+                        <div style="font-size: 10px; opacity: 0.6;">GASTOS</div>
+                        <h3 id="fin-gas" style="color:var(--error);">$0</h3>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="background: var(--primary-gradient); border:none; margin-bottom:20px;">
+                    <div style="font-size: 11px; opacity: 0.8; margin-bottom: 5px;">BALANCE NETO</div>
+                    <h2 id="fin-neto" style="font-size: 32px;">$0</h2>
+                </div>
+
+                <div class="section-header">Ingresos: Últimos 7 días</div>
+                <div class="glass-card">
+                    <div class="chart-container" id="fin-chart">
+                        <!-- Bars generated dynamically -->
+                    </div>
+                </div>
+
+                <div class="section-header">Historial Reciente</div>
+                <div id="full-finanzas-list"></div>
+            </section>
+
+            <section id="config" class="section">
+                <h2 style="font-size: 24px; margin-bottom: 20px;">Ajustes</h2>
+                <div class="glass-card">
+                    <div
+                        style="display:flex; align-items:center; gap:15px; margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <img id="cfg-logo-preview" src="" class="avatar" style="width:60px; height:60px;">
+                        <div>
+                            <div style="font-size:12px; opacity:0.6; margin-bottom:5px;">Logo o Foto del Estilista</div>
+                            <button class="btn-small" onclick="document.getElementById('cfg-logo-input').click()"
+                                style="color:var(--primary-color); border:1px solid var(--primary-color); padding:5px 10px; border-radius:8px;">Subir
+                                Imagen</button>
+                            <input type="file" id="cfg-logo-input" style="display:none" accept="image/*"
+                                onchange="app.handleLogo(event)">
+                        </div>
+                    </div>
+                    <label>Nombre del Salón</label>
+                    <input type="text" id="cfg-name" placeholder="BellaPro">
+                    <button class="btn-full" onclick="app.saveCfg()">Guardar</button>
+                </div>
+
+                <div class="section-header" style="margin-top: 30px;">Copia de Seguridad</div>
+                <div class="glass-card">
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">
+                        Descarga toda tu información en un archivo para guardarla como respaldo o pasarla a otro
+                        dispositivo.
+                    </p>
+                    <button class="btn-full" onclick="app.exportData()"
+                        style="background: var(--surface-light); margin-bottom: 10px;">
+                        <i class="fas fa-download"></i> Exportar Datos (JSON)
+                    </button>
+                    <button class="btn-full" onclick="document.getElementById('import-file').click()"
+                        style="background: var(--surface-light);">
+                        <i class="fas fa-upload"></i> Importar Datos
+                    </button>
+                    <input type="file" id="import-file" style="display: none;" accept=".json"
+                        onchange="app.importData(event)">
+                </div>
+
+                <div class="section-header" style="margin-top: 30px;">Zona de Peligro</div>
+                <div class="glass-card" style="border: 1px solid rgba(255, 59, 48, 0.2);">
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">
+                        Estas acciones eliminan datos permanentemente. Úsalas con precaución.
+                    </p>
+                    <button class="btn-full" onclick="app.resetDB()"
+                        style="background: transparent; color: var(--error); border: 1px solid var(--error);">
+                        <i class="fas fa-trash-alt"></i> Borrar toda la base de datos
+                    </button>
+                    <button class="btn-full" onclick="app.changePassword()"
+                        style="background: transparent; color: var(--accent-lavender); border: 1px solid var(--accent-lavender); margin-top:10px;">
+                        <i class="fas fa-key"></i> Cambiar mi contraseña
+                    </button>
+                    <button class="btn-full" onclick="app.seed()"
+                        style="background: transparent; color: var(--success); border: 1px solid var(--success); margin-top:10px;">
+                        <i class="fas fa-magic"></i> Cargar datos de ejemplo (DEMO)
+                    </button>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px; opacity: 0.3; font-size: 12px;">BELLAPRO V1.0 -
+                    GESTIÓN LOCAL</div>
+            </section>
+        </main>
+
+        <!-- BOTTOM NAV -->
+        <nav class="bottom-nav" id="app-nav">
+            <button class="nav-btn active" data-id="dashboard" onclick="app.navTo('dashboard')" aria-label="Inicio">
+                <i class="fas fa-home"></i> <span>Inicio</span>
+            </button>
+            <button class="nav-btn" data-id="turnos" onclick="app.navTo('turnos')" aria-label="Turnos">
+                <i class="fas fa-calendar-alt"></i> <span>Turnos</span>
+            </button>
+            <button class="nav-btn" data-id="clientes" onclick="app.navTo('clientes')" aria-label="Clientes">
+                <i class="fas fa-users"></i> <span>Clientes</span>
+            </button>
+            <button class="nav-btn" data-id="stock" onclick="app.navTo('stock')" aria-label="Inventario">
+                <i class="fas fa-box"></i> <span>Stock</span>
+            </button>
+            <button class="nav-btn" data-id="finanzas" onclick="app.navTo('finanzas')" aria-label="Finanzas">
+                <i class="fas fa-chart-line"></i> <span>Finanzas</span>
+            </button>
+            <button class="nav-btn" data-id="config" onclick="app.navTo('config')" aria-label="Ajustes">
+                <i class="fas fa-cog"></i> <span>Ajustes</span>
+            </button>
+            <button class="nav-btn" onclick="app.logout()" style="color: var(--error);" aria-label="Cerrar sesión">
+                <i class="fas fa-sign-out-alt"></i> <span>Salir</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal" id="m-turno">
+        <div class="modal-body">
+            <div class="modal-header">
+                <button onclick="app.closeModal('m-cli')"
+                    style="background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i
+                        class="fas fa-arrow-left"></i></button>
+                <h2 style="margin:0;">Nuevo Turno</h2>
+            </div>
+            <div class="modal-content">
+                <form id="f-turno">
+                    <input type="hidden" id="ft-id">
+                    <div class="form-group"><label>Cliente</label><select id="ft-cli" required></select></div>
+                    <div class="form-group">
+                        <label>Elegir Servicio</label>
+                        <div class="chip-group" id="service-selector"></div>
+                        <input type="hidden" id="ft-srv"> <!-- Hidden input to store selected value -->
+                    </div>
+                    <div class="form-group">
+                        <label>Elegir Día</label>
+                        <div class="chip-group" id="day-selector"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Elegir Hora</label>
+                        <div class="chip-grid" id="time-selector"></div>
+                    </div>
+                    <div class="form-group"><label>Costo ($)</label><input type="number" id="ft-val" value="0"></div>
+                    <button type="submit" class="btn-full">Guardar Turno</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="m-cli">
+        <div class="modal-body">
+            <div class="modal-header">
+                <button onclick="app.closeModal('m-cli')"
+                    style="background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i
+                        class="fas fa-arrow-left"></i></button>
+                <h2 style="margin:0;">Nuevo Cliente</h2>
+            </div>
+            <div class="modal-content">
+                <form id="f-cli">
+                    <input type="hidden" id="fc-id">
+                    <div class="form-group"><label>Nombre</label><input type="text" id="fc-nom" required></div>
+                    <div class="form-group"><label>Teléfono</label><input type="text" id="fc-tel"></div>
+                    <div class="form-group"><label>Notas</label><textarea id="fc-not" rows="3"></textarea></div>
+                    <button type="submit" class="btn-full">Agregar Cliente</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="m-prod">
+        <div class="modal-body">
+            <div class="modal-header">
+                <button onclick="app.closeModal('m-prod')"
+                    style="background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i
+                        class="fas fa-arrow-left"></i></button>
+                <h2 style="margin:0;">Producto</h2>
+            </div>
+            <div class="modal-content">
+                <form id="f-prod">
+                    <input type="hidden" id="fp-id">
+                    <div class="form-group"><label>Nombre</label><input type="text" id="fp-nom" required></div>
+                    <div class="form-group"><label>Stock Actual</label><input type="number" id="fp-sto" value="0"
+                            required>
+                    </div>
+                    <div class="form-group"><label>Mínimo (Alerta)</label><input type="number" id="fp-min" value="5">
+                    </div>
+                    <button type="submit" class="btn-full">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="m-fin">
+        <div class="modal-body">
+            <div class="modal-header">
+                <button onclick="app.closeModal('m-fin')"
+                    style="background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i
+                        class="fas fa-arrow-left"></i></button>
+                <h2 style="margin:0;">Registrar Movimiento</h2>
+            </div>
+            <div class="modal-content">
+                <form id="f-fin">
+                    <div class="form-group">
+                        <label>Tipo de Movimiento</label>
+                        <select id="ff-typ">
+                            <option value="ingreso">Ingreso (+)</option>
+                            <option value="gasto">Gasto (-)</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Concepto</label><input type="text" id="ff-con"
+                            placeholder="E.j. Alquiler, Venta producto" required></div>
+                    <div class="form-group"><label>Monto ($)</label><input type="number" id="ff-amt" required></div>
+                    <button type="submit" class="btn-full">Registrar Movimiento</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

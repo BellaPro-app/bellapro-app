@@ -3,7 +3,7 @@
   "short_name": "BellaPro",
   "description": "Gestión integral de peluquería y salón de belleza",
   "id": "bellapro-v1",
-  "start_url": "./index.html",
+  "start_url": "./app.html",
   "display": "standalone",
   "background_color": "#0a0506",
   "theme_color": "#0a0506",
