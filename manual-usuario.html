@@ -246,37 +246,57 @@
             }
         }
 
-        /* Estilos de Impresión (PDF) */
+        /* Estilos de Impresión (PDF) - Mantenemos el tema oscuro */
         @media print {
-            body {
-                background: white !important;
-                color: black !important;
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
-            .container {
-                max-width: 100% !important;
-                padding: 0 !important;
-                margin: 0 !important;
+            body {
+                background-color: var(--bg-color) !important;
+                color: var(--text-primary) !important;
             }
 
             .hero {
-                background: white !important;
-                border: 1px solid #eee !important;
-                color: black !important;
-                backdrop-filter: none !important;
-                padding: 40px 0 !important;
-                page-break-after: always;
+                background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.15), transparent) !important;
+                border: var(--glass-border) !important;
             }
 
-            .logo-box {
-                box-shadow: none !important;
-                border: 1px solid #ff2d55 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+            .content section {
+                background: var(--surface-color) !important;
+                border: var(--glass-border) !important;
+                page-break-inside: avoid;
             }
 
-            .subtitle {
-                color: #ff2d55 !important;
+            h2,
+            h3,
+            strong {
+                color: var(--text-primary) !important;
+            }
+
+            p,
+            li {
+                color: var(--text-secondary) !important;
+            }
+
+            .feature-card,
+            .step,
+            .pro-tip,
+            .screenshot-box {
+                background: rgba(255, 255, 255, 0.02) !important;
+                border: 1px solid rgba(255, 255, 255, 0.05) !important;
+                page-break-inside: avoid;
+            }
+
+            .pro-tip {
+                background: rgba(197, 160, 89, 0.1) !important;
+                border: 1px solid rgba(197, 160, 89, 0.2) !important;
+            }
+
+            .step-num {
+                background: var(--primary-gradient) !important;
+                color: white !important;
             }
 
             .toc {
@@ -287,54 +307,8 @@
                 display: block !important;
             }
 
-            .content section {
-                background: white !important;
-                border: 1px solid #eee !important;
-                color: black !important;
-                padding: 30px !important;
-                page-break-inside: avoid;
-                margin-bottom: 20px !important;
-            }
-
-            h2,
-            h3,
-            strong {
-                color: white !important;
-            }
-
-            h2 i {
-                display: none;
-            }
-
-            p,
-            li {
-                color: #333 !important;
-            }
-
-            .feature-card,
-            .step,
-            .pro-tip {
-                background: #f9f9f9 !important;
-                border: 1px solid #eee !important;
-                color: black !important;
-                page-break-inside: avoid;
-            }
-
-            .step-num {
-                background: #ff2d55 !important;
-                color: white !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .screenshot-box {
-                border: 1px solid #eee !important;
-                background: white !important;
-            }
-
             footer {
-                border-top: 1px solid #eee !important;
-                color: #999 !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
             }
         }
     </style>
