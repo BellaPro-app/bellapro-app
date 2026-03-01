@@ -38,12 +38,18 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
+            width: 100%;
             max-width: 900px;
             margin: 0 auto;
             padding: 40px 20px;
+            flex: 1;
+            /* Esto empuja el footer hacia abajo */
         }
 
         /* Hero Header */
@@ -260,13 +266,24 @@
             body {
                 background-color: var(--bg-color) !important;
                 color: var(--text-primary) !important;
-                padding: 15mm !important;
+                padding: 10mm !important;
+                margin: 0 !important;
+                display: block !important;
+                /* Reset para impresión */
+            }
+
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
                 margin: 0 !important;
             }
 
             .hero {
                 background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.15), transparent) !important;
                 border: var(--glass-border) !important;
+                padding: 40px 20px !important;
+                /* Menos padding para evitar cortes */
             }
 
             .content section {
@@ -315,6 +332,8 @@
 
             footer {
                 border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+                margin-top: 50px !important;
+                page-break-after: always;
             }
         }
     </style>
@@ -481,11 +500,11 @@
                 </section>
             </main>
         </div>
-
-        <footer>
-            <p>BellaPro systems © 2026 | Desarrollado para la excelencia en estética</p>
-        </footer>
     </div>
+
+    <footer>
+        <p>BellaPro systems © 2026 | Desarrollado para la excelencia en estética</p>
+    </footer>
 </body>
 
 </html>
