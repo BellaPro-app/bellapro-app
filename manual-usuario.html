@@ -248,6 +248,10 @@
 
         /* Estilos de Impresión (PDF) - Mantenemos el tema oscuro */
         @media print {
+            @page {
+                margin: 0;
+            }
+
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
@@ -256,6 +260,8 @@
             body {
                 background-color: var(--bg-color) !important;
                 color: var(--text-primary) !important;
+                margin: 20mm !important;
+                /* Espacio para que el contenido respire */
             }
 
             .hero {
