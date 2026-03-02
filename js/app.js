@@ -337,7 +337,8 @@ const app = {
                 cname: sel.options[sel.selectedIndex].text,
                 srv: this.state.selSrv,
                 dat: `${this.state.selDay}T${this.state.selTime}`,
-                val: Number(document.getElementById('ft-val').value)
+                val: Number(document.getElementById('ft-val').value),
+                prof: document.getElementById('ft-prof').value || ''
             };
 
             try {
@@ -543,6 +544,9 @@ const app = {
         if (titleEl) titleEl.innerText = name;
         if (cfgNameEl) cfgNameEl.value = name;
         if (cfgCurrEl) cfgCurrEl.value = this.currency;
+        const cfgProfsEl = document.getElementById('cfg-profs');
+        if (cfgProfsEl) cfgProfsEl.value = localStorage.getItem('bp_profs') || '';
+
         if (logoEl) logoEl.src = logo;
         if (previewEl) previewEl.src = logo;
 
@@ -592,7 +596,7 @@ const app = {
                             <button onclick="app.sendWsp(${t.id})" aria-label="WhatsApp" style="background:none; border:none; color:#25D366; cursor:pointer; font-size:16px;"><i class="fab fa-whatsapp"></i></button>
                         </div>
                     </div>
-                    <div style="font-size:13px; color:var(--primary-color);">${t.srv}</div>
+                    <div style="font-size:13px; color:var(--primary-color);">${t.srv} ${t.prof ? `<span style="opacity:0.6; font-size:11px; color:var(--text-secondary)">- ${t.prof}</span>` : ''}</div>
                     <div style="margin-top:10px; opacity:0.5; font-size:12px;">${t.dat.split('T')[1]} hs</div>
                 `;
                 scroll.appendChild(d);
@@ -612,6 +616,27 @@ const app = {
         if (moneyEl) moneyEl.innerText = this.formatMoney(weeklyIncome);
     },
 
+    genSelectors() {
+        // Clientes
+        const cliSel = document.getElementById('ft-cli');
+        if (cliSel) {
+            cliSel.innerHTML = '<option value="">Seleccionar Cliente...</option>';
+            this.state.clientes.sort((a, b) => a.nom.localeCompare(b.nom)).forEach(c => {
+                cliSel.innerHTML += `<option value="${c.id}">${c.nom}</option>`;
+            });
+        }
+
+        // Profesionales
+        const profSel = document.getElementById('ft-prof');
+        if (profSel) {
+            const profs = (localStorage.getItem('bp_profs') || '').split(',').map(x => x.trim()).filter(x => x);
+            profSel.innerHTML = '<option value="">Cualquier Profesional</option>';
+            profs.forEach(p => {
+                profSel.innerHTML += `<option value="${p}">${p}</option>`;
+            });
+        }
+    },
+
     renderTurnos() {
         const l = document.getElementById('full-turnos-list');
         if (!l) return;
@@ -626,7 +651,7 @@ const app = {
             row.innerHTML = `
                 <div class="list-item-info">
                     <h4>${t.cname}</h4>
-                    <p>${t.dat.replace('T', ' ')} hs - ${t.srv}</p>
+                    <p>${t.dat.replace('T', ' ')} hs - ${t.srv} ${t.prof ? `(${t.prof})` : ''}</p>
                 </div>
                 <div style="display:flex; align-items:center;">
                     <div style="color:var(--success); font-weight:700; margin-right:15px;">${this.formatMoney(t.val)}</div>
@@ -769,12 +794,25 @@ const app = {
         const s = document.getElementById('ft-cli');
         if (!s) return;
         s.innerHTML = '<option value="">Seleccionar cliente...</option>';
-        this.state.clientes.forEach(c => {
+        this.state.clientes.sort((a, b) => a.nom.localeCompare(b.nom)).forEach(c => {
             const o = document.createElement('option');
             o.value = c.id;
             o.innerText = c.nom;
             s.appendChild(o);
         });
+
+        // Profesionales
+        const profSel = document.getElementById('ft-prof');
+        if (profSel) {
+            const profs = (localStorage.getItem('bp_profs') || '').split(',').map(x => x.trim()).filter(x => x);
+            profSel.innerHTML = '<option value="">Cualquier Profesional</option>';
+            profs.forEach(p => {
+                const o = document.createElement('option');
+                o.value = p;
+                o.innerText = p;
+                profSel.appendChild(o);
+            });
+        }
     },
 
     prepEditTurno(id) {
@@ -820,7 +858,8 @@ const app = {
         const config = {
             name: localStorage.getItem('bp_name') || 'BellaPro',
             currency: this.currency,
-            logo: localStorage.getItem('bp_logo') || ''
+            logo: localStorage.getItem('bp_logo') || '',
+            professionals: localStorage.getItem('bp_profs') || ''
         };
         try {
             await this.dbCloud.collection('users').doc(this.user.uid).set({
@@ -877,12 +916,13 @@ const app = {
     saveCfg() {
         const name = document.getElementById('cfg-name').value;
         const currency = document.getElementById('cfg-currency').value;
+        const profs = document.getElementById('cfg-profs').value;
         if (name) localStorage.setItem('bp_name', name);
         if (currency) localStorage.setItem('bp_currency', currency);
+        if (profs !== undefined) localStorage.setItem('bp_profs', profs);
 
         this.render();
         this.pushCloud().then(() => {
-            // Toast o notificación silenciosa mejor que alert para UX Premium
             console.log("Config saved");
         });
     },

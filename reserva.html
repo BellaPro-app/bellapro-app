@@ -142,6 +142,12 @@
                     <option value="Manicura">Manicura</option>
                 </select>
             </div>
+            <div class="form-group" id="prof-group" style="display:none">
+                <label>Profesional / Estilista</label>
+                <select id="cust-prof">
+                    <option value="">Cualquier profesional</option>
+                </select>
+            </div>
             <button type="submit" class="btn-reserve">Solicitar Reserva</button>
         </form>
         <div id="status" class="status-msg"></div>
@@ -185,6 +191,18 @@
                     const config = data.config || {};
                     document.getElementById('salon-name').innerText = config.name || "Reserva tu Turno";
                     if (config.logo) document.getElementById('salon-logo').src = config.logo;
+
+                    // Cargar profesionales
+                    if (config.professionals) {
+                        const profs = config.professionals.split(',').map(x => x.trim()).filter(x => x);
+                        if (profs.length > 0) {
+                            const pSelect = document.getElementById('cust-prof');
+                            profs.forEach(p => {
+                                pSelect.innerHTML += `<option value="${p}">${p}</option>`;
+                            });
+                            document.getElementById('prof-group').style.display = 'block';
+                        }
+                    }
                 } else {
                     document.querySelector('.booking-card').innerHTML = "<h1>Error</h1><p>El salón no existe o no está registrado.</p>";
                 }
@@ -205,6 +223,7 @@
                 client: document.getElementById('cust-name').value,
                 phone: document.getElementById('cust-tel').value,
                 service: document.getElementById('cust-srv').value,
+                professional: document.getElementById('cust-prof').value || '',
                 status: 'pendiente',
                 createdAt: new Date().toISOString()
             };

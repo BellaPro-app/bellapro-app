@@ -198,6 +198,9 @@
                     </div>
                     <label>Nombre del Salón</label>
                     <input type="text" id="cfg-name" placeholder="BellaPro">
+                    <label style="margin-top:15px; display:block;">Tu Equipo / Profesionales (Separados por
+                        coma)</label>
+                    <input type="text" id="cfg-profs" placeholder="Ej: Ana, Carla, Luis">
                     <button class="btn-full" onclick="app.saveCfg()">Guardar</button>
                 </div>
 
@@ -297,6 +300,7 @@
                     <input type="hidden" id="ft-id">
                     <div class="form-group"><label>Nombre y Apellido (Cliente)</label><select id="ft-cli"
                             required></select></div>
+                    <div class="form-group"><label>Profesional / Estilista</label><select id="ft-prof"></select></div>
                     <div class="form-group">
                         <label>Elegir Servicio</label>
                         <div class="chip-group" id="service-selector"></div>
