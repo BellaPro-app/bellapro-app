@@ -147,22 +147,85 @@
         <div id="status" class="status-msg"></div>
     </div>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <script>
-        document.getElementById('booking-form').onsubmit = function (e) {
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCFp95pg8x4YAJ4prASufTIywvdbHksPE",
+            authDomain: "bellapro-d297f.firebaseapp.com",
+            projectId: "bellapro-d297f",
+            storageBucket: "bellapro-d297f.firebasestorage.app",
+            messagingSenderId: "634527697988",
+            appId: "1:634527697988:web:f2de382cf883b906dfc011"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Identificar Salón por URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const salonId = urlParams.get('s');
+
+        async function loadSalon() {
+            if (!salonId) {
+                document.querySelector('.booking-card').innerHTML = `
+                    <img src="assets/logo/logo.png" class="logo" style="opacity:0.3">
+                    <h1>Link Inválido</h1>
+                    <p>Por favor, solicita el link de reserva correcto a tu salón o estética.</p>
+                `;
+                return;
+            }
+
+            try {
+                const doc = await db.collection('users').doc(salonId).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    const config = data.config || {};
+                    document.getElementById('salon-name').innerText = config.name || "Reserva tu Turno";
+                    if (config.logo) document.getElementById('salon-logo').src = config.logo;
+                } else {
+                    document.querySelector('.booking-card').innerHTML = "<h1>Error</h1><p>El salón no existe o no está registrado.</p>";
+                }
+            } catch (e) {
+                console.error("Error loading salon:", e);
+                document.querySelector('.booking-card').innerHTML = "<h1>Error de Conexión</h1><p>No pudimos cargar la información del salón.</p>";
+            }
+        }
+
+        loadSalon();
+
+        document.getElementById('booking-form').onsubmit = async function (e) {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             const status = document.getElementById('status');
 
+            const reserva = {
+                client: document.getElementById('cust-name').value,
+                phone: document.getElementById('cust-tel').value,
+                service: document.getElementById('cust-srv').value,
+                status: 'pendiente',
+                createdAt: new Date().toISOString()
+            };
+
             btn.innerText = "Procesando...";
             btn.disabled = true;
 
-            // Simulación de envío (En fase 2 conectaremos con Firebase)
-            setTimeout(() => {
+            try {
+                await db.collection('users').doc(salonId).collection('reservas_publicas').add(reserva);
                 status.innerText = "¡Solicitud enviada! Te contactaremos por WhatsApp para confirmar.";
                 status.style.display = "block";
                 status.style.color = "#00ffcc";
                 btn.innerText = "Solicitud Enviada";
-            }, 1500);
+            } catch (err) {
+                console.error(err);
+                status.innerText = "Error: " + err.message;
+                status.style.display = "block";
+                status.style.color = "#ff4444";
+                btn.innerText = "Reintentar";
+                btn.disabled = false;
+            }
         };
     </script>
 </body>
