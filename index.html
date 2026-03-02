@@ -493,6 +493,78 @@
             color: var(--primary);
         }
 
+        /* Pricing Toggle */
+        .pricing-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--surface-light);
+            transition: .4s;
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 3px;
+            background: var(--primary-gradient);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .toggle-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-s);
+            transition: var(--transition);
+        }
+
+        .toggle-label.active {
+            color: white;
+        }
+
+        .saving-badge {
+            background: rgba(0, 255, 204, 0.1);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
         @media (max-width: 992px) {
             .hero {
                 text-align: center;
@@ -755,32 +827,58 @@
         <p style="color: var(--text-s); margin-bottom: 60px;">Ventas habilitadas para toda Latinoamérica vía Hotmart.
         </p>
 
-        <div class="pricing-grid" style="display: flex; justify-content: center;">
-            <div class="price-card featured"
-                style="max-width: 550px; background: #0a0708; border-color: var(--primary); text-align: center;">
+        <div class="pricing-toggle">
+            <span class="toggle-label active" id="label-mensual">Mensual</span>
+            <label class="switch">
+                <input type="checkbox" id="price-toggle" onchange="app.toggleBilling()">
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-label" id="label-vitalicio">Vitalicio <span class="saving-badge">Ahorra
+                    80%</span></span>
+        </div>
+
+        <div class="pricing-grid" style="display: flex; justify-content: center; gap: 30px; align-items: flex-end;">
+            <!-- PLAN MENSUAL -->
+            <div class="price-card" id="card-mensual"
+                style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1); opacity: 0.8; transform: scale(0.95);">
+                <h3>Plan Essential</h3>
+                <p style="font-size: 14px; opacity: 0.6;">Suscripción Mensual</p>
+                <div class="price" style="font-size: 44px;">$9.90 <span style="font-size: 18px;">USD/mes</span></div>
+                <ul class="price-list" style="margin: 30px 0;">
+                    <li><i class="fas fa-check-circle"></i> Acceso Full a la App</li>
+                    <li><i class="fas fa-check-circle"></i> Sincronización en la Nube</li>
+                    <li><i class="fas fa-check-circle"></i> WhatsApp Automático</li>
+                    <li><i class="fas fa-times-circle" style="color: rgba(255,255,255,0.2) !important;"></i> Soporte
+                        Prioritario 1 a 1</li>
+                </ul>
+                <a href="#contacto" class="btn-main"
+                    style="width: 100%; font-size: 16px; background: rgba(255,255,255,0.1); box-shadow: none;">ELEGIR
+                    MENSUAL</a>
+            </div>
+
+            <!-- PLAN VITALICIO -->
+            <div class="price-card featured" id="card-vitalicio"
+                style="max-width: 500px; background: #0a0708; border-color: var(--primary); text-align: center;">
                 <div
                     style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary-gradient); color: white; padding: 6px 20px; border-radius: 30px; font-size: 13px; font-weight: 800; white-space: nowrap; box-shadow: 0 5px 15px rgba(236,72,153,0.4);">
-                    OFERTA INTERNACIONAL
+                    MÁS POPULAR
                 </div>
-                <div style="margin-bottom: 20px; opacity: 0.6; text-decoration: line-through; font-size: 18px;">Valor
-                    Real: $199 USD</div>
-                <div class="price" style="font-size: 64px;">$49 <span style="font-size: 20px;">USD</span></div>
-                <p style="font-size: 14px; color: var(--accent); font-weight: 700; margin-bottom: 30px;">
-                    <i class="fas fa-clock"></i> ¡Quedan pocas licencias a este precio de preventa!
+                <h3>Licencia Vitalicia</h3>
+                <p style="font-size: 14px; color: var(--accent); font-weight: 700;">ELIMINA SUSCRIPCIONES PARA SIEMPRE
                 </p>
-                <ul class="price-list" style="text-align: left; margin: 0 auto 30px; max-width: 400px;">
-                    <li><i class="fas fa-check-circle"></i> <b>Licencia de Uso de por Vida</b></li>
-                    <li><i class="fas fa-check-circle"></i> Sincronización en la Nube Ilimitada</li>
-                    <li><i class="fas fa-check-circle"></i> Panel de Finanzas Multi-moneda</li>
-                    <li><i class="fas fa-check-circle"></i> WhatsApp Manager integrado</li>
-                    <li><i class="fas fa-check-circle"></i> Soporte Prioritario 1 a 1</li>
+                <div class="price" style="font-size: 64px;">$97 <span style="font-size: 20px;">USD</span></div>
+                <p style="font-size: 13px; opacity: 0.5; margin-bottom: 20px;">Un solo pago. Acceso para siempre.</p>
+                <ul class="price-list" style="text-align: left; margin: 0 auto 30px; max-width: 350px;">
+                    <li><i class="fas fa-check-circle"></i> <b>Licencia de por Vida</b></li>
+                    <li><i class="fas fa-check-circle"></i> Sincronización Ilimitada</li>
+                    <li><i class="fas fa-check-circle"></i> Panel Multi-moneda PRO</li>
+                    <li><i class="fas fa-check-circle"></i> <b>Soporte VIP Prioritario</b></li>
+                    <li><i class="fas fa-check-circle"></i> Todas las actualizaciones futuras</li>
                 </ul>
-                <!-- EL LINK DE HOTMART DEBERÁ SER REEMPLAZADO AQUÍ -->
                 <a href="#contacto" id="btn-comprar-hotmart" class="btn-main"
-                    style="width: 100%; text-align: center; padding: 25px; font-size: 20px;">QUIERO MI LICENCIA
-                    VITALICIA</a>
-                <p style="margin-top: 20px; font-size: 12px; opacity: 0.4;">
-                    <i class="fas fa-shield-alt"></i> Pago Seguro procesado por Hotmart.
+                    style="width: 100%; text-align: center; padding: 25px; font-size: 20px;">COMPRAR AHORA</a>
+                <p style="margin-top: 15px; font-size: 12px; opacity: 0.4;">
+                    <i class="fas fa-shield-alt"></i> Pago Seguro vía Hotmart.
                 </p>
             </div>
         </div>
@@ -827,25 +925,42 @@
             mensajeDefault: "Hola! Quiero más info sobre la Licencia de BellaPro"
         };
 
+        const app = {
+            toggleBilling() {
+                const isVitalicio = document.getElementById('price-toggle').checked;
+                const cardMensual = document.getElementById('card-mensual');
+                const cardVitalicio = document.getElementById('card-vitalicio');
+                const labelMensual = document.getElementById('label-mensual');
+                const labelVitalicio = document.getElementById('label-vitalicio');
+
+                if (isVitalicio) {
+                    cardVitalicio.style.opacity = "1";
+                    cardVitalicio.style.transform = "scale(1.05)";
+                    cardMensual.style.opacity = "0.5";
+                    cardMensual.style.transform = "scale(0.9)";
+                    labelVitalicio.classList.add('active');
+                    labelMensual.classList.remove('active');
+                } else {
+                    cardMensual.style.opacity = "1";
+                    cardMensual.style.transform = "scale(1.05)";
+                    cardVitalicio.style.opacity = "0.5";
+                    cardVitalicio.style.transform = "scale(0.9)";
+                    labelMensual.classList.add('active');
+                    labelVitalicio.classList.remove('active');
+                }
+            }
+        };
+
         function updateCommercialData() {
             // Actualizar Precios e Links
-            const priceElements = document.querySelectorAll('.price');
-            priceElements.forEach(el => {
-                el.innerHTML = `${BELLA_CONFIG.precio} <span style="font-size: 20px;">${BELLA_CONFIG.moneda}</span>`;
-            });
-
-            // Botón Hotmart
             const btnHotmart = document.getElementById('btn-comprar-hotmart');
             if (btnHotmart && BELLA_CONFIG.hotmartLink !== "#contacto") {
                 btnHotmart.href = BELLA_CONFIG.hotmartLink;
             }
 
-            // Actualizar otros botones de compra
-            document.querySelectorAll('.hero-btns .btn-main').forEach(btn => {
-                if (btn.innerText.includes('Escalar')) {
-                    btn.href = BELLA_CONFIG.hotmartLink;
-                }
-            });
+            // Iniciar en modo Vitalicio por defecto visualmente
+            document.getElementById('price-toggle').checked = true;
+            app.toggleBilling();
         }
 
         // Countdown Timer Simple

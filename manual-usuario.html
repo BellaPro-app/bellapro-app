@@ -238,6 +238,55 @@
             border-top: var(--glass-border);
         }
 
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+
+            body {
+                background-color: #0a0506 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .manual-grid {
+                display: block !important;
+            }
+
+            .toc {
+                display: none !important;
+            }
+
+            .content section {
+                break-inside: avoid;
+                margin-bottom: 20px !important;
+                padding: 30px !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+
+            .hero {
+                padding: 40px 20px !important;
+                margin-bottom: 30px !important;
+                break-after: avoid;
+            }
+
+            footer {
+                padding: 20px !important;
+                break-before: avoid;
+            }
+
+            img {
+                max-width: 100% !important;
+            }
+        }
+
         @media (max-width: 992px) {
             .manual-grid {
                 grid-template-columns: 1fr;
