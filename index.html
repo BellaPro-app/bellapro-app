@@ -602,6 +602,32 @@
                 width: 100%;
             }
         }
+
+        .price-toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .price-card .old-price {
+            text-decoration: line-through;
+            opacity: 0.4;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .badge-promo {
+            background: #ffcc00;
+            color: #000;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 800;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
     </style>
 </head>
 
@@ -794,6 +820,60 @@
             <a href="./index.html?demo=true" class="btn-main"
                 style="background: none; border: 1px solid var(--accent); color: var(--accent); padding: 15px 35px;">Ver
                 Demo Interactiva en Vivo</a>
+        </div>
+    </section>
+
+    <section class="pricing" id="precio" style="background: var(--bg); position: relative; overflow: hidden;">
+        <div class="hero-visual"
+            style="top: 20%; left: 10%; width: 30vw; height: 30vw; filter: blur(120px); opacity: 0.05;"></div>
+        <span class="section-tag">Inversión en tu Crecimiento</span>
+        <h2 style="font-family: 'Playfair Display', serif;">Planes diseñados para tu <span
+                class="text-gradient">Éxito</span></h2>
+        <p style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px;">Elige la forma que mejor se adapte a tu
+            salón. Sin costos ocultos, con todo el poder de BellaPro.</p>
+
+        <div class="pricing-grid">
+            <!-- PLAN MENSUAL -->
+            <div class="price-card">
+                <h3>Plan Pro Mensual</h3>
+                <p style="color: var(--text-s); font-size: 14px;">Ideal para empezar sin presiones</p>
+                <div class="price">
+                    $9.99 <span>/ mes</span>
+                </div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> Agenda Inteligente Full</li>
+                    <li><i class="fas fa-check"></i> Control de Caja y Finanzas</li>
+                    <li><i class="fas fa-check"></i> WhatsApp e Invisible Tickets</li>
+                    <li><i class="fas fa-check"></i> Reservas Online Ilimitadas</li>
+                    <li><i class="fas fa-check"></i> Soporte Prioritario</li>
+                </ul>
+                <a href="URL_HOTMART_SUSCRIPCION" class="btn-main"
+                    style="width: 100%; padding: 15px; font-size: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none;">Elegir
+                    Suscripción</a>
+            </div>
+
+            <!-- PLAN VITALICIO -->
+            <div class="price-card featured">
+                <div
+                    style="position: absolute; top: -15px; right: 20px; background: var(--accent); color: var(--bg); padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 800;">
+                    MÁS ELEGIDO</div>
+                <h3>Licencia Vitalicia</h3>
+                <p style="color: var(--text-s); font-size: 14px;">Un solo pago, acceso para siempre</p>
+                <div class="price">
+                    <span class="old-price">$120</span> $47 <span class="badge-promo">60% OFF</span>
+                </div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> <strong>Paga una vez, úsala siempre</strong></li>
+                    <li><i class="fas fa-check"></i> Todas las funciones Premium</li>
+                    <li><i class="fas fa-check"></i> Actualizaciones de por vida</li>
+                    <li><i class="fas fa-check"></i> Sin cuotas mensuales</li>
+                    <li><i class="fas fa-check"></i> Gestión de Equipo Multi-profesional</li>
+                </ul>
+                <a href="URL_HOTMART_PAGO_UNICO" class="btn-main"
+                    style="width: 100%; padding: 15px; font-size: 16px;">Adquirir de por vida</a>
+                <p style="font-size: 12px; margin-top: 15px; opacity: 0.6;"><i class="fas fa-shield-alt"></i> Garantía
+                    de satisfacción 7 días</p>
+            </div>
         </div>
     </section>
 
