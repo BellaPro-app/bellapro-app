@@ -947,7 +947,7 @@ const app = {
         const salon = localStorage.getItem('bp_name') || 'BellaPro';
         const [fecha, hora] = t.dat.split('T');
         const [y, m, d] = fecha.split('-');
-        const msj = `¡Hola ${c.nom}! Te recuerdo tu turno de *${t.srv}* para el día *${d}/${m}* a las *${hora} hs* en *${salon}*. ¡Te esperamos! ✂️✨`;
+        const msj = `¡Hola *${c.nom}*! Te recuerdo tu turno de *${t.srv}* para el día *${d}/${m}* a las *${hora} hs* en *${salon}*. ¡Te esperamos! ✂️✨`;
         window.open(`https://api.whatsapp.com/send?phone=${c.tel.replace(/\D/g, '')}&text=${encodeURIComponent(msj)}`, '_blank');
     },
 

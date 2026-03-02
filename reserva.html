@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Turno | BellaPro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #EC4899;
+            --primary-gradient: linear-gradient(135deg, #EC4899 0%, #db271d 100%);
+            --bg: #0a0506;
+            --surface: #1a1112;
+            --text-p: #ffffff;
+            --text-s: #fce7f3;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-p);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .booking-card {
+            background: var(--surface);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 32px;
+            border: var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: var(--text-s);
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            background: var(--glass);
+            border: var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .btn-reserve {
+            background: var(--primary-gradient);
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-reserve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .status-msg {
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="booking-card">
+        <img src="assets/logo/logo.png" alt="BellaPro" class="logo">
+        <h1>Reserva tu Turno</h1>
+        <p>Selecciona el servicio y horario que prefieras.</p>
+
+        <form id="booking-form">
+            <div class="form-group">
+                <label>Nombre y Apellido</label>
+                <input type="text" id="cust-name" placeholder="Tu nombre completo" required>
+            </div>
+            <div class="form-group">
+                <label>WhatsApp (con código de área)</label>
+                <input type="tel" id="cust-tel" placeholder="Ej: 5491132094505" required>
+            </div>
+            <div class="form-group">
+                <label>Servicio</label>
+                <select id="cust-srv" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="Corte Dama">Corte Dama</option>
+                    <option value="Coloración">Coloración</option>
+                    <option value="Manicura">Manicura</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-reserve">Solicitar Reserva</button>
+        </form>
+        <div id="status" class="status-msg"></div>
+    </div>
+
+    <script>
+        document.getElementById('booking-form').onsubmit = function (e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const status = document.getElementById('status');
+
+            btn.innerText = "Procesando...";
+            btn.disabled = true;
+
+            // Simulación de envío (En fase 2 conectaremos con Firebase)
+            setTimeout(() => {
+                status.innerText = "¡Solicitud enviada! Te contactaremos por WhatsApp para confirmar.";
+                status.style.display = "block";
+                status.style.color = "#00ffcc";
+                btn.innerText = "Solicitud Enviada";
+            }, 1500);
+        };
+    </script>
+</body>
+
+</html>
