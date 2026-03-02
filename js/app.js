@@ -98,6 +98,7 @@ const app = {
                     await this.load();
                     this.events();
                     this.render();
+                    this.listenReservas();
                 } catch (e) {
                     this.handleError("Error de Acceso", "No Pudimos verificar tu licencia.");
                     console.error("Init error:", e);
@@ -1018,6 +1019,61 @@ const app = {
         const [y, m, d] = fecha.split('-');
         const msj = `📄 *COMPROBANTE DE SERVICIO*\n----------------------------------\n🏠 *${salon}*\n👤 *Cliente:* ${c.nom}\n✂️ *Servicio:* ${t.srv}\n📅 *Fecha:* ${d}/${m} - ${hora}hs\n\n💰 *TOTAL:* ${this.formatMoney(t.val)}\n----------------------------------\n¡Gracias por elegirnos! ✨`;
         window.open(`https://api.whatsapp.com/send?phone=${c.tel.replace(/\D/g, '')}&text=${encodeURIComponent(msj)}`, '_blank');
+    },
+
+    listenReservas() {
+        if (!this.user || !this.dbCloud) return;
+
+        this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas')
+            .where('status', '==', 'pendiente')
+            .onSnapshot(async (snapshot) => {
+                for (const change of snapshot.docChanges()) {
+                    if (change.type === "added") {
+                        const data = change.doc.data();
+                        const resId = change.doc.id;
+
+                        console.log("BellaPro: Nueva reserva detectada:", data.client);
+
+                        // 1. Buscar o Crear Cliente
+                        let cli = this.state.clientes.find(c => c.tel === data.phone);
+                        if (!cli) {
+                            const newCli = { nom: data.client, tel: data.phone, not: 'Creado desde reserva online' };
+                            const id = await database.add('clientes', newCli);
+                            cli = { ...newCli, id };
+                            this.state.clientes.push(cli);
+                        }
+
+                        // 2. Crear Turno
+                        // Usamos la fecha actual + 1 hora como fallback si no hay fecha definida en la reserva rápida
+                        const now = new Date();
+                        now.setHours(now.getHours() + 1);
+                        const turno = {
+                            cid: cli.id,
+                            cname: cli.nom,
+                            srv: data.service,
+                            prof: data.professional || '',
+                            dat: now.toISOString().split(':')[0] + ':00',
+                            val: 0,
+                            pagado: false
+                        };
+
+                        await database.add('turnos', turno);
+                        this.state.turnos.push(turno);
+
+                        // 3. Marcar como procesada en la nube
+                        await this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas').doc(resId).update({ status: 'procesada' });
+
+                        this.render();
+
+                        // Notificación visual discreta
+                        const toast = document.createElement('div');
+                        toast.style = "position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--primary-gradient); color:white; padding:15px 25px; border-radius:50px; z-index:10000; box-shadow:0 10px 20px rgba(0,0,0,0.3); font-weight:700;";
+                        toast.innerText = `🔔 Nueva reserva de ${data.client}`;
+                        document.body.appendChild(toast);
+                        setTimeout(() => toast.remove(), 5000);
+                    }
+                }
+            });
     },
 
     async resetDB() {
