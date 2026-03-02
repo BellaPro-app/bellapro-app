@@ -76,15 +76,29 @@ const app = {
 
                     // Si es un usuario nuevo, creamos su perfil inicial bloqueado
                     if (!userDoc.exists) {
-                        console.log("BellaPro: Usuario nuevo. Creando perfil en Firestore...");
                         try {
+                            // Verificar pre-aprobación de Hotmart
+                            const approvedRef = this.dbCloud.collection('approved_emails').doc(user.email);
+                            const approvedDoc = await approvedRef.get();
+                            const isAutoApproved = approvedDoc.exists && approvedDoc.data().approved;
+
                             await this.dbCloud.collection('users').doc(user.uid).set({
-                                config: { name: 'Mi Salón BellaPro', isApproved: false },
+                                config: {
+                                    name: 'Mi Salón BellaPro',
+                                    email: user.email,
+                                    isApproved: isAutoApproved
+                                },
                                 data: { turnos: [], clientes: [], productos: [], pagos: [] },
                                 createdAt: new Date().toISOString()
                             });
-                            console.log("BellaPro: Perfil creado con éxito.");
-                            this.showPendingActivation();
+
+                            if (isAutoApproved) {
+                                console.log("BellaPro: Usuario activado automáticamente por Hotmart.");
+                                location.reload(); // Recargar para entrar a la app
+                            } else {
+                                console.log("BellaPro: Perfil creado con éxito (Pendiente).");
+                                this.showPendingActivation();
+                            }
                         } catch (setErr) {
                             console.error("BellaPro: ERROR CRÍTICO al crear perfil:", setErr.message);
                             this.showAuthError("Error al inicializar tu cuenta: " + setErr.message);
