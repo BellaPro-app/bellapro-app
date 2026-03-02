@@ -182,6 +182,20 @@
                                 onchange="app.handleLogo(event)">
                         </div>
                     </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label>País / Moneda Local</label>
+                        <select id="cfg-currency" onchange="app.saveCfg()"
+                            style="width: 100%; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); font-family: inherit;">
+                            <option value="$">Argentina (ARS $)</option>
+                            <option value="$">México (MXN $)</option>
+                            <option value="$">Colombia (COP $)</option>
+                            <option value="$">Chile (CLP $)</option>
+                            <option value="S/">Perú (PEN S/)</option>
+                            <option value="$U">Uruguay (UYU $U)</option>
+                            <option value="₲">Paraguay (PYG ₲)</option>
+                            <option value="$">Ecuador / Internacional (USD $)</option>
+                        </select>
+                    </div>
                     <label>Nombre del Salón</label>
                     <input type="text" id="cfg-name" placeholder="BellaPro">
                     <button class="btn-full" onclick="app.saveCfg()">Guardar</button>
@@ -281,7 +295,8 @@
                         <label>Elegir Hora</label>
                         <div class="chip-grid" id="time-selector"></div>
                     </div>
-                    <div class="form-group"><label>Costo ($)</label><input type="number" id="ft-val" value="0"></div>
+                    <div class="form-group"><label id="label-ft-val">Costo (Moneda Local)</label><input type="number"
+                            id="ft-val" value="0"></div>
                     <button type="submit" class="btn-full">Guardar Turno</button>
                 </form>
             </div>
@@ -350,7 +365,8 @@
                     </div>
                     <div class="form-group"><label>Concepto</label><input type="text" id="ff-con"
                             placeholder="E.j. Alquiler, Venta producto" required></div>
-                    <div class="form-group"><label>Monto ($)</label><input type="number" id="ff-amt" required></div>
+                    <div class="form-group"><label id="label-ff-amt">Monto (Moneda Local)</label><input type="number"
+                            id="ff-amt" required></div>
                     <button type="submit" class="btn-full">Registrar Movimiento</button>
                 </form>
             </div>

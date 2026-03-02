@@ -6,6 +6,15 @@ const app = {
     state: { turnos: [], clientes: [], productos: [], pagos: [], selDay: '', selTime: '', selSrv: '' },
     user: null,
 
+    get currency() {
+        return localStorage.getItem('bp_currency') || '$';
+    },
+
+    formatMoney(amount) {
+        const symbol = this.currency;
+        return `${symbol}${Number(amount).toLocaleString()}`;
+    },
+
     async init() {
         console.log("BellaPro: Initializing...");
 
@@ -527,13 +536,21 @@ const app = {
 
         const titleEl = document.getElementById('salon-title-display');
         const cfgNameEl = document.getElementById('cfg-name');
+        const cfgCurrEl = document.getElementById('cfg-currency');
         const logoEl = document.getElementById('salon-logo-display');
         const previewEl = document.getElementById('cfg-logo-preview');
 
         if (titleEl) titleEl.innerText = name;
         if (cfgNameEl) cfgNameEl.value = name;
+        if (cfgCurrEl) cfgCurrEl.value = this.currency;
         if (logoEl) logoEl.src = logo;
         if (previewEl) previewEl.src = logo;
+
+        // Actualizar labels de modales con moneda
+        const labelVal = document.getElementById('label-ft-val');
+        const labelAmt = document.getElementById('label-ff-amt');
+        if (labelVal) labelVal.innerText = `Costo (${this.currency})`;
+        if (labelAmt) labelAmt.innerText = `Monto (${this.currency})`;
     },
 
     renderDashboard() {
@@ -585,7 +602,7 @@ const app = {
             .filter(p => (!p.typ || p.typ === 'ingreso') && last7Days.includes(p.dat))
             .reduce((acc, p) => acc + p.amt, 0);
         const moneyEl = document.getElementById('dash-money');
-        if (moneyEl) moneyEl.innerText = `$${weeklyIncome.toLocaleString()}`;
+        if (moneyEl) moneyEl.innerText = this.formatMoney(weeklyIncome);
     },
 
     renderTurnos() {
@@ -605,7 +622,7 @@ const app = {
                     <p>${t.dat.replace('T', ' ')} hs - ${t.srv}</p>
                 </div>
                 <div style="display:flex; align-items:center;">
-                    <div style="color:var(--success); font-weight:700; margin-right:15px;">$${t.val.toLocaleString()}</div>
+                    <div style="color:var(--success); font-weight:700; margin-right:15px;">${this.formatMoney(t.val)}</div>
                     <button onclick="app.sendTicket(${t.id})" title="Enviar Ticket" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; margin-right:10px; font-size:16px;"><i class="fas fa-file-invoice-dollar"></i></button>
                     <button onclick="app.sendWsp(${t.id})" title="Recordatorio" style="background:none; border:none; color:#25D366; cursor:pointer; margin-right:10px; font-size:18px;"><i class="fab fa-whatsapp"></i></button>
                     <button onclick="app.prepEditTurno(${t.id})" title="Editar" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; margin-right:10px;"><i class="fas fa-edit"></i></button>
@@ -676,9 +693,9 @@ const app = {
         const gasEl = document.getElementById('fin-gas');
         const netoEl = document.getElementById('fin-neto');
 
-        if (ingEl) ingEl.innerText = `$${ingresos.toLocaleString()}`;
-        if (gasEl) gasEl.innerText = `$${gastos.toLocaleString()}`;
-        if (netoEl) netoEl.innerText = `$${neto.toLocaleString()}`;
+        if (ingEl) ingEl.innerText = this.formatMoney(ingresos);
+        if (gasEl) gasEl.innerText = this.formatMoney(gastos);
+        if (netoEl) netoEl.innerText = this.formatMoney(neto);
 
         const chartCon = document.getElementById('fin-chart');
         if (!chartCon) return;
@@ -708,7 +725,7 @@ const app = {
             const barWrap = document.createElement('div');
             barWrap.className = 'chart-bar-wrap';
             barWrap.innerHTML = `
-                <div class="chart-bar" style="height: ${Math.max(height, 5)}%" data-value="$${d.total.toLocaleString()}"></div>
+                <div class="chart-bar" style="height: ${Math.max(height, 5)}%" data-value="${this.formatMoney(d.total)}"></div>
                 <div class="chart-label">${label}</div>
             `;
             chartCon.appendChild(barWrap);
@@ -732,7 +749,7 @@ const app = {
                 </div>
                 <div style="display:flex; align-items:center;">
                     <div style="color:${isGasto ? 'var(--error)' : 'var(--success)'}; font-weight:700; margin-right:15px;">
-                        ${isGasto ? '-' : '+'}$${p.amt.toLocaleString()}
+                        ${isGasto ? '-' : '+'}${this.formatMoney(p.amt)}
                     </div>
                     <button onclick="app.delItem('pago', ${p.id})" title="Eliminar" style="background:none; border:none; color:var(--error); cursor:pointer;"><i class="fas fa-trash"></i></button>
                 </div>
@@ -795,6 +812,7 @@ const app = {
         const data = await database.dump();
         const config = {
             name: localStorage.getItem('bp_name') || 'BellaPro',
+            currency: this.currency,
             logo: localStorage.getItem('bp_logo') || ''
         };
         try {
@@ -830,6 +848,7 @@ const app = {
                 }
                 if (cloud.config) {
                     localStorage.setItem('bp_name', cloud.config.name);
+                    if (cloud.config.currency) localStorage.setItem('bp_currency', cloud.config.currency);
                     if (cloud.config.logo) localStorage.setItem('bp_logo', cloud.config.logo);
                 }
                 console.log("Cloud Sync: Pull success");
@@ -850,11 +869,15 @@ const app = {
 
     saveCfg() {
         const name = document.getElementById('cfg-name').value;
-        if (name) {
-            localStorage.setItem('bp_name', name);
-            this.render();
-            this.pushCloud().then(() => alert("Configuración guardada y sincronizada!"));
-        }
+        const currency = document.getElementById('cfg-currency').value;
+        if (name) localStorage.setItem('bp_name', name);
+        if (currency) localStorage.setItem('bp_currency', currency);
+
+        this.render();
+        this.pushCloud().then(() => {
+            // Toast o notificación silenciosa mejor que alert para UX Premium
+            console.log("Config saved");
+        });
     },
 
     handleLogo(event) {
@@ -937,7 +960,7 @@ const app = {
         const salon = localStorage.getItem('bp_name') || 'BellaPro';
         const [fecha, hora] = t.dat.split('T');
         const [y, m, d] = fecha.split('-');
-        const msj = `📄 *COMPROBANTE DE SERVICIO*\n----------------------------------\n🏠 *${salon}*\n👤 *Cliente:* ${c.nom}\n✂️ *Servicio:* ${t.srv}\n📅 *Fecha:* ${d}/${m} - ${hora}hs\n\n💰 *TOTAL:* $${t.val.toLocaleString()}\n----------------------------------\n¡Gracias por elegirnos! ✨`;
+        const msj = `📄 *COMPROBANTE DE SERVICIO*\n----------------------------------\n🏠 *${salon}*\n👤 *Cliente:* ${c.nom}\n✂️ *Servicio:* ${t.srv}\n📅 *Fecha:* ${d}/${m} - ${hora}hs\n\n💰 *TOTAL:* ${this.formatMoney(t.val)}\n----------------------------------\n¡Gracias por elegirnos! ✨`;
         window.open(`https://api.whatsapp.com/send?phone=${c.tel.replace(/\D/g, '')}&text=${encodeURIComponent(msj)}`, '_blank');
     },
 
