@@ -89,6 +89,14 @@
             color: white;
             font-size: 15px;
             outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        select option {
+            background-color: var(--surface);
+            color: white;
+            padding: 10px;
         }
 
         .btn-reserve {
@@ -138,8 +146,15 @@
                 <select id="cust-srv" required>
                     <option value="">Seleccionar...</option>
                     <option value="Corte Dama">Corte Dama</option>
+                    <option value="Corte Caballero">Corte Caballero</option>
                     <option value="Coloración">Coloración</option>
+                    <option value="Mechas/Balayage">Mechas/Balayage</option>
+                    <option value="Peinado Evento">Peinado Evento</option>
+                    <option value="Baño de Crema">Baño de Crema</option>
+                    <option value="Alisado">Alisado</option>
+                    <option value="Lavado & Secado">Lavado & Secado</option>
                     <option value="Manicura">Manicura</option>
+                    <option value="Depilación Rostro">Depilación Rostro</option>
                 </select>
             </div>
             <div class="form-group" id="prof-group" style="display:none">
