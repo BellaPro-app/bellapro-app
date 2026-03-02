@@ -562,6 +562,20 @@
     <footer>
         <p>BellaPro systems © 2026 | Desarrollado para la excelencia en estética</p>
     </footer>
+    <script>
+        // Forzar vista de impresión para capturas automáticas
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('print') === 'true') {
+            document.querySelector('.toc').style.display = 'none';
+            document.querySelector('.manual-grid').style.display = 'block';
+            document.querySelector('.container').style.maxWidth = '100%';
+            document.querySelector('.container').style.width = '100%';
+            document.querySelectorAll('.content section').forEach(s => {
+                s.style.width = '100%';
+                s.style.padding = '40px';
+            });
+        }
+    </script>
 </body>
 
 </html>

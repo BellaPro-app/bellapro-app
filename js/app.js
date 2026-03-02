@@ -638,7 +638,7 @@ const app = {
         if (!l) return;
         l.innerHTML = '';
         if (this.state.clientes.length === 0) {
-            l.innerHTML = '<p style="opacity:0.3; text-align:center; padding:40px;">No hay clientes registrados.</p>';
+            l.innerHTML = '<p style="opacity:0.3; text-align:center; padding:40px;">No hay clientes registrados aún.</p>';
             return;
         }
         this.state.clientes.forEach(c => {
