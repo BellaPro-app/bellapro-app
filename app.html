@@ -201,6 +201,20 @@
                     <button class="btn-full" onclick="app.saveCfg()">Guardar</button>
                 </div>
 
+                <div class="section-header" style="margin-top: 30px;">Reservas Online</div>
+                <div class="glass-card">
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">
+                        Tus clientes pueden reservar turnos directamente desde este link. Cópialo y ponlo en tu
+                        Instagram o WhatsApp.
+                    </p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="cfg-booking-link" readonly
+                            style="flex: 1; font-size: 12px; background: rgba(255,255,255,0.03);">
+                        <button class="btn-small" onclick="app.copyBookingLink()"
+                            style="background: var(--primary-gradient); white-space: nowrap;">Copiar Link</button>
+                    </div>
+                </div>
+
                 <div class="section-header" style="margin-top: 30px;">Copia de Seguridad</div>
                 <div class="glass-card">
                     <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">

@@ -546,6 +546,13 @@ const app = {
         if (logoEl) logoEl.src = logo;
         if (previewEl) previewEl.src = logo;
 
+        // Generar Link de Reservas
+        const bookingInp = document.getElementById('cfg-booking-link');
+        if (bookingInp && this.user) {
+            const base = window.location.href.split('app.html')[0];
+            bookingInp.value = `${base}reserva.html?s=${this.user.uid}`;
+        }
+
         // Actualizar labels de modales con moneda
         const labelVal = document.getElementById('label-ft-val');
         const labelAmt = document.getElementById('label-ff-amt');
@@ -877,6 +884,16 @@ const app = {
         this.pushCloud().then(() => {
             // Toast o notificación silenciosa mejor que alert para UX Premium
             console.log("Config saved");
+        });
+    },
+
+    copyBookingLink() {
+        const link = document.getElementById('cfg-booking-link');
+        if (!link) return;
+        link.select();
+        link.setSelectionRange(0, 99999); // Para móviles
+        navigator.clipboard.writeText(link.value).then(() => {
+            alert("¡Link de reserva copiado al portapapeles!");
         });
     },
 
