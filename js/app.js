@@ -472,6 +472,25 @@ const app = {
         this.state.selTime = '';
         this.state.selSrv = '';
 
+        // Clientes
+        const cliSel = document.getElementById('ft-cli');
+        if (cliSel) {
+            cliSel.innerHTML = '<option value="">Seleccionar Cliente...</option>';
+            this.state.clientes.sort((a, b) => a.nom.localeCompare(b.nom)).forEach(c => {
+                cliSel.innerHTML += `<option value="${c.id}">${c.nom}</option>`;
+            });
+        }
+
+        // Profesionales
+        const profSel = document.getElementById('ft-prof');
+        if (profSel) {
+            const profs = (localStorage.getItem('bp_profs') || '').split(',').map(x => x.trim()).filter(x => x);
+            profSel.innerHTML = '<option value="">Cualquier Profesional</option>';
+            profs.forEach(p => {
+                profSel.innerHTML += `<option value="${p}">${p}</option>`;
+            });
+        }
+
         const services = ['Corte Dama', 'Corte Caballero', 'Coloración', 'Mechas/Balayage', 'Peinado Evento', 'Baño de Crema', 'Alisado', 'Lavado & Secado', 'Manicura', 'Depilación Rostro'];
         services.forEach(s => {
             const chip = document.createElement('div');
@@ -616,26 +635,6 @@ const app = {
         if (moneyEl) moneyEl.innerText = this.formatMoney(weeklyIncome);
     },
 
-    genSelectors() {
-        // Clientes
-        const cliSel = document.getElementById('ft-cli');
-        if (cliSel) {
-            cliSel.innerHTML = '<option value="">Seleccionar Cliente...</option>';
-            this.state.clientes.sort((a, b) => a.nom.localeCompare(b.nom)).forEach(c => {
-                cliSel.innerHTML += `<option value="${c.id}">${c.nom}</option>`;
-            });
-        }
-
-        // Profesionales
-        const profSel = document.getElementById('ft-prof');
-        if (profSel) {
-            const profs = (localStorage.getItem('bp_profs') || '').split(',').map(x => x.trim()).filter(x => x);
-            profSel.innerHTML = '<option value="">Cualquier Profesional</option>';
-            profs.forEach(p => {
-                profSel.innerHTML += `<option value="${p}">${p}</option>`;
-            });
-        }
-    },
 
     renderTurnos() {
         const l = document.getElementById('full-turnos-list');
