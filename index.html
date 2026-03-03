@@ -426,16 +426,11 @@
             transform: scale(1.1) rotate(5deg);
         }
 
-        /* Pricing Section */
-        .pricing {
-            padding: 100px 8%;
-            text-align: center;
-        }
-
         .pricing-grid {
             display: flex;
             justify-content: center;
             align-items: stretch;
+            /* Asegura que todas midan lo mismo */
             gap: 30px;
             margin: 60px auto 0;
             flex-wrap: wrap;
@@ -447,10 +442,18 @@
             padding: 50px 40px;
             border-radius: 40px;
             border: 2px solid rgba(255, 255, 255, 0.05);
-            max-width: 400px;
             width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            /* Para empujar el botón al final */
             transition: var(--transition);
             position: relative;
+        }
+
+        .price-card .btn-main {
+            margin-top: auto;
+            /* Empuja el botón al fondo siempre */
         }
 
         .price-card.featured {
@@ -849,7 +852,7 @@
                     <li><i class="fas fa-check"></i> Reservas Online Ilimitadas</li>
                     <li><i class="fas fa-check"></i> Soporte Prioritario</li>
                 </ul>
-                <a href="URL_HOTMART_SUSCRIPCION" class="btn-main"
+                <a href="https://pay.hotmart.com/ID_DE_TU_SUSCRIPCION" class="btn-main"
                     style="width: 100%; padding: 15px; font-size: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none;">Elegir
                     Suscripción</a>
             </div>
@@ -871,7 +874,7 @@
                     <li><i class="fas fa-check"></i> Sin cuotas mensuales</li>
                     <li><i class="fas fa-check"></i> Gestión de Equipo Multi-profesional</li>
                 </ul>
-                <a href="URL_HOTMART_PAGO_UNICO" class="btn-main"
+                <a href="https://pay.hotmart.com/ID_DE_TU_OFERTA_VITALICIA" class="btn-main"
                     style="width: 100%; padding: 15px; font-size: 16px;">Adquirir de por vida</a>
                 <p style="font-size: 12px; margin-top: 15px; opacity: 0.6;"><i class="fas fa-shield-alt"></i> Garantía
                     de satisfacción 7 días</p>
