@@ -827,59 +827,6 @@
         </div>
     </section>
 
-    <section class="pricing" id="precio" style="background: var(--bg); position: relative; overflow: hidden;">
-        <div class="hero-visual"
-            style="top: 20%; left: 10%; width: 30vw; height: 30vw; filter: blur(120px); opacity: 0.05;"></div>
-        <span class="section-tag">Inversión en tu Crecimiento</span>
-        <h2 style="font-family: 'Playfair Display', serif;">Planes diseñados para tu <span
-                class="text-gradient">Éxito</span></h2>
-        <p style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px;">Elige la forma que mejor se adapte a tu
-            salón. Sin costos ocultos, con todo el poder de BellaPro.</p>
-
-        <div class="pricing-grid">
-            <!-- PLAN MENSUAL -->
-            <div class="price-card">
-                <h3>Plan Pro Mensual</h3>
-                <p style="color: var(--text-s); font-size: 14px;">Ideal para empezar sin presiones</p>
-                <div class="price">
-                    $9.99 <span>/ mes</span>
-                </div>
-                <ul class="price-list">
-                    <li><i class="fas fa-check"></i> Agenda Inteligente Full</li>
-                    <li><i class="fas fa-check"></i> Control de Caja y Finanzas</li>
-                    <li><i class="fas fa-check"></i> WhatsApp e Invisible Tickets</li>
-                    <li><i class="fas fa-check"></i> Reservas Online Ilimitadas</li>
-                    <li><i class="fas fa-check"></i> Soporte Prioritario</li>
-                </ul>
-                <a href="https://pay.hotmart.com/ABC12345S" class="btn-main"
-                    style="width: 100%; padding: 15px; font-size: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none;">Elegir
-                    Suscripción</a>
-            </div>
-
-            <!-- PLAN VITALICIO -->
-            <div class="price-card featured">
-                <div
-                    style="position: absolute; top: -15px; right: 20px; background: var(--accent); color: var(--bg); padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 800;">
-                    MÁS ELEGIDO</div>
-                <h3>Licencia Vitalicia</h3>
-                <p style="color: var(--text-s); font-size: 14px;">Un solo pago, acceso para siempre</p>
-                <div class="price">
-                    <span class="old-price">$197</span> $97 <span class="badge-promo">OFERTA</span>
-                </div>
-                <ul class="price-list">
-                    <li><i class="fas fa-check"></i> <strong>Paga una vez, úsala siempre</strong></li>
-                    <li><i class="fas fa-check"></i> Todas las funciones Premium</li>
-                    <li><i class="fas fa-check"></i> Actualizaciones de por vida</li>
-                    <li><i class="fas fa-check"></i> Sin cuotas mensuales</li>
-                    <li><i class="fas fa-check"></i> Gestión de Equipo Multi-profesional</li>
-                </ul>
-                <a href="https://pay.hotmart.com/ABC12345V" class="btn-main"
-                    style="width: 100%; padding: 15px; font-size: 16px;">Adquirir de por vida</a>
-                <p style="font-size: 12px; margin-top: 15px; opacity: 0.6;"><i class="fas fa-shield-alt"></i> Garantía
-                    de satisfacción 7 días</p>
-            </div>
-        </div>
-    </section>
 
     <section class="versions" id="versiones" style="padding: 100px 8%; background: #000;">
         <span class="section-tag" style="color: var(--accent);">Elige tu Especialidad</span>
@@ -914,65 +861,59 @@
     </section>
 
     <section class="pricing" id="precio"
-        style="background: linear-gradient(to bottom, var(--bg), #000); padding: 120px 8%; text-align: center;">
-        <span class="section-tag" style="color: var(--primary);">Inversión Inteligente</span>
-        <h2 style="margin-bottom: 20px;">Licencia <span class="text-gradient">Vitalicia</span> BellaPro</h2>
-        <p style="color: var(--text-s); margin-bottom: 60px;">Ventas habilitadas para toda Latinoamérica vía Hotmart.
-        </p>
+        style="background: var(--bg); position: relative; overflow: hidden; padding: 120px 8%;">
+        <div class="hero-visual"
+            style="top: 20%; left: 10%; width: 30vw; height: 30vw; filter: blur(120px); opacity: 0.05;"></div>
+        <span class="section-tag" style="text-align: center;">Inversión en tu Crecimiento</span>
+        <h2 style="font-family: 'Playfair Display', serif; text-align: center;">Planes diseñados para tu <span
+                class="text-gradient">Éxito</span></h2>
+        <p style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px; text-align: center;">Elige la forma que
+            mejor se adapte a tu salón. Sin costos ocultos, con todo el poder de BellaPro.</p>
 
-        <div class="pricing-toggle">
-            <span class="toggle-label active" id="label-mensual">Mensual</span>
-            <label class="switch">
-                <input type="checkbox" id="price-toggle" onchange="app.toggleBilling()">
-                <span class="slider"></span>
-            </label>
-            <span class="toggle-label" id="label-vitalicio">Vitalicio <span class="saving-badge">Ahorra
-                    80%</span></span>
-        </div>
-
-        <div class="pricing-grid" style="display: flex; justify-content: center; gap: 30px; align-items: flex-end;">
+        <div class="pricing-grid">
             <!-- PLAN MENSUAL -->
-            <div class="price-card" id="card-mensual"
-                style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1); opacity: 0.8; transform: scale(0.95);">
-                <h3>Plan Essential</h3>
-                <p style="font-size: 14px; opacity: 0.6;">Suscripción Mensual</p>
-                <div class="price" style="font-size: 44px;">$9.90 <span style="font-size: 18px;">USD/mes</span></div>
-                <ul class="price-list" style="margin: 30px 0;">
-                    <li><i class="fas fa-check-circle"></i> Acceso Full a la App</li>
-                    <li><i class="fas fa-check-circle"></i> Sincronización en la Nube</li>
-                    <li><i class="fas fa-check-circle"></i> WhatsApp Automático</li>
-                    <li><i class="fas fa-times-circle" style="color: rgba(255,255,255,0.2) !important;"></i> Soporte
-                        Prioritario 1 a 1</li>
+            <div class="price-card">
+                <h3>Plan Pro Mensual</h3>
+                <p style="color: var(--text-s); font-size: 14px;">Ideal para empezar sin presiones</p>
+                <div class="price">
+                    $9.99 <span>/ mes</span>
+                </div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> Agenda Inteligente Full</li>
+                    <li><i class="fas fa-check"></i> Control de Caja y Finanzas</li>
+                    <li><i class="fas fa-check"></i> WhatsApp e Invisible Tickets</li>
+                    <li><i class="fas fa-check"></i> Reservas Online Ilimitadas</li>
+                    <li><i class="fas fa-check"></i> Soporte Prioritario</li>
                 </ul>
-                <a href="#contacto" class="btn-main"
-                    style="width: 100%; font-size: 16px; background: rgba(255,255,255,0.1); box-shadow: none;">ELEGIR
-                    MENSUAL</a>
+                <a href="https://pay.hotmart.com/ABC12345S" class="btn-main"
+                    style="width: 100%; padding: 15px; font-size: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none;">Elegir
+                    Suscripción</a>
             </div>
 
             <!-- PLAN VITALICIO -->
-            <div class="price-card featured" id="card-vitalicio"
-                style="max-width: 500px; background: #0a0708; border-color: var(--primary); text-align: center;">
+            <div class="price-card featured" style="border-width: 3px;">
                 <div
-                    style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary-gradient); color: white; padding: 6px 20px; border-radius: 30px; font-size: 13px; font-weight: 800; white-space: nowrap; box-shadow: 0 5px 15px rgba(236,72,153,0.4);">
-                    MÁS POPULAR
-                </div>
+                    style="position: absolute; top: -15px; right: 20px; background: var(--accent); color: var(--bg); padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 800;">
+                    MÁS ELEGIDO</div>
                 <h3>Licencia Vitalicia</h3>
-                <p style="font-size: 14px; color: var(--accent); font-weight: 700;">ELIMINA SUSCRIPCIONES PARA SIEMPRE
+                <p style="color: var(--accent); font-size: 14px; font-weight: 700;">ELIMINA SUSCRIPCIONES PARA SIEMPRE
                 </p>
-                <div class="price" style="font-size: 64px;">$97 <span style="font-size: 20px;">USD</span></div>
-                <p style="font-size: 13px; opacity: 0.5; margin-bottom: 20px;">Un solo pago. Acceso para siempre.</p>
-                <ul class="price-list" style="text-align: left; margin: 0 auto 30px; max-width: 350px;">
-                    <li><i class="fas fa-check-circle"></i> <b>Licencia de por Vida</b></li>
-                    <li><i class="fas fa-check-circle"></i> Sincronización Ilimitada</li>
-                    <li><i class="fas fa-check-circle"></i> Panel Multi-moneda PRO</li>
-                    <li><i class="fas fa-check-circle"></i> <b>Soporte VIP Prioritario</b></li>
-                    <li><i class="fas fa-check-circle"></i> Todas las actualizaciones futuras</li>
+                <div class="price">
+                    <span class="old-price"
+                        style="text-decoration: line-through; opacity: 0.4; font-size: 20px; margin-right: 10px;">$197</span>
+                    $97 <span class="badge-promo">OFERTA</span>
+                </div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> <strong>Paga una vez, úsala siempre</strong></li>
+                    <li><i class="fas fa-check"></i> Todas las funciones Premium</li>
+                    <li><i class="fas fa-check"></i> Actualizaciones de por vida</li>
+                    <li><i class="fas fa-check"></i> Sin cuotas mensuales</li>
+                    <li><i class="fas fa-check"></i> Gestión de Equipo Multi-profesional</li>
                 </ul>
-                <a href="#contacto" id="btn-comprar-hotmart" class="btn-main"
-                    style="width: 100%; text-align: center; padding: 25px; font-size: 20px;">COMPRAR AHORA</a>
-                <p style="margin-top: 15px; font-size: 12px; opacity: 0.4;">
-                    <i class="fas fa-shield-alt"></i> Pago Seguro vía Hotmart.
-                </p>
+                <a href="https://pay.hotmart.com/ABC12345V" class="btn-main"
+                    style="width: 100%; padding: 25px; font-size: 18px;">Adquirir de por vida</a>
+                <p style="font-size: 12px; margin-top: 15px; opacity: 0.6;"><i class="fas fa-shield-alt"></i> Pago
+                    Seguro vía Hotmart. Garantía 7 días.</p>
             </div>
         </div>
     </section>
@@ -1019,41 +960,12 @@
         };
 
         const app = {
-            toggleBilling() {
-                const isVitalicio = document.getElementById('price-toggle').checked;
-                const cardMensual = document.getElementById('card-mensual');
-                const cardVitalicio = document.getElementById('card-vitalicio');
-                const labelMensual = document.getElementById('label-mensual');
-                const labelVitalicio = document.getElementById('label-vitalicio');
-
-                if (isVitalicio) {
-                    cardVitalicio.style.opacity = "1";
-                    cardVitalicio.style.transform = "scale(1.05)";
-                    cardMensual.style.opacity = "0.5";
-                    cardMensual.style.transform = "scale(0.9)";
-                    labelVitalicio.classList.add('active');
-                    labelMensual.classList.remove('active');
-                } else {
-                    cardMensual.style.opacity = "1";
-                    cardMensual.style.transform = "scale(1.05)";
-                    cardVitalicio.style.opacity = "0.5";
-                    cardVitalicio.style.transform = "scale(0.9)";
-                    labelMensual.classList.add('active');
-                    labelVitalicio.classList.remove('active');
-                }
-            }
+            // App functions
         };
 
         function updateCommercialData() {
             // Actualizar Precios e Links
-            const btnHotmart = document.getElementById('btn-comprar-hotmart');
-            if (btnHotmart && BELLA_CONFIG.hotmartLink !== "#contacto") {
-                btnHotmart.href = BELLA_CONFIG.hotmartLink;
-            }
-
-            // Iniciar en modo Vitalicio por defecto visualmente
-            document.getElementById('price-toggle').checked = true;
-            app.toggleBilling();
+            // No hay elementos de toggle de precio o hotmart específicos para actualizar aquí.
         }
 
         // Countdown Timer Simple
