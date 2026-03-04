@@ -4,7 +4,21 @@
     --surface-color: #1a1112;
     --surface-light: #251a1b;
     --primary-color: #EC4899;
+    /* HAIR: Hot Pink */
     --primary-gradient: linear-gradient(135deg, #EC4899 0%, #db271d 100%);
+
+    /* SPECIALTY THEMES */
+    --color-hair: #EC4899;
+    --grad-hair: linear-gradient(135deg, #EC4899 0%, #db271d 100%);
+
+    --color-nails: #a855f7;
+    /* Lavender */
+    --grad-nails: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+
+    --color-spa: #22c55e;
+    /* green-500 */
+    --grad-spa: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+
     --accent-lavender: #a78bfa;
     /* Lighter lavender for dark bg */
     --accent-gold: #d4af37;
@@ -38,6 +52,18 @@ body {
     color: var(--text-primary);
     overflow-x: hidden;
     min-height: 100vh;
+    transition: background-color 0.5s ease;
+}
+
+/* Specialty Theme Overrides */
+body.theme-nails {
+    --primary-color: var(--color-nails);
+    --primary-gradient: var(--grad-nails);
+}
+
+body.theme-spa {
+    --primary-color: var(--color-spa);
+    --primary-gradient: var(--grad-spa);
 }
 
 .hidden {
