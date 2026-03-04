@@ -892,93 +892,123 @@
         </div>
     </section>
 
-    <section class="pricing" id="precio"
-        style="background: var(--bg); position: relative; overflow: hidden; padding: 120px 8%;">
-        <div class="hero-visual"
-            style="top: 20%; left: 10%; width: 30vw; height: 30vw; filter: blur(120px); opacity: 0.05;"></div>
-        <span class="section-tag" style="text-align: center;">Inversión en tu Crecimiento</span>
-        <h2 style="font-family: 'Playfair Display', serif; text-align: center;">Planes diseñados para tu <span
-                class="text-gradient">Éxito</span></h2>
-
-        <!-- SPECIALTY TABS -->
-        <div class="tabs-container" style="display: flex; justify-content: center; gap: 10px; margin: 30px 0 50px;">
-            <button class="tab-btn active" onclick="switchPricing('hair')" id="tab-hair"
-                style="padding: 12px 25px; border-radius: 50px; border: 1px solid var(--primary); background: var(--primary-gradient); color: #fff; font-weight: 700; cursor: pointer; transition: 0.3s;">Hair
-                Salon</button>
-            <button class="tab-btn" onclick="switchPricing('nails')" id="tab-nails"
-                style="padding: 12px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #fff; opacity: 0.7; font-weight: 700; cursor: pointer; transition: 0.3s;">Nails
-                & Lashes</button>
-            <button class="tab-btn" onclick="switchPricing('spa')" id="tab-spa"
-                style="padding: 12px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #fff; opacity: 0.7; font-weight: 700; cursor: pointer; transition: 0.3s;">Spa
-                & Wellness</button>
-        </div>
-
-        <p id="pricing-subtitle"
-            style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px; text-align: center;">Elige la forma que
-            mejor se adapte a tu salón de **Cabello**. Sin costos ocultos, con todo el poder de BellaPro.</p>
+    <!-- PRECIOS: HAIR SALON -->
+    <section class="pricing" id="precio-hair" style="padding: 100px 8%; background: #050505;">
+        <span class="section-tag" style="text-align: center;">BellaPro | Hair Salon</span>
+        <h2 style="font-family: 'Playfair Display', serif; text-align: center;">Inversión para tu <span
+                class="text-gradient">Peluquería</span></h2>
+        <p style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px; text-align: center;">Elegí el plan
+            perfecto para potenciar tu salón de cabello. Sin sorpresas, todo incluido.</p>
 
         <div class="pricing-grid">
-            <!-- PLAN MENSUAL -->
-            <div class="price-card">
-                <h3>Plan Pro Mensual</h3>
-                <p style="color: var(--text-s); font-size: 14px;">Ideal para empezar sin presiones</p>
-                <div class="price">
-                    $9.99 <span style="font-size: 16px; opacity: 0.8;">USD</span> <span>/ mes</span>
-                </div>
-                <ul class="price-list">
-                    <li><i class="fas fa-check"></i> Agenda Inteligente Full</li>
-                    <li><i class="fas fa-check"></i> Control de Caja y Finanzas</li>
-                    <li><i class="fas fa-check"></i> WhatsApp e Invisible Tickets</li>
+            <div class="pricing-card">
+                <div class="p-tag">Suscripción</div>
+                <h3>Mensual</h3>
+                <div class="price"><span>$</span>9.99<span>/mes</span></div>
+                <p>Ideal para empezar sin grandes inversiones iniciales.</p>
+                <ul class="p-features">
+                    <li><i class="fas fa-check"></i> Acceso Completo a la App</li>
+                    <li><i class="fas fa-check"></i> Sincronización en la Nube</li>
                     <li><i class="fas fa-check"></i> Reservas Online Ilimitadas</li>
                     <li><i class="fas fa-check"></i> Soporte Prioritario</li>
                 </ul>
                 <a href="https://pay.hotmart.com/Y104724020R?off=m5vyke7m&bid=1772643151843" class="btn-main"
-                    id="link-monthly"
                     style="width: 100%; padding: 15px; font-size: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none; display: flex; align-items: center; justify-content: center; text-align: center;">Elegir
-                    Suscripción</a>
+                    Mensual</a>
             </div>
-
-            <!-- PLAN VITALICIO -->
-            <div class="price-card featured" style="border-width: 3px;">
-                <div
-                    style="position: absolute; top: -15px; right: 20px; background: var(--accent); color: var(--bg); padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 800;">
-                    MÁS ELEGIDO</div>
+            <div class="pricing-card featured" style="border: 1px solid var(--primary);">
+                <div class="p-tag" style="background: var(--primary-gradient);">Recomendado</div>
                 <h3>Licencia Vitalicia</h3>
-                <p style="color: var(--accent); font-size: 14px; font-weight: 700;">ELIMINA SUSCRIPCIONES PARA SIEMPRE
-                </p>
-                <div class="price">
-                    <span class="old-price"
-                        style="text-decoration: line-through; opacity: 0.4; font-size: 20px; margin-right: 10px;">$197</span>
-                    $97 <span style="font-size: 16px; opacity: 0.8;">USD</span> <span class="badge-promo">OFERTA</span>
-                </div>
-                <ul class="price-list">
-                    <li><i class="fas fa-check"></i> <strong>Paga una vez, úsala siempre</strong></li>
-                    <li><i class="fas fa-check"></i> Todas las funciones Premium</li>
-                    <li><i class="fas fa-check"></i> Actualizaciones de por vida</li>
+                <div class="price"><span>$</span>97<span>/único</span></div>
+                <p>Pagás una vez, la tenés para siempre. Ahorro total.</p>
+                <ul class="p-features">
+                    <li><i class="fas fa-check"></i> Acceso de por vida (Lifetime)</li>
+                    <li><i class="fas fa-check"></i> Actualizaciones Permanentes</li>
                     <li><i class="fas fa-check"></i> Sin cuotas mensuales</li>
                     <li><i class="fas fa-check"></i> Gestión de Equipo Multi-profesional</li>
                 </ul>
                 <a href="https://pay.hotmart.com/Y104724020R?off=0lx5rpjk&bid=1772643131555" class="btn-main"
-                    id="link-lifetime"
                     style="width: 100%; padding: 25px; font-size: 18px; display: flex; align-items: center; justify-content: center; text-align: center;">Adquirir
                     de por vida</a>
-                <p style="font-size: 12px; margin-top: 15px; opacity: 0.6;"><i class="fas fa-shield-alt"></i> Pago
-                    Seguro vía Hotmart. Garantía 7 días.</p>
             </div>
         </div>
+    </section>
 
-        <!-- CURRENCY CLARIFICATION LEGEND -->
-        <div
-            style="text-align: center; margin-top: 40px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05); max-width: 800px; margin-left: auto; margin-right: auto;">
-            <p style="color: var(--text-p); font-size: 14px; font-weight: 600;">
-                <i class="fas fa-globe-americas" style="color: var(--primary); margin-right: 8px;"></i>
-                Los precios están expresados en <strong>Dólares Americanos (USD)</strong>.
-            </p>
-            <p style="color: var(--text-s); font-size: 13px; margin-top: 5px;">
-                Al momento del pago, Hotmart realizará la conversión automática a tu moneda local
-                (ej. Pesos Argentinos, Uruguayos, Mexicanos, etc.) según el tipo de cambio oficial de tu país.
-            </p>
+    <!-- PRECIOS: NAILS & LASHES -->
+    <section class="pricing" id="precio-nails"
+        style="padding: 100px 8%; background: #000; border-top: 1px solid rgba(168,85,247,0.1);">
+        <span class="section-tag" style="text-align: center; color: #a855f7;">BellaPro | Nails & Lashes</span>
+        <h2 style="font-family: 'Playfair Display', serif; text-align: center;">Inversión para tu <span
+                style="background: var(--grad-nails); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Estudio
+                de Uñas</span></h2>
+        <p style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px; text-align: center;">Digitalizá tu
+            estudio de manicuría y pestañas hoy mismo.</p>
+
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="p-tag">Suscripción</div>
+                <h3>Mensual</h3>
+                <div class="price"><span>$</span>9.99<span>/mes</span></div>
+                <p>Todas las funciones de nails & lashes activas.</p>
+                <a href="LINK_NAILS_MENSUAL" class="btn-main"
+                    style="width: 100%; padding: 15px; font-size: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none; display: flex; align-items: center; justify-content: center; text-align: center;">Elegir
+                    Mensual</a>
+            </div>
+            <div class="pricing-card featured" style="border: 1px solid #a855f7;">
+                <div class="p-tag" style="background: var(--grad-nails);">Oferta Limitada</div>
+                <h3>Licencia Vitalicia</h3>
+                <div class="price"><span>$</span>97<span>/único</span></div>
+                <p>Pagás una vez y te olvidás de suscripciones para siempre.</p>
+                <a href="LINK_NAILS_VITALICIO" class="btn-main"
+                    style="width: 100%; padding: 25px; font-size: 18px; display: flex; align-items: center; justify-content: center; text-align: center; background: var(--grad-nails);">Adquirir
+                    de por vida</a>
+            </div>
         </div>
+    </section>
+
+    <!-- PRECIOS: SPA & WELLNESS -->
+    <section class="pricing" id="precio-spa"
+        style="padding: 100px 8%; background: #050505; border-top: 1px solid rgba(34,197,94,0.1);">
+        <span class="section-tag" style="text-align: center; color: #22c55e;">BellaPro | Spa & Wellness</span>
+        <h2 style="font-family: 'Playfair Display', serif; text-align: center;">Inversión para tu <span
+                style="background: var(--grad-spa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Centro
+                de Bienestar</span></h2>
+        <p style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px; text-align: center;">Gestioná tus
+            gabinetes y servicios de relax con BellaPro.</p>
+
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="p-tag">Suscripción</div>
+                <h3>Mensual</h3>
+                <div class="price"><span>$</span>9.99<span>/mes</span></div>
+                <p>Potenciá tu centro de estética sin límites.</p>
+                <a href="LINK_SPA_MENSUAL" class="btn-main"
+                    style="width: 100%; padding: 15px; font-size: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none; display: flex; align-items: center; justify-content: center; text-align: center;">Elegir
+                    Mensual</a>
+            </div>
+            <div class="pricing-card featured" style="border: 1px solid #22c55e;">
+                <div class="p-tag" style="background: var(--grad-spa);">Oferta Limitada</div>
+                <h3>Licencia Vitalicia</h3>
+                <div class="price"><span>$</span>97<span>/único</span></div>
+                <p>Tu software profesional de por vida por un solo pago.</p>
+                <a href="LINK_SPA_VITALICIO" class="btn-main"
+                    style="width: 100%; padding: 25px; font-size: 18px; display: flex; align-items: center; justify-content: center; text-align: center; background: var(--grad-spa);">Adquirir
+                    de por vida</a>
+            </div>
+        </div>
+    </section>
+    <!-- CURRENCY CLARIFICATION LEGEND -->
+    <div
+        style="text-align: center; margin-top: 40px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05); max-width: 800px; margin-left: auto; margin-right: auto;">
+        <p style="color: var(--text-p); font-size: 14px; font-weight: 600;">
+            <i class="fas fa-globe-americas" style="color: var(--primary); margin-right: 8px;"></i>
+            Los precios están expresados en <strong>Dólares Americanos (USD)</strong>.
+        </p>
+        <p style="color: var(--text-s); font-size: 13px; margin-top: 5px;">
+            Al momento del pago, Hotmart realizará la conversión automática a tu moneda local
+            (ej. Pesos Argentinos, Uruguayos, Mexicanos, etc.) según el tipo de cambio oficial de tu país.
+        </p>
+    </div>
     </section>
 
     <section class="cta-section" id="contacto">
