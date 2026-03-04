@@ -23,6 +23,15 @@
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             --glass-border: 1px solid rgba(255, 255, 255, 0.08);
             --shadow-premium: 0 25px 60px rgba(0, 0, 0, 0.9);
+
+            /* LUXE SPECIALTY COLORS */
+            --light-hair: rgba(236, 72, 153, 0.15);
+            --light-nails: rgba(168, 85, 247, 0.15);
+            --light-spa: rgba(34, 197, 94, 0.15);
+
+            --grad-hair: linear-gradient(135deg, #EC4899 0%, #be185d 100%);
+            --grad-nails: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+            --grad-spa: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
         }
 
         * {
@@ -438,8 +447,8 @@
         }
 
         .f-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px 30px;
             border-radius: 30px;
@@ -450,19 +459,33 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Specific niche glows for cards */
+        .f-card.niche-hair {
+            border-color: rgba(236, 72, 153, 0.3);
+            background: rgba(236, 72, 153, 0.03);
+        }
+
+        .f-card.niche-nails {
+            border-color: rgba(168, 85, 247, 0.3);
+            background: rgba(168, 85, 247, 0.03);
+        }
+
+        .f-card.niche-spa {
+            border-color: rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.03);
         }
 
         .f-card:hover {
             transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
 
         .f-card i {
-            font-size: 40px;
+            font-size: 45px;
             margin-bottom: 25px;
-            background: var(--primary-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -470,39 +493,45 @@
 
         /* LUXE PRICING CARDS */
         .pricing-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 40px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 50px 40px;
             transition: 0.3s;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(30px);
         }
 
         .pricing-card.featured {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--primary);
-            position: relative;
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid var(--primary);
             transform: scale(1.05);
             z-index: 2;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
         }
 
         .btn-luxe-outline {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             color: #fff;
-            padding: 15px 30px;
+            padding: 15px 35px;
             border-radius: 50px;
             font-weight: 700;
             text-decoration: none;
             transition: 0.3s;
             display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
         }
 
         .btn-luxe-outline:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: #fff;
+            color: #000;
             border-color: #fff;
         }
 
