@@ -392,6 +392,11 @@ textarea {
     transition: var(--transition);
 }
 
+select option {
+    background: var(--surface-color);
+    color: white;
+}
+
 input:focus,
 select:focus,
 textarea:focus {
