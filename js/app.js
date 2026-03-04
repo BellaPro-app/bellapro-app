@@ -10,13 +10,58 @@ const app = {
         return localStorage.getItem('bp_currency') || '$';
     },
 
+    get specialty() {
+        // 1. Check window global (set in nails.html, spa.html)
+        if (window.SPECIALTY) return window.SPECIALTY;
+
+        // 2. Check stored config
+        const stored = localStorage.getItem('bp_specialty');
+        if (stored) return stored;
+
+        // 3. Detect from URL
+        const path = window.location.pathname;
+        if (path.includes('nails')) return 'nails';
+        if (path.includes('spa')) return 'spa';
+
+        return 'hair'; // Default
+    },
+
+    applySpecialtyTheme() {
+        const type = this.specialty;
+        document.body.classList.remove('theme-hair', 'theme-nails', 'theme-spa');
+        document.body.classList.add(`theme-${type}`);
+        console.log(`BellaPro Theme Applied: ${type}`);
+    },
+
     formatMoney(amount) {
         const symbol = this.currency;
         return `${symbol}${Number(amount).toLocaleString()}`;
     },
 
+    specialtyConfig: {
+        hair: {
+            title: 'BellaPro | Hair Salon',
+            icon: 'fa-cut',
+            services: ['Corte Dama', 'Corte Caballero', 'Coloración', 'Mechas/Balayage', 'Peinado Evento', 'Baño de Crema', 'Alisado', 'Lavado & Secado'],
+            welcome: 'Agenda de Peluquería'
+        },
+        nails: {
+            title: 'BellaPro | Nails & Lashes',
+            icon: 'fa-hand-sparkles',
+            services: ['Esmaltado Semipermanente', 'Uñas Esculpidas', 'Kapping Gel', 'Service Uñas', 'Diseño Advanced', 'Limpieza de Cutículas', 'Perfilado de Cejas', 'Lifting de Pestañas'],
+            welcome: 'Agenda de Manicuría'
+        },
+        spa: {
+            title: 'BellaPro | Spa & Wellness',
+            icon: 'fa-spa',
+            services: ['Masaje Relajante', 'Masaje Descontracturante', 'Limpieza Facial Deep', 'Piedras Calientes', 'Drenaje Linfático', 'Tratamiento Corporal', 'Aromaterapia', 'Reflexología'],
+            welcome: 'Agenda de Bienestar'
+        }
+    },
+
     async init() {
         console.log("BellaPro: Initializing...");
+        this.applySpecialtyTheme();
 
         // Configuration: Consider moving to dedicated config file in production
         const firebaseConfig = {
@@ -506,7 +551,8 @@ const app = {
             });
         }
 
-        const services = ['Corte Dama', 'Corte Caballero', 'Coloración', 'Mechas/Balayage', 'Peinado Evento', 'Baño de Crema', 'Alisado', 'Lavado & Secado', 'Manicura', 'Depilación Rostro'];
+        const config = this.specialtyConfig[this.specialty] || this.specialtyConfig.hair;
+        const services = config.services;
         services.forEach(s => {
             const chip = document.createElement('div');
             chip.className = 'chip';
@@ -567,6 +613,9 @@ const app = {
         this.populateClients();
 
         const name = localStorage.getItem('bp_name') || 'BellaPro';
+        const type = this.specialty;
+        const config = this.specialtyConfig[type] || this.specialtyConfig.hair;
+
         const logo = localStorage.getItem('bp_logo') || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150';
 
         const titleEl = document.getElementById('salon-title-display');
@@ -575,7 +624,7 @@ const app = {
         const logoEl = document.getElementById('salon-logo-display');
         const previewEl = document.getElementById('cfg-logo-preview');
 
-        if (titleEl) titleEl.innerText = name;
+        if (titleEl) titleEl.innerText = `${name} | ${config.title.split('|')[1].trim()}`;
         if (cfgNameEl) cfgNameEl.value = name;
         if (cfgCurrEl) cfgCurrEl.value = this.currency;
         const cfgProfsEl = document.getElementById('cfg-profs');
@@ -873,7 +922,8 @@ const app = {
             name: localStorage.getItem('bp_name') || 'BellaPro',
             currency: this.currency,
             logo: localStorage.getItem('bp_logo') || '',
-            professionals: localStorage.getItem('bp_profs') || ''
+            professionals: localStorage.getItem('bp_profs') || '',
+            specialty: this.specialty
         };
         try {
             await this.dbCloud.collection('users').doc(this.user.uid).set({
@@ -910,6 +960,10 @@ const app = {
                     localStorage.setItem('bp_name', cloud.config.name);
                     if (cloud.config.currency) localStorage.setItem('bp_currency', cloud.config.currency);
                     if (cloud.config.logo) localStorage.setItem('bp_logo', cloud.config.logo);
+                    if (cloud.config.specialty) {
+                        localStorage.setItem('bp_specialty', cloud.config.specialty);
+                        this.applySpecialtyTheme();
+                    }
                 }
                 console.log("Cloud Sync: Pull success");
             }
@@ -931,9 +985,14 @@ const app = {
         const name = document.getElementById('cfg-name').value;
         const currency = document.getElementById('cfg-currency').value;
         const profs = document.getElementById('cfg-profs').value;
+        const specialty = document.getElementById('cfg-specialty').value;
         if (name) localStorage.setItem('bp_name', name);
         if (currency) localStorage.setItem('bp_currency', currency);
         if (profs !== undefined) localStorage.setItem('bp_profs', profs);
+        if (specialty) {
+            localStorage.setItem('bp_specialty', specialty);
+            this.applySpecialtyTheme();
+        }
 
         this.render();
         this.pushCloud().then(() => {
