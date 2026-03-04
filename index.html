@@ -899,8 +899,23 @@
         <span class="section-tag" style="text-align: center;">Inversión en tu Crecimiento</span>
         <h2 style="font-family: 'Playfair Display', serif; text-align: center;">Planes diseñados para tu <span
                 class="text-gradient">Éxito</span></h2>
-        <p style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px; text-align: center;">Elige la forma que
-            mejor se adapte a tu salón. Sin costos ocultos, con todo el poder de BellaPro.</p>
+
+        <!-- SPECIALTY TABS -->
+        <div class="tabs-container" style="display: flex; justify-content: center; gap: 10px; margin: 30px 0 50px;">
+            <button class="tab-btn active" onclick="switchPricing('hair')" id="tab-hair"
+                style="padding: 12px 25px; border-radius: 50px; border: 1px solid var(--primary); background: var(--primary-gradient); color: #fff; font-weight: 700; cursor: pointer; transition: 0.3s;">Hair
+                Salon</button>
+            <button class="tab-btn" onclick="switchPricing('nails')" id="tab-nails"
+                style="padding: 12px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #fff; opacity: 0.7; font-weight: 700; cursor: pointer; transition: 0.3s;">Nails
+                & Lashes</button>
+            <button class="tab-btn" onclick="switchPricing('spa')" id="tab-spa"
+                style="padding: 12px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #fff; opacity: 0.7; font-weight: 700; cursor: pointer; transition: 0.3s;">Spa
+                & Wellness</button>
+        </div>
+
+        <p id="pricing-subtitle"
+            style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px; text-align: center;">Elige la forma que
+            mejor se adapte a tu salón de **Cabello**. Sin costos ocultos, con todo el poder de BellaPro.</p>
 
         <div class="pricing-grid">
             <!-- PLAN MENSUAL -->
@@ -918,6 +933,7 @@
                     <li><i class="fas fa-check"></i> Soporte Prioritario</li>
                 </ul>
                 <a href="https://pay.hotmart.com/Y104724020R?off=m5vyke7m&bid=1772643151843" class="btn-main"
+                    id="link-monthly"
                     style="width: 100%; padding: 15px; font-size: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); box-shadow: none; display: flex; align-items: center; justify-content: center; text-align: center;">Elegir
                     Suscripción</a>
             </div>
@@ -943,6 +959,7 @@
                     <li><i class="fas fa-check"></i> Gestión de Equipo Multi-profesional</li>
                 </ul>
                 <a href="https://pay.hotmart.com/Y104724020R?off=0lx5rpjk&bid=1772643131555" class="btn-main"
+                    id="link-lifetime"
                     style="width: 100%; padding: 25px; font-size: 18px; display: flex; align-items: center; justify-content: center; text-align: center;">Adquirir
                     de por vida</a>
                 <p style="font-size: 12px; margin-top: 15px; opacity: 0.6;"><i class="fas fa-shield-alt"></i> Pago
@@ -1004,6 +1021,50 @@
         const app = {
             // App functions
         };
+
+        const HOTMART_LINKS = {
+            hair: {
+                monthly: "https://pay.hotmart.com/Y104724020R?off=m5vyke7m&bid=1772643151843",
+                lifetime: "https://pay.hotmart.com/Y104724020R?off=0lx5rpjk&bid=1772643131555"
+            },
+            nails: {
+                monthly: "PEGAR_LINK_NAILS_MENSUAL",
+                lifetime: "PEGAR_LINK_NAILS_VITALICIO"
+            },
+            spa: {
+                monthly: "PEGAR_LINK_SPA_MENSUAL",
+                lifetime: "PEGAR_LINK_SPA_VITALICIO"
+            }
+        };
+
+        function switchPricing(type) {
+            const monthlyBtn = document.getElementById('link-monthly');
+            const lifetimeBtn = document.getElementById('link-lifetime');
+            const subtitle = document.getElementById('pricing-subtitle');
+
+            // Update Links
+            monthlyBtn.href = HOTMART_LINKS[type].monthly;
+            lifetimeBtn.href = HOTMART_LINKS[type].lifetime;
+
+            // Update Subtitle
+            const names = { hair: 'Cabello', nails: 'Uñas & Pestañas', spa: 'Spa & Estética' };
+            subtitle.innerHTML = `Elige la forma que mejor se adapte a tu salón de **${names[type]}**. Sin costos ocultos, con todo el poder de BellaPro.`;
+
+            // Update Active Tab State
+            const colors = { hair: 'var(--primary)', nails: '#a855f7', spa: '#22c55e' };
+            const grads = { hair: 'var(--primary-gradient)', nails: 'var(--grad-nails)', spa: 'var(--grad-spa)' };
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.style.background = 'rgba(0,0,0,0.3)';
+                btn.style.border = '1px solid rgba(255,255,255,0.1)';
+                btn.style.opacity = '0.7';
+            });
+
+            const activeBtn = document.getElementById('tab-' + type);
+            activeBtn.style.background = grads[type];
+            activeBtn.style.border = `1px solid ${colors[type]}`;
+            activeBtn.style.opacity = '1';
+        }
 
         function updateCommercialData() {
             // Actualizar Precios e Links
