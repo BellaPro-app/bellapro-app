@@ -1193,6 +1193,17 @@ const app = {
         await this.load();
     },
 
+    showUpdateToast() {
+        const toast = document.createElement('div');
+        toast.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--primary-gradient); color:white; padding:15px 25px; border-radius:50px; z-index:10000; box-shadow:0 10px 30px rgba(0,0,0,0.5); font-weight:700; text-align:center; animation: slideDown 0.5s ease-out;";
+        toast.innerHTML = `<i class="fas fa-sparkles"></i> ¡Nueva versión de BellaPro lista!<br><span style="font-size:12px; font-weight:400; opacity:0.9;">Actualizando para darte lo mejor...</span>`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            location.reload();
+        }, 3000);
+    },
+
     checkAdminPrivileges() {
         const adminSection = document.getElementById('admin-panel-section');
         if (this.isAdmin && adminSection) {
@@ -1231,8 +1242,18 @@ const app = {
 window.onload = () => {
     app.init();
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log("BellaPro: Service Worker Active"))
-            .catch(e => console.error('BellaPro: SW Error', e));
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+            console.log("BellaPro: Service Worker Registrado");
+
+            reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        // Hay una actualización lista
+                        app.showUpdateToast();
+                    }
+                });
+            });
+        }).catch(e => console.error('BellaPro: SW Error', e));
     }
 };
