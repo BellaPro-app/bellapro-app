@@ -27,7 +27,7 @@ const app = {
     },
 
     // PANEL MAESTRO: Solo visible para el dueño (Seguridad Nivel Banco)
-    ADMIN_EMAIL: 'TU_EMAIL_AQUI@EJEMPLO.COM', // <--- CAMBIA ESTO POR TU EMAIL REAL
+    ADMIN_EMAIL: 'sinfield.fabian@gmail.com',
 
     get isAdmin() {
         return this.user && this.user.email === this.ADMIN_EMAIL;
