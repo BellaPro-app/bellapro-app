@@ -26,6 +26,13 @@ const app = {
         return 'hair'; // Default
     },
 
+    // PANEL MAESTRO: Solo visible para el dueño (Seguridad Nivel Banco)
+    ADMIN_EMAIL: 'TU_EMAIL_AQUI@EJEMPLO.COM', // <--- CAMBIA ESTO POR TU EMAIL REAL
+
+    get isAdmin() {
+        return this.user && this.user.email === this.ADMIN_EMAIL;
+    },
+
     applySpecialtyTheme() {
         const type = this.specialty;
         document.body.classList.remove('theme-hair', 'theme-nails', 'theme-spa');
@@ -154,10 +161,11 @@ const app = {
                     this.showApp();
                     await database.init();
                     await this.pullCloud();
-                    await this.load();
+                    console.log("BellaPro: Perfil cargado correctamente.");
+                    this.showApp();
                     this.events();
-                    this.render();
                     this.listenReservas();
+                    this.checkAdminPrivileges();
                 } catch (e) {
                     this.handleError("Error de Acceso", "No Pudimos verificar tu licencia.");
                     console.error("Init error:", e);
