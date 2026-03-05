@@ -636,7 +636,7 @@ const app = {
         // Generar Link de Reservas
         const bookingInp = document.getElementById('cfg-booking-link');
         if (bookingInp && this.user) {
-            const base = window.location.href.split('app.html')[0];
+            const base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
             bookingInp.value = `${base}reserva.html?s=${this.user.uid}`;
         }
 

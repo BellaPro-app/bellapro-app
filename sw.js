@@ -2,6 +2,8 @@ const CACHE_NAME = 'bellapro-v6';
 const ASSETS = [
     './',
     './app.html',
+    './nails.html',
+    './spa.html',
     './css/style.css',
     './js/db.js',
     './js/app.js',
