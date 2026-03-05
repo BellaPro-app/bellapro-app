@@ -207,11 +207,27 @@
                     document.getElementById('salon-name').innerText = config.name || "Reserva tu Turno";
                     if (config.logo) document.getElementById('salon-logo').src = config.logo;
 
+                    // Cargar servicios dinámicamente según especialidad
+                    const specialty = config.specialty || 'hair';
+                    const specialtyConfig = {
+                        hair: ['Corte Dama', 'Corte Caballero', 'Coloración', 'Mechas/Balayage', 'Peinado Evento', 'Baño de Crema', 'Alisado', 'Lavado & Secado'],
+                        nails: ['Esmaltado Semipermanente', 'Uñas Esculpidas', 'Kapping Gel', 'Service Uñas', 'Diseño Advanced', 'Limpieza de Cutículas', 'Perfilado de Cejas', 'Lifting de Pestañas'],
+                        spa: ['Masaje Relajante', 'Masaje Descontracturante', 'Limpieza Facial Deep', 'Piedras Calientes', 'Drenaje Linfático', 'Tratamiento Corporal', 'Aromaterapia', 'Reflexología']
+                    };
+
+                    const services = specialtyConfig[specialty] || specialtyConfig.hair;
+                    const sSelect = document.getElementById('cust-srv');
+                    sSelect.innerHTML = '<option value="">Seleccionar...</option>';
+                    services.forEach(s => {
+                        sSelect.innerHTML += `<option value="${s}">${s}</option>`;
+                    });
+
                     // Cargar profesionales
                     if (config.professionals) {
                         const profs = config.professionals.split(',').map(x => x.trim()).filter(x => x);
                         if (profs.length > 0) {
                             const pSelect = document.getElementById('cust-prof');
+                            pSelect.innerHTML = '<option value="">Cualquier profesional</option>';
                             profs.forEach(p => {
                                 pSelect.innerHTML += `<option value="${p}">${p}</option>`;
                             });
