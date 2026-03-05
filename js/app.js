@@ -1191,6 +1191,40 @@ const app = {
             typ: 'ingreso'
         });
         await this.load();
+    },
+
+    checkAdminPrivileges() {
+        const adminSection = document.getElementById('admin-panel-section');
+        if (this.isAdmin && adminSection) {
+            adminSection.style.display = 'block';
+            console.log("BellaPro Admin: Panel Maestro Activado.");
+        }
+    },
+
+    async manualActivateLicense() {
+        const email = document.getElementById('admin-activate-email').value.trim().toLowerCase();
+        if (!email) return alert("Ingresa un email válido");
+
+        const btn = document.querySelector('.btn-admin-activate');
+        const oldText = btn.innerText;
+        btn.innerText = "Procesando...";
+        btn.disabled = true;
+
+        try {
+            await this.dbCloud.collection('approved_emails').doc(email).set({
+                approved: true,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                source: 'Manual Activation (Master Panel)'
+            });
+            alert(`¡Éxito! El email ${email} ha sido activado gratis.`);
+            document.getElementById('admin-activate-email').value = '';
+        } catch (err) {
+            console.error(err);
+            alert("Error al activar: " + err.message);
+        } finally {
+            btn.innerText = oldText;
+            btn.disabled = false;
+        }
     }
 };
 
