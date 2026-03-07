@@ -53,7 +53,7 @@
 
         /* Navbar */
         nav {
-            padding: 20px 8%;
+            padding: 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -64,6 +64,12 @@
             background: rgba(10, 5, 6, 0.8);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (min-width: 992px) {
+            nav {
+                padding: 20px 8%;
+            }
         }
 
         .logo {
@@ -97,9 +103,15 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            padding: 120px 8% 60px;
+            padding: 120px 5% 40px;
             position: relative;
             overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .hero {
+                padding: 120px 8% 60px;
+            }
         }
 
         .hero-content {
@@ -169,14 +181,21 @@
 
         /* Stats Strip */
         .stats {
-            padding: 40px 8%;
+            padding: 30px 5%;
             background: var(--surface);
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
-            gap: 30px;
+            gap: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (min-width: 992px) {
+            .stats {
+                padding: 40px 8%;
+                gap: 30px;
+            }
         }
 
         .stat-item {
@@ -199,10 +218,17 @@
 
         /* Features */
         .features {
-            padding: 100px 8%;
+            padding: 60px 5%;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
+            gap: 30px;
+        }
+
+        @media (min-width: 992px) {
+            .features {
+                padding: 100px 8%;
+                gap: 40px;
+            }
         }
 
         .f-card {
@@ -243,8 +269,14 @@
 
         /* Product Showcase */
         .showcase {
-            padding: 100px 8%;
+            padding: 60px 5%;
             text-align: center;
+        }
+
+        @media (min-width: 992px) {
+            .showcase {
+                padding: 100px 8%;
+            }
         }
 
         .section-tag {
@@ -315,12 +347,19 @@
 
         /* Installation Section */
         .install-info {
-            padding: 100px 8%;
+            padding: 60px 5%;
             background: linear-gradient(to bottom, var(--bg), var(--surface-light));
             display: flex;
             align-items: center;
-            gap: 80px;
+            gap: 40px;
             flex-wrap: wrap;
+        }
+
+        @media (min-width: 992px) {
+            .install-info {
+                padding: 100px 8%;
+                gap: 80px;
+            }
         }
 
         .install-text {
@@ -353,7 +392,13 @@
 
         /* CTA Box */
         .cta-section {
-            padding: 100px 8%;
+            padding: 60px 5%;
+        }
+
+        @media (min-width: 992px) {
+            .cta-section {
+                padding: 100px 8%;
+            }
         }
 
         .cta-box {
@@ -399,10 +444,16 @@
         }
 
         footer {
-            padding: 80px 8% 40px;
+            padding: 60px 5% 40px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
             color: var(--text-s);
+        }
+
+        @media (min-width: 992px) {
+            footer {
+                padding: 80px 8% 40px;
+            }
         }
 
         .footer-logo {
@@ -733,16 +784,16 @@
     </style>
 </head>
 
-<body style="padding-top: 40px;">
+<body style="padding-top: 38px;">
     <!-- URGENCY BAR -->
     <div
-        style="background: var(--primary-gradient); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: 700; position: fixed; top: 0; width: 100%; z-index: 1100; letter-spacing: 1px;">
+        style="background: var(--primary-gradient); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: 700; position: fixed; top: 0; width: 100%; z-index: 1100; letter-spacing: 1px; line-height: 1.4;">
         🔥 OFERTA DE LANZAMIENTO: LICENCIA VITALICIA POR <span id="countdown">47:52</span> - <a
             href="https://pay.hotmart.com/Y104724020R?off=0lx5rpjk&bid=1772643131555"
             style="color: white; text-decoration: underline;">ADQUIRIR AHORA</a>
     </div>
 
-    <nav style="top: 40px;">
+    <nav style="top: 38px;">
         <div class="logo">
             <img src="assets/logo/logo.png" alt="BellaPro Logo" style="height: 45px; width: auto;">
         </div>
@@ -770,14 +821,11 @@
                     <i class="fas fa-file-pdf"></i> Descargar Manual de Usuario (PDF)
                 </a>
             </div>
-            <p style="font-size: 14px; margin-top: 20px; opacity: 0.6; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-check-circle" style="color: var(--accent);"></i> Acceso instantáneo. Elige tu plan.
-            </p>
         </div>
         <div class="hero-visual" style="background: var(--accent); opacity: 0.1;"></div>
     </header>
 
-    <section class="problem-agitation" style="padding: 100px 8%; text-align: center; background: #000;">
+    <section class="problem-agitation" style="padding: 60px 5%; text-align: center; background: #000;">
         <span class="section-tag" style="color: var(--primary);">El costo de la desorganización</span>
         <h2
             style="font-size: clamp(30px, 5vw, 48px); margin-bottom: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
@@ -805,7 +853,7 @@
         </div>
     </section>
 
-    <section class="authority-solution" style="padding: 100px 8%; background: var(--surface);">
+    <section class="authority-solution" style="padding: 60px 5%; background: var(--surface);">
         <div style="display: flex; align-items: center; gap: 80px; flex-wrap: wrap;">
             <div style="flex: 1; min-width: 300px;">
                 <span class="section-tag" style="color: var(--accent);">La Solución Definitiva</span>
@@ -860,7 +908,8 @@
                         style="min-height: 400px; display: flex; flex-direction: column; justify-content: center; padding: 30px;">
                         <div
                             style="background: rgba(0,255,204,0.05); padding: 25px; border-radius: 20px; border: 1px dashed var(--accent);">
-                            <p style="font-style: italic; font-size: 18px; text-align: center; color: var(--accent);">
+                            <p
+                                style="font-style: italic; font-size: clamp(20px, 4vw, 24px); font-weight: 600; text-align: center; color: var(--accent); line-height: 1.4;">
                                 "El diseño no vende por ser bonito, vende porque comunica confianza."</p>
                         </div>
                     </div>
@@ -878,7 +927,7 @@
         <div class="mockup-container"
             style="border: 1px solid rgba(255,255,255,0.05); padding: 40px; background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.05), transparent);">
             <div class="ui-mock" style="gap: 40px;">
-                <div class="ui-card" style="border: 1px solid rgba(0,255,204,0.1); transform: rotate(-1deg);">
+                <div class="ui-card" style="border: 1px solid rgba(0,255,204,0.1);">
                     <div style="font-size: 11px; margin-bottom: 10px; opacity: 0.5; letter-spacing: 2px;">PANEL
                         FINANCIERO</div>
                     <div style="font-size: 32px; font-weight: 800; color: var(--accent);">$452.900</div>
@@ -893,7 +942,7 @@
                     </div>
                     <p style="font-size: 12px; margin-top: 15px; opacity: 0.5;">Ingresos Netos (Semana 4)</p>
                 </div>
-                <div class="ui-card" style="border: 1px solid rgba(236,72,153,0.1); transform: rotate(1deg);">
+                <div class="ui-card" style="border: 1px solid rgba(236,72,153,0.1);">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <span style="font-size: 11px; opacity: 0.5;">AGENDA INTELIGENTE</span>
@@ -926,7 +975,7 @@
     </section>
 
 
-    <section class="versions" id="versiones" style="padding: 100px 8%; background: #000;">
+    <section class="versions" id="versiones" style="padding: 60px 5%; background: #000;">
         <span class="section-tag" style="color: var(--accent);">Elige tu Especialidad</span>
         <h2 style="margin-bottom: 50px; text-align: center;">Una Suite, <span class="text-gradient">3 Soluciones</span>
             Premium</h2>
@@ -994,7 +1043,7 @@
 
     <!-- PRECIOS: HAIR SALON -->
     <section class="pricing" id="precio-hair"
-        style="padding: 100px 8%; background: radial-gradient(circle at top, #1a050d 0%, #050505 100%);">
+        style="padding: 60px 5%; background: radial-gradient(circle at top, #1a050d 0%, #050505 100%);">
         <span class="section-tag" style="text-align: center; color: #EC4899;">Precios Exclusivos</span>
         <h2 style="font-family: 'Playfair Display', serif; text-align: center; margin-bottom: 10px;">BellaPro | <span
                 class="text-gradient">Hair Salon</span></h2>
@@ -1031,7 +1080,7 @@
 
     <!-- PRECIOS: NAILS & LASHES -->
     <section class="pricing" id="precio-nails"
-        style="padding: 100px 8%; background: radial-gradient(circle at top, #14051a 0%, #000 100%); border-top: 1px solid rgba(168,85,247,0.2);">
+        style="padding: 60px 5%; background: radial-gradient(circle at top, #14051a 0%, #000 100%); border-top: 1px solid rgba(168,85,247,0.2);">
         <span class="section-tag" style="text-align: center; color: #a855f7;">Luxe Collection</span>
         <h2 style="font-family: 'Playfair Display', serif; text-align: center; margin-bottom: 10px;">BellaPro | <span
                 style="background: var(--grad-nails); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Nails
@@ -1069,7 +1118,7 @@
 
     <!-- PRECIOS: SPA & WELLNESS -->
     <section class="pricing" id="precio-spa"
-        style="padding: 100px 8%; background: radial-gradient(circle at top, #051a0d 0%, #050505 100%); border-top: 1px solid rgba(34,197,94,0.2);">
+        style="padding: 60px 5%; background: radial-gradient(circle at top, #051a0d 0%, #050505 100%); border-top: 1px solid rgba(34,197,94,0.2);">
         <span class="section-tag" style="text-align: center; color: #22c55e;">Wellness Suite</span>
         <h2 style="font-family: 'Playfair Display', serif; text-align: center; margin-bottom: 10px;">BellaPro | <span
                 style="background: var(--grad-spa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Spa
