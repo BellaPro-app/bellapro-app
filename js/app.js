@@ -11,12 +11,12 @@ const app = {
     },
 
     get specialty() {
-        // 1. Check window global (set in nails.html, spa.html)
-        if (window.SPECIALTY) return window.SPECIALTY;
-
-        // 2. Check stored config
+        // 1. Check stored config (User preference takes absolute priority)
         const stored = localStorage.getItem('bp_specialty');
         if (stored) return stored;
+
+        // 2. Check window global (set in nails.html, spa.html)
+        if (window.SPECIALTY) return window.SPECIALTY;
 
         // 3. Detect from URL
         const path = window.location.pathname;
@@ -994,12 +994,28 @@ const app = {
         const currency = document.getElementById('cfg-currency').value;
         const profs = document.getElementById('cfg-profs').value;
         const specialty = document.getElementById('cfg-specialty').value;
+
+        const oldSpecialty = localStorage.getItem('bp_specialty') || this.specialty;
+
         if (name) localStorage.setItem('bp_name', name);
         if (currency) localStorage.setItem('bp_currency', currency);
         if (profs !== undefined) localStorage.setItem('bp_profs', profs);
+
         if (specialty) {
             localStorage.setItem('bp_specialty', specialty);
             this.applySpecialtyTheme();
+
+            // REDIRECTION LOGIC: If specialty changed, go to the correct page
+            if (specialty !== oldSpecialty) {
+                const pages = { 'hair': 'app.html', 'nails': 'nails.html', 'spa': 'spa.html' };
+                const target = pages[specialty];
+                if (target && !window.location.pathname.includes(target)) {
+                    this.pushCloud().then(() => {
+                        window.location.href = target;
+                    });
+                    return; // Prevent further execution as we are redirecting
+                }
+            }
         }
 
         this.render();
