@@ -103,76 +103,75 @@ const app = {
 
                 try {
                     console.log("BellaPro: Buscando perfil en Firestore...");
+                    const userDoc = await this.dbCloud.collection('users').doc(user.uid).get();
+                    let userData = userDoc.exists ? userDoc.data() : null;
 
-                    // Añadimos un pequeño truco para detectar si Firestore está bloqueado por reglas
-                    const getDocPromise = this.dbCloud.collection('users').doc(user.uid).get();
-
-                    // Si en 10 segundos no responde, avisamos al usuario
-                    const timeoutPromise = new Promise((_, reject) =>
-                        setTimeout(() => reject(new Error("Firestore Timeout: Revisa tus Reglas de Seguridad")), 10000)
-                    );
-
-                    const userDoc = await Promise.race([getDocPromise, timeoutPromise]);
-                    const userData = userDoc.exists ? userDoc.data() : null;
-
-                    if (userData) {
-                        console.log("BellaPro: Perfil encontrado. Aprobado:", userData.config ? userData.config.isApproved : 'N/A');
-                    }
-
-                    // Si el usuario existe pero no está aprobado
-                    if (userData && userData.config && userData.config.isApproved === false) {
-                        console.log("BellaPro: Acceso bloqueado (Pendiente de Aprobación)");
+                    if (userDoc.exists && userData.config && userData.config.isApproved === false) {
                         this.showPendingActivation();
                         return;
                     }
 
-                    // Si es un usuario nuevo, creamos su perfil inicial bloqueado
                     if (!userDoc.exists) {
-                        try {
-                            // Verificar pre-aprobación de Hotmart
-                            const approvedRef = this.dbCloud.collection('approved_emails').doc(user.email);
-                            const approvedDoc = await approvedRef.get();
-                            const isAutoApproved = approvedDoc.exists && approvedDoc.data().approved;
+                        const approvedRef = this.dbCloud.collection('approved_emails').doc(user.email);
+                        const approvedDoc = await approvedRef.get();
+                        const isAutoApproved = approvedDoc.exists && approvedDoc.data().approved;
+                        const initialSpecialty = approvedDoc.exists ? approvedDoc.data().specialty || 'hair' : 'hair';
 
-                            await this.dbCloud.collection('users').doc(user.uid).set({
-                                config: {
-                                    name: 'Mi Salón BellaPro',
-                                    email: user.email,
-                                    isApproved: isAutoApproved
-                                },
-                                data: { turnos: [], clientes: [], productos: [], pagos: [] },
-                                createdAt: new Date().toISOString()
-                            });
+                        userData = {
+                            config: {
+                                name: 'Mi Salón BellaPro',
+                                email: user.email,
+                                isApproved: isAutoApproved,
+                                licenseType: initialSpecialty
+                            },
+                            data: { turnos: [], clientes: [], productos: [], pagos: [] },
+                            createdAt: new Date().toISOString()
+                        };
+                        await this.dbCloud.collection('users').doc(user.uid).set(userData);
 
-                            if (isAutoApproved) {
-                                console.log("BellaPro: Usuario activado automáticamente por Hotmart.");
-                                location.reload(); // Recargar para entrar a la app
-                            } else {
-                                console.log("BellaPro: Perfil creado con éxito (Pendiente).");
-                                this.showPendingActivation();
-                            }
-                        } catch (setErr) {
-                            console.error("BellaPro: ERROR CRÍTICO al crear perfil:", setErr.message);
-                            this.showAuthError("Error al inicializar tu cuenta: " + setErr.message);
+                        if (!isAutoApproved) {
+                            this.showPendingActivation();
+                            return;
                         }
+                    }
+
+                    // License Enforcement
+                    this.isAdmin = (user.email === this.ADMIN_EMAIL);
+                    this.licenseType = (userData && userData.config) ? userData.config.licenseType : 'hair';
+                    if (this.isAdmin) this.licenseType = 'master';
+
+                    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                    const authorizedPages = {
+                        'hair': ['app.html', 'index.html'],
+                        'nails': ['nails.html', 'index.html'],
+                        'spa': ['spa.html', 'index.html'],
+                        'master': ['app.html', 'nails.html', 'spa.html', 'index.html']
+                    };
+
+                    const allowedForUser = authorizedPages[this.licenseType] || authorizedPages['hair'];
+                    const isBasePage = currentPage === 'index.html' || currentPage === '' || currentPage.includes('reserva') || currentPage.includes('manual');
+
+                    if (!isBasePage && !allowedForUser.includes(currentPage)) {
+                        const fallbacks = { 'hair': 'app.html', 'nails': 'nails.html', 'spa': 'spa.html', 'master': 'app.html' };
+                        window.location.href = fallbacks[this.licenseType] || 'app.html';
                         return;
                     }
 
                     this.showApp();
                     await database.init();
-                    await this.pullCloud();
-                    console.log("BellaPro: Perfil cargado correctamente.");
-                    this.showApp();
+                    await this.load();
                     this.events();
+                    this.render();
                     this.listenReservas();
                     this.checkAdminPrivileges();
+                    this.pullCloud();
                 } catch (e) {
-                    this.handleError("Error de Acceso", "No Pudimos verificar tu licencia.");
-                    console.error("Init error:", e);
+                    console.error("BellaPro Setup Error:", e);
+                    this.showAuthError("Error de conexión. Reintenta.");
                 }
             } else {
                 this.user = null;
-                this.showAuth();
+                if (!this.demoMode) this.showAuth();
             }
         });
     },
@@ -1230,6 +1229,7 @@ const app = {
 
     async manualActivateLicense() {
         const email = document.getElementById('admin-activate-email').value.trim().toLowerCase();
+        const specialty = document.getElementById('admin-activate-specialty').value;
         if (!email) return alert("Ingresa un email válido");
 
         const btn = document.querySelector('.btn-admin-activate');
@@ -1240,10 +1240,21 @@ const app = {
         try {
             await this.dbCloud.collection('approved_emails').doc(email).set({
                 approved: true,
+                specialty: specialty,
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                 source: 'Manual Activation (Master Panel)'
             });
-            alert(`¡Éxito! El email ${email} ha sido activado gratis.`);
+            // Update user config if they already exist
+            const userRef = this.dbCloud.collection('users').where('config.email', '==', email);
+            const userSnap = await userRef.get();
+            if (!userSnap.empty) {
+                const uid = userSnap.docs[0].id;
+                await this.dbCloud.collection('users').doc(uid).update({
+                    'config.isApproved': true,
+                    'config.licenseType': specialty
+                });
+            }
+            alert(`¡Éxito! El email ${email} ha sido activado para ${specialty}.`);
             document.getElementById('admin-activate-email').value = '';
         } catch (err) {
             console.error(err);
