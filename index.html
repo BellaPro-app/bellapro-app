@@ -23,6 +23,8 @@
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             --glass-border: 1px solid rgba(255, 255, 255, 0.08);
             --shadow-premium: 0 25px 60px rgba(0, 0, 0, 0.9);
+            --side-margin: 5%;
+            --header-height: 80px;
 
             /* LUXE SPECIALTY COLORS */
             --light-hair: rgba(236, 72, 153, 0.15);
@@ -52,24 +54,33 @@
         }
 
         /* Navbar */
+        @media (min-width: 992px) {
+            :root {
+                --side-margin: 10%;
+            }
+
+            nav {
+                padding: 0 var(--side-margin);
+                height: 90px;
+            }
+        }
+
         nav {
-            padding: 15px 5%;
+            padding: 0 var(--side-margin);
+            height: var(--header-height);
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: fixed;
-            top: 0;
+            top: 40px;
+            /* Offset for urgency bar */
+            left: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(10, 5, 6, 0.8);
+            background: rgba(10, 5, 6, 0.85);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        @media (min-width: 992px) {
-            nav {
-                padding: 20px 8%;
-            }
+            transition: top 0.3s;
         }
 
         .logo {
@@ -103,14 +114,14 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            padding: 120px 5% 40px;
+            padding: calc(var(--header-height) + 60px) var(--side-margin) 40px;
             position: relative;
             overflow: hidden;
         }
 
         @media (min-width: 992px) {
             .hero {
-                padding: 120px 8% 60px;
+                padding-top: calc(90px + 80px);
             }
         }
 
@@ -784,29 +795,46 @@
     </style>
 </head>
 
-<body style="padding-top: 38px;">
+<body style="padding-top: 0;">
+    <script>
+        // PWA PERSISTENCE LOGIC
+        (function () {
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.location.search.includes('utm_source=pwa');
+            if (isPWA) {
+                const lastSpecialty = localStorage.getItem('bp_specialty') || 'hair';
+                const hasUser = localStorage.getItem('firebase:authUser:bellapro-d297f:[DEFAULT]'); // Simple heuristic
+
+                if (hasUser) {
+                    const pages = { 'hair': 'app.html', 'nails': 'nails.html', 'spa': 'spa.html' };
+                    window.location.href = pages[lastSpecialty] || 'app.html';
+                }
+            }
+        })();
+    </script>
     <!-- URGENCY BAR -->
     <div
-        style="background: var(--primary-gradient); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: 700; position: fixed; top: 0; width: 100%; z-index: 1100; letter-spacing: 1px; line-height: 1.4;">
+        style="background: var(--primary-gradient); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: 700; position: fixed; top: 0; width: 100%; z-index: 1100; letter-spacing: 1px; line-height: 1.4; height: 40px;">
         🔥 OFERTA DE LANZAMIENTO: LICENCIA VITALICIA POR <span id="countdown">47:52</span> - <a
             href="https://pay.hotmart.com/Y104724020R?off=0lx5rpjk&bid=1772643131555"
             style="color: white; text-decoration: underline;">ADQUIRIR AHORA</a>
     </div>
 
-    <nav style="top: 38px;">
+    <nav id="main-nav">
         <div class="logo">
             <img src="assets/logo/logo.png" alt="BellaPro Logo" style="height: 45px; width: auto;">
         </div>
     </nav>
 
     <header class="hero">
-        <div class="hero-content">
-            <span class="section-tag"
-                style="color: var(--accent); border-left: 2px solid var(--accent); padding-left: 10px;">World Class
-                Design</span>
-            <h1>Gana más dinero <span class="text-gradient">Profesionalizando</span> tu Salón hoy.</h1>
-            <p>El diseño de tu software no es solo estética, es una herramienta de ventas. Organiza tus turnos, controla
-                tus finanzas y fideliza clientes con la estética Luxe de BellaPro.</p>
+        <div class="hero-content" style="padding-left: 0;">
+            <span class="section-tag" style="background: rgba(236,72,153,0.1); color: var(--primary);">Gestión Pro para
+                Salones</span>
+            <h1 style="font-size: clamp(40px, 8vw, 72px); line-height: 1.1; margin-bottom: 25px;">Tu Salón en <span
+                    class="text-gradient">Piloto Automático</span></h1>
+            <p style="font-size: clamp(18px, 2vw, 22px); color: var(--text-s); margin-bottom: 40px; max-width: 550px;">
+                Libera tu tiempo y multiplica tus ingresos con la herramienta de gestión más elegante del mercado.
+                Diseñada por y para profesionales de la belleza.
+            </p>
             <div class="hero-btns">
                 <a href="#versiones" class="btn-main">Empezar a Escalar</a>
                 <a href="./app.html?demo=true" class="btn-main"
@@ -918,15 +946,15 @@
         </div>
     </section>
 
-    <section class="showcase" id="demo">
-        <span class="section-tag" style="color: var(--accent);">Diseño de Clase Mundial</span>
-        <h2 style="margin-bottom: 20px;">Tu Salon se verá así de <span class="text-gradient">Premium</span></h2>
-        <p style="color: var(--text-s); margin-bottom: 60px; max-width: 600px; margin-left: auto; margin-right: auto;">
+    <section class="ui-preview" style="padding: 40px var(--side-margin); text-align: center;">
+        <span class="section-tag" style="color: var(--primary);">Experiencia Premium</span>
+        <h2 style="margin: 20px 0;">Interfaz Diseñada para el <span class="text-gradient">Éxito</span></h2>
+        <p style="color: var(--text-s); max-width: 600px; margin: 0 auto 50px; font-size: 18px;">
             No es solo una app, es una declaración de intenciones. Tus clientes percibirán el lujo desde el primer
             recordatorio de turno.</p>
         <div class="mockup-container"
-            style="border: 1px solid rgba(255,255,255,0.05); padding: 20px; background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.05), transparent);">
-            <div class="ui-mock" style="gap: 20px; padding: 0;">
+            style="border: 1px solid rgba(255,255,255,0.05); padding: 20px; background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.05), transparent); border-radius: 30px;">
+            <div class="ui-mock" style="display: flex; flex-direction: column; gap: 20px; padding: 0;">
                 <div class="ui-card" style="border: 1px solid rgba(0,255,204,0.1); width: 100%;">
                     <div style="font-size: 11px; margin-bottom: 10px; opacity: 0.5; letter-spacing: 2px;">PANEL
                         FINANCIERO</div>
