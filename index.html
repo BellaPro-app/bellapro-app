@@ -798,11 +798,19 @@
         (function () {
             const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.location.search.includes('utm_source=pwa');
             if (isPWA) {
-                const lastSpecialty = localStorage.getItem('bp_specialty') || 'hair';
-                const hasUser = localStorage.getItem('firebase:authUser:bellapro-d297f:[DEFAULT]'); // Simple heuristic
+                // More robust check: check for any firebase auth key in localStorage
+                let hasFirebaseSession = false;
+                for (let i = 0; i < localStorage.length; i++) {
+                    if (localStorage.key(i).startsWith('firebase:authUser')) {
+                        hasFirebaseSession = true;
+                        break;
+                    }
+                }
 
-                if (hasUser) {
+                if (hasFirebaseSession) {
+                    const lastSpecialty = localStorage.getItem('bp_specialty') || 'hair';
                     const pages = { 'hair': 'app.html', 'nails': 'nails.html', 'spa': 'spa.html' };
+                    console.log("PWA Session detected, redirecting to:", lastSpecialty);
                     window.location.href = pages[lastSpecialty] || 'app.html';
                 }
             }

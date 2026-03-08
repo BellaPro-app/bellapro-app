@@ -1003,7 +1003,12 @@ const app = {
                         this.applySpecialtyTheme();
                     }
                 }
-                console.log("Cloud Sync: Pull success");
+
+                // CRITICAL: Refresh local state and UI after pull
+                await this.load();
+                this.render();
+
+                console.log("Cloud Sync: Pull success and UI refreshed");
             }
         } catch (e) {
             console.error("Cloud Sync: Pull failed", e);
