@@ -653,6 +653,21 @@ const app = {
         const cfgProfsEl = document.getElementById('cfg-profs');
         if (cfgProfsEl) cfgProfsEl.value = localStorage.getItem('bp_profs') || '';
 
+        // Schedule Settings
+        const hStart = document.getElementById('cfg-hour-start');
+        const hEnd = document.getElementById('cfg-hour-end');
+        if (hStart) hStart.value = localStorage.getItem('bp_hour_start') || '09:00';
+        if (hEnd) hEnd.value = localStorage.getItem('bp_hour_end') || '20:00';
+
+        const workdays = (localStorage.getItem('bp_workdays') || '1,2,3,4,5,6').split(',');
+        document.querySelectorAll('#workdays-selector .chip').forEach(chip => {
+            if (workdays.includes(chip.dataset.day)) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+
         if (logoEl) logoEl.src = logo;
         if (previewEl) previewEl.src = logo;
 
