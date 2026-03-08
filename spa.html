@@ -212,6 +212,32 @@
                     <button class="btn-full" onclick="app.saveCfg()">Guardar</button>
                 </div>
 
+                <div class="section-header" style="margin-top: 30px;">Horarios de Atención</div>
+                <div class="glass-card">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label>Hora Apertura</label>
+                            <input type="time" id="cfg-hour-start" value="09:00" onchange="app.saveCfg()">
+                        </div>
+                        <div class="form-group">
+                            <label>Hora Cierre</label>
+                            <input type="time" id="cfg-hour-end" value="20:00" onchange="app.saveCfg()">
+                        </div>
+                    </div>
+                    <label>Días Laborales</label>
+                    <div class="chip-group" id="workdays-selector" style="margin-top:10px; flex-wrap: wrap; gap: 8px;">
+                        <div class="chip active" data-day="1" onclick="app.toggleWorkday(1)">Lun</div>
+                        <div class="chip active" data-day="2" onclick="app.toggleWorkday(2)">Mar</div>
+                        <div class="chip active" data-day="3" onclick="app.toggleWorkday(3)">Mié</div>
+                        <div class="chip active" data-day="4" onclick="app.toggleWorkday(4)">Jue</div>
+                        <div class="chip active" data-day="5" onclick="app.toggleWorkday(5)">Vie</div>
+                        <div class="chip active" data-day="6" onclick="app.toggleWorkday(6)">Sáb</div>
+                        <div class="chip" data-day="0" onclick="app.toggleWorkday(0)">Dom</div>
+                    </div>
+                    <p style="font-size:11px; opacity:0.5; margin-top:10px;">Los turnos solo se podrán agendar en estos
+                        rangos.</p>
+                </div>
+
                 <!-- PANEL MAESTRO (Solo visible para Admin) -->
                 <div id="admin-panel-section" style="display:none; margin-top: 30px;">
                     <div class="section-header">Panel Maestro: Activar Socios</div>
