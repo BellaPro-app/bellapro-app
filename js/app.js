@@ -986,12 +986,14 @@ const app = {
                     const stores = ['turnos', 'clientes', 'productos', 'pago'];
                     for (const s of stores) {
                         const items = cloud.data[s] || [];
-                        // Simple overwrite for now
-                        const tx = database.db.transaction(s, 'readwrite');
-                        tx.objectStore(s).clear();
-                        for (const item of items) {
-                            tx.objectStore(s).add(item);
-                        }
+                        await new Promise((resolve, reject) => {
+                            const tx = database.db.transaction(s, 'readwrite');
+                            const store = tx.objectStore(s);
+                            store.clear();
+                            items.forEach(item => store.add(item));
+                            tx.oncomplete = () => resolve();
+                            tx.onerror = (err) => reject(err);
+                        });
                     }
                 }
                 if (cloud.config) {
