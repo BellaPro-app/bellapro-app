@@ -573,25 +573,41 @@ const app = {
         });
 
         const now = new Date();
-        for (let i = 0; i < 14; i++) {
+        const workdays = (localStorage.getItem('bp_workdays') || '1,2,3,4,5,6').split(',').map(Number);
+
+        let foundDays = 0;
+        let i = 0;
+        while (foundDays < 14 && i < 30) { // Limit search to 30 days ahead to find 14 workdays
             const d = new Date();
             d.setDate(now.getDate() + i);
-            const iso = d.toISOString().split('T')[0];
-            const dayName = d.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
-            const chip = document.createElement('div');
-            chip.className = 'chip';
-            chip.innerText = dayName;
-            chip.onclick = () => {
-                document.querySelectorAll('#day-selector .chip').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                this.state.selDay = iso;
-            };
-            dayCon.appendChild(chip);
+            const dayOfWeek = d.getDay();
+
+            if (workdays.includes(dayOfWeek)) {
+                const iso = d.toISOString().split('T')[0];
+                const dayName = d.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                chip.innerText = dayName;
+                chip.onclick = () => {
+                    document.querySelectorAll('#day-selector .chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    this.state.selDay = iso;
+                };
+                dayCon.appendChild(chip);
+                foundDays++;
+            }
+            i++;
         }
 
         const slots = [];
-        for (let h = 9; h <= 20; h++) {
-            ['00', '30'].forEach(m => slots.push(`${h.toString().padStart(2, '0')}:${m}`));
+        const startH = parseInt((localStorage.getItem('bp_hour_start') || '09:00').split(':')[0]);
+        const endH = parseInt((localStorage.getItem('bp_hour_end') || '20:00').split(':')[0]);
+
+        for (let h = startH; h <= endH; h++) {
+            ['00', '30'].forEach(m => {
+                if (h === endH && m === '30') return; // Don't add last slot if it's the exact end hour
+                slots.push(`${h.toString().padStart(2, '0')}:${m}`);
+            });
         }
         slots.forEach(s => {
             const chip = document.createElement('div');
@@ -994,11 +1010,16 @@ const app = {
         const profs = document.getElementById('cfg-profs').value;
         const specialty = document.getElementById('cfg-specialty').value;
 
+        const hStart = document.getElementById('cfg-hour-start').value;
+        const hEnd = document.getElementById('cfg-hour-end').value;
+
         const oldSpecialty = localStorage.getItem('bp_specialty') || this.specialty;
 
         if (name) localStorage.setItem('bp_name', name);
         if (currency) localStorage.setItem('bp_currency', currency);
         if (profs !== undefined) localStorage.setItem('bp_profs', profs);
+        if (hStart) localStorage.setItem('bp_hour_start', hStart);
+        if (hEnd) localStorage.setItem('bp_hour_end', hEnd);
 
         if (specialty) {
             localStorage.setItem('bp_specialty', specialty);
@@ -1021,6 +1042,19 @@ const app = {
         this.pushCloud().then(() => {
             console.log("Config saved");
         });
+    },
+
+    toggleWorkday(day) {
+        let current = (localStorage.getItem('bp_workdays') || '1,2,3,4,5,6').split(',').filter(x => x !== '');
+        const dayStr = day.toString();
+        if (current.includes(dayStr)) {
+            current = current.filter(x => x !== dayStr);
+        } else {
+            current.push(dayStr);
+        }
+        localStorage.setItem('bp_workdays', current.join(','));
+        this.render();
+        this.pushCloud();
     },
 
     copyBookingLink() {
