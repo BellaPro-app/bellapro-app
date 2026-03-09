@@ -139,12 +139,6 @@ body.theme-spa {
     transition: var(--transition);
 }
 
-/* Adjust sidebar if demo badge is visible */
-#demo-badge:not(.hidden)~.bottom-nav {
-    top: 35px;
-    height: calc(100vh - 35px);
-}
-
 .nav-btn {
     background: none;
     border: none;
