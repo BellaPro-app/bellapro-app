@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /js/
+Disallow: /design-system/
+
+Sitemap: https://bellapro.site/sitemap.xml

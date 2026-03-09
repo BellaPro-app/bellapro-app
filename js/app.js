@@ -1252,20 +1252,39 @@ const app = {
     },
 
     async seed() {
-        console.log("BellaPro: Seeding initial data...");
-        const cid = await database.add('clientes', { nom: 'María Pérez', tel: '1122334455', not: 'Servicio recurrente' });
-        await database.add('productos', { nom: 'Shampoo Profesional 1L', sto: 12, min: 5 });
+        console.log("BellaPro: Seeding initial data for:", window.SPECIALTY || 'hair');
+        const spec = window.SPECIALTY || 'hair';
+
+        let clientName = 'María Pérez';
+        let productName = 'Shampoo Profesional 1L';
+        let serviceName = 'Corte & Lavado';
+        let price = 8500;
+
+        if (spec === 'nails') {
+            clientName = 'Lucía García';
+            productName = 'Esmalte Gel UV';
+            serviceName = 'Esmaltado Semipermanente';
+            price = 4500;
+        } else if (spec === 'spa') {
+            clientName = 'Ana Torres';
+            productName = 'Aceite Esencial Lavanda';
+            serviceName = 'Masaje Relajante';
+            price = 12000;
+        }
+
+        const cid = await database.add('clientes', { nom: clientName, tel: '1122334455', not: 'Servicio recurrente' });
+        await database.add('productos', { nom: productName, sto: 12, min: 5 });
         await database.add('turnos', {
             cid,
-            cname: 'María Pérez',
-            srv: 'Corte & Lavado',
+            cname: clientName,
+            srv: serviceName,
             dat: new Date().toISOString().split('T')[0] + 'T10:00',
-            val: 8500
+            val: price
         });
         await database.add('pago', {
             dat: new Date().toISOString().split('T')[0],
-            concept: 'Ingreso inicial sembrado',
-            amt: 8500,
+            concept: `Ingreso inicial sembrado (${spec})`,
+            amt: price,
             typ: 'ingreso'
         });
         await this.load();
