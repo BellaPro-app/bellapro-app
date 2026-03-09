@@ -129,7 +129,7 @@
         !function (f, b, e, v, n, t, s) {
             if (f.fbq) return; n = f.fbq = function () {
                 n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
             };
             if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
             n.queue = []; t = b.createElement(e); t.async = !0;
@@ -185,6 +185,13 @@
             <button type="submit" class="btn-reserve">Solicitar Reserva</button>
         </form>
         <div id="status" class="status-msg"></div>
+
+        <div
+            style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11px; opacity: 0.5;">
+            <p style="margin-bottom: 10px;">2026 © BellaPro | Al reservar aceptas nuestros <a href="legal.html#terminos"
+                    style="color: var(--primary); text-decoration: none;">Términos</a> y <a href="legal.html#privacidad"
+                    style="color: var(--primary); text-decoration: none;">Privacidad</a>.</p>
+        </div>
     </div>
 
     <!-- Firebase SDKs -->

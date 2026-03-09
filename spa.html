@@ -21,7 +21,7 @@
         !function (f, b, e, v, n, t, s) {
             if (f.fbq) return; n = f.fbq = function () {
                 n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
             };
             if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
             n.queue = []; t = b.createElement(e); t.async = !0;
@@ -72,7 +72,14 @@
             </div>
             <p id="auth-error" style="color: var(--error); font-size: 13px; margin-top: 15px; display: none;"></p>
         </div>
-        <p style="margin-top: 30px; font-size: 12px; opacity: 0.5;">2026 © BellaPro Systems</p>
+        <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+            <p style="font-size: 12px; opacity: 0.5;">2026 © BellaPro Systems</p>
+            <div style="display: flex; gap: 15px; font-size: 11px; opacity: 0.4;">
+                <a href="legal.html#privacidad" style="color: inherit; text-decoration: none;">Privacidad</a>
+                <a href="legal.html#terminos" style="color: inherit; text-decoration: none;">Términos</a>
+                <a href="legal.html#descargo" style="color: inherit; text-decoration: none;">Legal</a>
+            </div>
+        </div>
     </div>
 
     <div class="app-container hidden" id="main-app">
@@ -326,6 +333,28 @@
                         style="background: transparent; color: var(--success); border: 1px solid var(--success); margin-top:10px;">
                         <i class="fas fa-magic"></i> Cargar datos de ejemplo (DEMO)
                     </button>
+                </div>
+
+                <div class="section-header" style="margin-top: 30px;">Información Legal</div>
+                <div class="glass-card">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <a href="legal.html#privacidad"
+                            style="color: var(--text-s); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-user-shield" style="width: 20px;"></i> Política de Privacidad
+                        </a>
+                        <a href="legal.html#terminos"
+                            style="color: var(--text-s); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-file-contract" style="width: 20px;"></i> Términos de Servicio
+                        </a>
+                        <a href="legal.html#eula"
+                            style="color: var(--text-s); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-certificate" style="width: 20px;"></i> Acuerdo de Licencia (EULA)
+                        </a>
+                    </div>
+                    <div
+                        style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 12px; opacity: 0.5;">
+                        Soporte: soporte@bellapro.com | +54 9 11 3209 4505
+                    </div>
                 </div>
 
                 <div style="text-align: center; margin-top: 40px; opacity: 0.3; font-size: 12px;">BELLAPRO V1.0 -
