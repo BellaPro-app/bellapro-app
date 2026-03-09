@@ -627,6 +627,12 @@ textarea:focus {
         background: rgba(26, 17, 18, 0.95);
     }
 
+    /* Desktop Sidebar adjustment if demo badge is visible */
+    #demo-badge:not(.hidden)~.bottom-nav {
+        top: 35px;
+        height: calc(100vh - 35px);
+    }
+
     .main-content {
         margin-left: 110px;
         padding: 48px;

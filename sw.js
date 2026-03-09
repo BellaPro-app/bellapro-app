@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bellapro-v8';
+const CACHE_NAME = 'bellapro-v9';
 const ASSETS = [
     './',
     './app.html',
@@ -8,6 +8,10 @@ const ASSETS = [
     './js/db.js',
     './js/app.js',
     './assets/logo/logo.png',
+    './legal.html',
+    './gracias.html',
+    './reserva.html',
+    './manual-usuario.html',
     'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2',
