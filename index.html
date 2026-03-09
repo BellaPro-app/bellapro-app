@@ -814,37 +814,44 @@
 
 <body style="padding-top: 0;">
     <script>
-        // PWA PERSISTENCE LOGIC
+        // PWA PERSISTENCE LOGIC - V3 (Optimized Reachability)
         (function () {
             const displayModes = ['standalone', 'minimal-ui', 'fullscreen'];
             const isPWA = displayModes.some(mode => window.matchMedia(`(display-mode: ${mode})`).matches) ||
                 window.location.search.includes('utm_source=pwa');
 
-            // Check session
+            // Detect session accurately via LocalStorage keys
             let hasFirebaseSession = false;
-            for (let i = 0; i < localStorage.length; i++) {
-                if (localStorage.key(i).startsWith('firebase:authUser')) {
-                    hasFirebaseSession = true;
-                    break;
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('firebase:authUser')) {
+                        hasFirebaseSession = true;
+                        break;
+                    }
                 }
+            } catch (e) {
+                console.error("Storage Access Error:", e);
             }
 
             if (hasFirebaseSession) {
                 const lastSpecialty = localStorage.getItem('bp_specialty') || 'hair';
                 const pages = { 'hair': 'app.html', 'nails': 'nails.html', 'spa': 'spa.html' };
 
-                // 1. Auto-Redirect only if in PWA mode
+                // 1. Redirect only if in PWA mode to avoid disrupting normal web browsing
                 if (isPWA) {
-                    console.log("PWA Session detected, redirecting to:", lastSpecialty);
+                    console.log("BellaPro PWA: Session detected, auto-launching:", lastSpecialty);
                     window.location.href = pages[lastSpecialty] || 'app.html';
                 }
 
-                // 2. Dynamic Hero Update (Backup entry)
+                // 2. Hero Update (Single Entry Point)
                 window.addEventListener('DOMContentLoaded', () => {
                     const heroBtn = document.querySelector('.hero-btns .btn-main');
                     if (heroBtn) {
-                        heroBtn.innerText = "Ir a mi Salón";
+                        heroBtn.innerText = "Entrar a mi Salón";
                         heroBtn.href = pages[lastSpecialty] || 'app.html';
+                        heroBtn.style.background = "var(--accent)";
+                        heroBtn.style.color = "#000";
                     }
                 });
             }

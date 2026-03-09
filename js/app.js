@@ -70,7 +70,6 @@ const app = {
         console.log("BellaPro: Initializing...");
         this.applySpecialtyTheme();
 
-        // Configuration: Consider moving to dedicated config file in production
         const firebaseConfig = {
             apiKey: "AIzaSyCCFp95pg8x4YAJ4prASufTIywvdbHksPE",
             authDomain: "bellapro-d297f.firebaseapp.com",
@@ -82,14 +81,13 @@ const app = {
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-        // CONFIGURACIÓN DE PERSISTENCIA EXPLÍCITA (Soluciona problemas de desconexión)
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-            .then(() => {
-                console.log("BellaPro: Persistencia establecida en LOCAL.");
-            })
-            .catch((error) => {
-                console.error("BellaPro: Error al configurar persistencia:", error);
-            });
+        try {
+            // CRITICAL: Explicitly set and WAIT for persistence before finishing init or starting auth observer
+            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            console.log("BellaPro: Persistencia establecida en LOCAL.");
+        } catch (error) {
+            console.error("BellaPro: Error al configurar persistencia:", error);
+        }
 
         const urlParams = new URL(window.location.href).searchParams;
         this.demoMode = urlParams.get('demo') === 'true';
@@ -104,9 +102,9 @@ const app = {
             return;
         }
 
+        // AUTH WATCHER: Single Source of Truth
         firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
-                console.log("BellaPro: Usuario detectado:", user.email);
                 this.user = user;
                 this.dbCloud = firebase.firestore();
 
