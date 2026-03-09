@@ -136,6 +136,13 @@ body.theme-spa {
     padding: 14px 10px;
     border-top: var(--glass-border);
     z-index: 1000;
+    transition: var(--transition);
+}
+
+/* Adjust sidebar if demo badge is visible */
+#demo-badge:not(.hidden)~.bottom-nav {
+    top: 35px;
+    height: calc(100vh - 35px);
 }
 
 .nav-btn {
