@@ -82,6 +82,15 @@ const app = {
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
+        // CONFIGURACIÓN DE PERSISTENCIA EXPLÍCITA (Soluciona problemas de desconexión)
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                console.log("BellaPro: Persistencia establecida en LOCAL.");
+            })
+            .catch((error) => {
+                console.error("BellaPro: Error al configurar persistencia:", error);
+            });
+
         const urlParams = new URL(window.location.href).searchParams;
         this.demoMode = urlParams.get('demo') === 'true';
 
