@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación Legal | BellaPro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ec4899;
+            --bg: #0a0506;
+            --surface: #160d0f;
+            --text-p: #ffffff;
+            --text-s: rgba(255, 255, 255, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-p);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        nav a {
+            color: var(--text-s);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        section {
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            margin: 20px 0 10px;
+            font-size: 18px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-s);
+            font-size: 15px;
+        }
+
+        ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            color: var(--text-s);
+            font-size: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .contact-box {
+            margin-top: 40px;
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <img src="assets/logo/logo.png" alt="BellaPro" class="logo">
+            <h1>Centro Legal BellaPro</h1>
+            <p>Última actualización: 9 de marzo de 2026</p>
+        </header>
+
+        <nav>
+            <a href="#privacidad">Política de Privacidad</a>
+            <a href="#terminos">Términos de Servicio</a>
+            <a href="#eula">EULA</a>
+            <a href="#descargo">Descargo de Responsabilidad</a>
+        </nav>
+
+        <section id="privacidad">
+            <h2>Política de Privacidad</h2>
+            <p>En BellaPro, la privacidad de su información es nuestra prioridad. Esta política detalla cómo manejamos
+                sus datos personales.</p>
+
+            <h3>1. Información que Recopilamos</h3>
+            <p>Recopilamos información necesaria para la gestión de su salón, incluyendo:</p>
+            <ul>
+                <li><strong>Datos de la Cuenta:</strong> Nombre, dirección de correo electrónico y contraseña.</li>
+                <li><strong>Configuración del Salón:</strong> Nombre del establecimiento, logo, moneda local y
+                    especialidades.</li>
+                <li><strong>Datos Operativos:</strong> Información sobre turnos, clientes (nombre, teléfono, notas) e
+                    inventario de productos.</li>
+                <li><strong>Datos Técnicos:</strong> Identificadores de dispositivo y registros de actividad para
+                    seguridad y soporte.</li>
+            </ul>
+
+            <h3>2. Cómo Recopilamos la Información</h3>
+            <p>La información es proporcionada directamente por usted al registrarse o usar la aplicación, y por sus
+                clientes al solicitar reservas a través de sus links públicos.</p>
+
+            <h3>3. Por Qué Recopilamos esta Información</h3>
+            <p>Utilizamos sus datos para:</p>
+            <ul>
+                <li>Proporcionar y mantener la funcionalidad principal de la plataforma.</li>
+                <li>Gestionar turnos y enviar notificaciones.</li>
+                <li>Procesar y verificar la validez de las licencias de uso.</li>
+                <li>Mejorar la experiencia del usuario y proporcionar soporte técnico.</li>
+            </ul>
+
+            <h3>4. Compartición de Datos con Terceros</h3>
+            <p>BellaPro <strong>no vende ni alquila</strong> su información personal a terceros. Compartimos datos solo
+                en las siguientes circunstancias:</p>
+            <ul>
+                <li><strong>Proveedores de Infraestructura:</strong> Utilizamos servicios de Google Firebase para el
+                    almacenamiento de datos y autenticación, sujetos a sus propias políticas de privacidad.</li>
+                <li><strong>Cumplimiento Legal:</strong> Cuando sea requerido por ley o para proteger nuestros derechos.
+                </li>
+            </ul>
+
+            <h3>5. Derechos del Usuario</h3>
+            <p>Usted tiene derecho a acceder, rectificar o eliminar sus datos personales en cualquier momento a través
+                de las herramientas proporcionadas dentro de la plataforma (Sección de Ajustes).</p>
+
+            <h3>6. Medidas de Seguridad</h3>
+            <p>Implementamos medidas de seguridad robustas, incluyendo cifrado HTTPS, autenticación segura de Firebase y
+                almacenamiento protegido, para prevenir el acceso no autorizado a su información.</p>
+        </section>
+
+        <section id="terminos">
+            <h2>Términos de Servicio</h2>
+            <p>Al acceder o utilizar BellaPro, usted acepta estar sujeto a estos términos.</p>
+            <h3>1. Uso de la Licencia</h3>
+            <p>BellaPro otorga una licencia de uso personal o comercial para la gestión de un salón de belleza según el
+                plan adquirido (Demo, Vitalicia o Maestro).</p>
+            <h3>2. Responsabilidades del Usuario</h3>
+            <p>Usted es responsable de mantener la confidencialidad de su cuenta y contraseña, así como de todas las
+                actividades que ocurran bajo su cuenta.</p>
+            <h3>3. Prohibiciones</h3>
+            <p>Queda prohibido el uso de la plataforma para fines ilegales, el envío de spam, o cualquier intento de
+                comprometer la seguridad del sistema.</p>
+        </section>
+
+        <section id="eula">
+            <h2>Acuerdo de Licencia (EULA)</h2>
+            <p>Este es un acuerdo legal entre usted y BellaPro Systems.</p>
+            <h3>1. Concesión de Licencia</h3>
+            <p>Se le otorga una licencia no exclusiva y no transferible para utilizar el software BellaPro en sus
+                dispositivos personales.</p>
+            <h3>2. Restricciones</h3>
+            <p>Usted no puede: descompilar, realizar ingeniería inversa, desensamblar o intentar extraer el código
+                fuente del software.</p>
+            <h3>3. Terminación</h3>
+            <p>Esta licencia terminará automáticamente si usted incumple cualquiera de los términos establecidos.</p>
+        </section>
+
+        <section id="descargo">
+            <h2>Descargo de Responsabilidad</h2>
+            <p>BellaPro se proporciona "tal cual" y "según disponibilidad".</p>
+            <ul>
+                <li><strong>Garantías:</strong> No garantizamos que el software esté libre de errores o interrupciones.
+                </li>
+                <li><strong>Responsabilidad de Datos:</strong> Aunque implementamos medidas de seguridad, el usuario es
+                    responsable de realizar exportaciones periódicas de sus datos para respaldo local.</li>
+                <li><strong>Resultados del Negocio:</strong> BellaPro no garantiza incrementos en las ventas o
+                    rentabilidad de su negocio por el solo uso de la herramienta.</li>
+            </ul>
+        </section>
+
+        <div class="contact-box">
+            <h2>Contacto de Soporte</h2>
+            <p>Para consultas legales o soporte técnico:</p>
+            <p><i class="fas fa-envelope"></i> Email: soporte@bellapro.com</p>
+            <p><i class="fab fa-whatsapp"></i> WhatsApp: +54 9 11 3209 4505</p>
+            <a href="index.html" class="btn-back">Volver al Inicio</a>
+        </div>
+    </div>
+</body>
+
+</html>
