@@ -1,40 +1,38 @@
 :root {
-    --bg-color: #0a0506;
-    /* Deep Black */
-    --surface-color: #1a1112;
-    --surface-light: #251a1b;
-    --primary-color: #EC4899;
-    /* HAIR: Hot Pink */
-    --primary-gradient: linear-gradient(135deg, #EC4899 0%, #db271d 100%);
+    --bg-color: #020617; /* Slate-950 */
+    --surface-color: #0f172a; /* Slate-900 */
+    --surface-light: #1e293b; /* Slate-800 */
+    
+    --primary-color: #D4AF37; /* Champagne Gold */
+    --primary-gradient: linear-gradient(135deg, #d4af37 0%, #a67c00 100%);
+    
+    --accent-gold: #D4AF37;
+    --accent-glow: rgba(212, 175, 55, 0.4);
 
-    /* SPECIALTY THEMES */
-    --color-hair: #EC4899;
-    --grad-hair: linear-gradient(135deg, #EC4899 0%, #db271d 100%);
+    /* SPECIALTY THEMES (Subtle adjustments for Luxe) */
+    --color-hair: #D4AF37;
+    --grad-hair: linear-gradient(135deg, #d4af37 0%, #a67c00 100%);
 
-    --color-nails: #a855f7;
-    /* Lavender */
-    --grad-nails: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+    --color-nails: #c084fc; /* Refined Purple */
+    --grad-nails: linear-gradient(135deg, #c084fc 0%, #9333ea 100%);
 
-    --color-spa: #22c55e;
-    /* green-500 */
-    --grad-spa: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    --color-spa: #4ade80; /* Refined Emerald */
+    --grad-spa: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
 
-    --accent-lavender: #a78bfa;
-    /* Lighter lavender for dark bg */
-    --accent-gold: #d4af37;
-    --text-primary: #ffffff;
-    /* Maximum contrast on dark */
-    --text-secondary: #fce7f3;
-    /* Very light pink/lavender */
-    --success: #34d399;
-    --error: #fb7185;
-    --border-radius: 20px;
-    --card-radius: 24px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow-premium: 0 10px 40px rgba(0, 0, 0, 0.8);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
-    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --accent-lavender: #c084fc;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    
+    --success: #10b981;
+    --error: #ef4444;
+    
+    --border-radius: 1.5rem;
+    --card-radius: 1.5rem;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.4);
+    --glass-background: rgba(15, 23, 42, 0.7);
+    --glass-border: 1px solid rgba(212, 175, 55, 0.15);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
@@ -43,7 +41,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Outfit', 'Inter', sans-serif;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -172,14 +170,20 @@ body.theme-spa {
 
 /* Cards */
 .glass-card {
-    background: var(--surface-color);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--glass-background);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: var(--glass-border);
     border-radius: var(--card-radius);
     padding: 24px;
     margin-bottom: 20px;
     box-shadow: var(--shadow-premium);
+    transition: var(--transition);
+}
+
+.glass-card:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.1);
 }
 
 .top-bar {
@@ -205,10 +209,11 @@ body.theme-spa {
 
 .welcome h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
     color: var(--text-primary);
+    letter-spacing: -0.02em;
 }
 
 .welcome p {
@@ -216,7 +221,7 @@ body.theme-spa {
     font-size: 15px;
 }
 
-.text-pink {
+.text-accent {
     color: var(--primary-color);
     font-weight: 700;
     background: var(--primary-gradient);
@@ -346,8 +351,8 @@ body.theme-spa {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
+    background: rgba(2, 6, 23, 0.8);
+    backdrop-filter: blur(15px);
     display: none;
     align-items: flex-end;
     justify-content: center;
@@ -355,7 +360,9 @@ body.theme-spa {
 }
 
 .modal-body {
-    background: var(--surface-color);
+    background: var(--glass-background);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
     width: 100%;
     max-width: 600px;
     border-radius: 32px 32px 0 0;
@@ -363,17 +370,20 @@ body.theme-spa {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+    animation: modalUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -10px 60px rgba(0, 0, 0, 0.6);
+    border: var(--glass-border);
 }
 
 @keyframes modalUp {
     from {
-        transform: translateY(100%);
+        transform: translateY(100%) scale(1.05);
+        opacity: 0;
     }
 
     to {
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+        opacity: 1;
     }
 }
 
@@ -568,11 +578,24 @@ textarea:focus {
     width: 100%;
     max-width: 44px;
     background: var(--primary-gradient);
-    border-radius: 8px 8px 4px 4px;
+    border-radius: 12px 12px 4px 4px;
     min-height: 4px;
-    transition: height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+}
+
+.chart-bar-wrap {
+    animation: barEntrance 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+@keyframes barEntrance {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .chart-bar::after {
