@@ -42,13 +42,13 @@ exports.hotmartWebhook = functions.https.onRequest(async (req, res) => {
     }
 
     const email = buyer.email;
-    const transactionId = data.data.purchase.transaction;
+    const transactionId = data.data && data.data.purchase ? data.data.purchase.transaction : "manual_tx";
 
     console.log(`HOTMART EVENT: ${event} | USER: ${email} | TX: ${transactionId}`);
 
     // Mapeo de Roles RBAC basado en el producto/oferta
     let role = "PREMIUM";
-    if (data.data.purchase.price.value === 0) {
+    if (data.data && data.data.purchase && data.data.purchase.price && data.data.purchase.price.value === 0) {
         role = "FREE_STUDENT";
     }
 
