@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bellapro-v11';
+const CACHE_NAME = 'bellapro-v12';
 const ASSETS = [
     './',
     './app.html',

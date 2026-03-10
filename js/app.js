@@ -66,8 +66,31 @@ const app = {
         }
     },
 
+    VERSION: '3.3.1', // Incrementar para forzar limpieza total de caché en clientes
+
     async init() {
         console.log("BellaPro: Initializing...");
+
+        // Lógica de limpieza forzada de caché por versión
+        const currentVersion = localStorage.getItem('bp_app_version');
+        if (currentVersion !== this.VERSION) {
+            console.warn("BellaPro: Nueva versión detectada. Limpiando caché...");
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+            }
+            localStorage.setItem('bp_app_version', this.VERSION);
+            // Si hay un service worker, lo desregistramos para forzar recarga limpia
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                }
+            }
+            window.location.reload();
+            return;
+        }
+
         this.applySpecialtyTheme();
 
         const firebaseConfig = {
