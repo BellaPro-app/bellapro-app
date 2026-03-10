@@ -165,10 +165,18 @@ const app = {
                         }
                     }
 
-                    // License Enforcement
+                    // License & RBAC Enforcement (Soberanía Total)
                     this.isAdmin = (user.email === this.ADMIN_EMAIL);
-                    this.licenseType = (userData && userData.config) ? userData.config.licenseType : 'hair';
-                    if (this.isAdmin) this.licenseType = 'master';
+                    const userRole = (userData && userData.config) ? userData.config.role : 'FREE_STUDENT';
+                    this.licenseType = userRole === 'PREMIUM' ? (userData.config.licenseType || 'hair') : 'hair';
+                    this.tenantId = (userData && userData.config) ? userData.config.tenantId : 'default';
+
+                    if (this.isAdmin) {
+                        this.licenseType = 'master';
+                        this.tenantId = 'master_system';
+                    }
+
+                    console.log(`RBAC Active: Role=${userRole} | Tenant=${this.tenantId}`);
 
                     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
                     const authorizedPages = {
@@ -180,6 +188,14 @@ const app = {
 
                     const allowedForUser = authorizedPages[this.licenseType] || authorizedPages['hair'];
                     const isBasePage = currentPage === 'index.html' || currentPage === '' || currentPage.includes('reserva') || currentPage.includes('manual');
+
+                    // Protección de Rutas Financieras/Premium
+                    const isPremiumArea = (this.state.section === 'pagos');
+                    if (isPremiumArea && userRole !== 'PREMIUM' && !this.isAdmin) {
+                        alert("Acceso Restringido: Tu suscripción actual no incluye el Panel Financiero.");
+                        this.navTo('turnos');
+                        return;
+                    }
 
                     if (!isBasePage && !allowedForUser.includes(currentPage)) {
                         const fallbacks = { 'hair': 'app.html', 'nails': 'nails.html', 'spa': 'spa.html', 'master': 'app.html' };
@@ -263,23 +279,17 @@ const app = {
     authMode: 'login', // 'login' o 'register'
 
     toggleAuthMode() {
-        this.authMode = (this.authMode === 'login') ? 'register' : 'login';
+        // MODO BLOQUEADO: Solo se permite Login. Registro vía Hotmart Webhook únicamente.
+        this.authMode = 'login';
         const btn = document.getElementById('btn-auth');
         const toggle = document.getElementById('auth-toggle');
         const forgot = document.getElementById('forgot-pass-link');
         const title = document.querySelector('#auth-container p');
 
-        if (this.authMode === 'register') {
-            btn.innerText = "Crear mi Cuenta Profesional";
-            toggle.innerText = "¿Ya eres usuaria? Entra aquí";
-            forgot.style.display = 'none';
-            if (title) title.innerText = "Regístrate para activar tu licencia de BellaPro.";
-        } else {
-            btn.innerText = "Entrar al Salón";
-            toggle.innerText = "¿No tienes cuenta? Regístrate aquí";
-            forgot.style.display = 'inline-block';
-            if (title) title.innerText = "Gestión Premium para tu Salón. Ingresa para continuar.";
-        }
+        btn.innerText = "Entrar al Salón";
+        toggle.style.display = 'none'; // Ocultar link de registro
+        forgot.style.display = 'inline-block';
+        if (title) title.innerText = "Gestión Premium para tu Salón. Ingresa para continuar.";
     },
 
     async handleAuthAction() {
