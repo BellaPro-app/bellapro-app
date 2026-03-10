@@ -105,7 +105,7 @@ const app = {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
         try {
-            // CRITICAL: Explicitly set and WAIT for persistence before finishing init or starting auth observer
+            // FIX PERSISTENCIA: Asegurar que la sesión no se cierre
             await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
             console.log("BellaPro: Persistencia establecida en LOCAL.");
         } catch (error) {
