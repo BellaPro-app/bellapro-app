@@ -54,7 +54,7 @@
 
     <div id="auth-container" class="hidden"
         style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; background: var(--bg-color);">
-        <img src="assets/logo/logo.png" alt="BellaPro Logo"
+        <img src="assets/logo/logo.png" alt="BellaPro - Gestión Premium para Centros de Estética"
             style="width: 150px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 15px 30px rgba(212, 175, 55, 0.25));">
         <p style="color: var(--text-secondary); margin-bottom: 30px; max-width: 300px;">Gestión Premium para tu Salón.
             Ingresa para continuar.</p>
@@ -104,12 +104,12 @@
                 <div class="profile">
                     <img id="salon-logo-display"
                         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150"
-                        class="avatar" style="border-color: var(--primary-color);">
+                        class="avatar" style="border-color: var(--primary-color);" alt="Avatar del Salón">
                     <h3 id="salon-title-display"></h3>
                 </div>
                 <div style="text-align: right;">
                     <div id="app-brand-identity">
-                        <img src="assets/logo/logo.png" alt="Logo" style="width: 50px; height: auto;">
+                        <img src="assets/logo/logo.png" alt="BellaPro Luxe Gold" style="width: 50px; height: auto;">
                     </div>
                 </div>
             </header>
@@ -145,12 +145,12 @@
 
                 <div class="section-header">Acciones Rápidas</div>
                 <div class="action-grid">
-                    <div class="action-btn primary" onclick="app.openModal('m-turno')">
+                    <button class="action-btn primary" onclick="app.openModal('m-turno')" aria-label="Crear nuevo turno">
                         <i class="fas fa-calendar-plus"></i> Nuevo Turno
-                    </div>
-                    <div class="action-btn" onclick="app.openModal('m-fin')">
+                    </button>
+                    <button class="action-btn" onclick="app.openModal('m-fin')" aria-label="Registrar nuevo pago">
                         <i class="fas fa-wallet" style="color:var(--primary-color)"></i> Registrar Pago
-                    </div>
+                    </button>
                 </div>
 
                 <div class="section-header">Resumen Semanal</div>
@@ -275,13 +275,13 @@
                     </div>
                     <label>Días Laborales</label>
                     <div class="chip-group" id="workdays-selector" style="margin-top:10px; flex-wrap: wrap; gap: 8px;">
-                        <div class="chip active" data-day="1" onclick="app.toggleWorkday(1)">Lun</div>
-                        <div class="chip active" data-day="2" onclick="app.toggleWorkday(2)">Mar</div>
-                        <div class="chip active" data-day="3" onclick="app.toggleWorkday(3)">Mié</div>
-                        <div class="chip active" data-day="4" onclick="app.toggleWorkday(4)">Jue</div>
-                        <div class="chip active" data-day="5" onclick="app.toggleWorkday(5)">Vie</div>
-                        <div class="chip active" data-day="6" onclick="app.toggleWorkday(6)">Sáb</div>
-                        <div class="chip" data-day="0" onclick="app.toggleWorkday(0)">Dom</div>
+                        <button class="chip active" data-day="1" onclick="app.toggleWorkday(1)" type="button" aria-pressed="true">Lun</button>
+                        <button class="chip active" data-day="2" onclick="app.toggleWorkday(2)" type="button" aria-pressed="true">Mar</button>
+                        <button class="chip active" data-day="3" onclick="app.toggleWorkday(3)" type="button" aria-pressed="true">Mié</button>
+                        <button class="chip active" data-day="4" onclick="app.toggleWorkday(4)" type="button" aria-pressed="true">Jue</button>
+                        <button class="chip active" data-day="5" onclick="app.toggleWorkday(5)" type="button" aria-pressed="true">Vie</button>
+                        <button class="chip active" data-day="6" onclick="app.toggleWorkday(6)" type="button" aria-pressed="true">Sáb</button>
+                        <button class="chip" data-day="0" onclick="app.toggleWorkday(0)" type="button" aria-pressed="false">Dom</button>
                     </div>
                     <p style="font-size:11px; opacity:0.5; margin-top:10px;">Los turnos solo se podrán agendar en estos
                         rangos.</p>
