@@ -121,6 +121,20 @@
                     <p>Tienes <span id="dash-turnos-count" class="text-accent">0</span> turnos para hoy.</p>
                 </div>
 
+                <div class="server-status-card" style="background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="status-pulse" style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div>
+                        <div>
+                            <div style="font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px;">Soberanía Digital</div>
+                            <div style="font-size: 14px; font-weight: 600;">Servidor Privado: Activo</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 11px; opacity: 0.5;">Cifrado AES-256</div>
+                        <div style="font-size: 12px; color: var(--primary); font-weight: 700;">DEDICADO</div>
+                    </div>
+                </div>
+
                 <div class="section-header">
                     <span>Turnos de hoy</span>
                     <span class="btn-small" onclick="app.navTo('turnos')">Ver todos</span>

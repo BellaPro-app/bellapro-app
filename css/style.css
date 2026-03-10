@@ -9,6 +9,24 @@
     --accent-gold: #D4AF37;
     --accent-glow: rgba(212, 175, 55, 0.4);
 
+    @keyframes statusPulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.status-pulse {
+    animation: statusPulse 2s infinite;
+}
+
+.server-status-card {
+    transition: var(--transition);
+}
+
+.server-status-card:hover {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(212, 175, 55, 0.2) !important;
+}
     /* SPECIALTY THEMES (Subtle adjustments for Luxe) */
     --color-hair: #D4AF37;
     --grad-hair: linear-gradient(135deg, #d4af37 0%, #a67c00 100%);
