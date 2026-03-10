@@ -1358,11 +1358,19 @@ window.onload = () => {
                 const newWorker = reg.installing;
                 newWorker.addEventListener('statechange', () => {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        // Hay una actualización lista
+                        // Hay una actualización lista en segundo plano
                         app.showUpdateToast();
                     }
                 });
             });
         }).catch(e => console.error('BellaPro: SW Error', e));
+
+        // Forzar recarga cuando el nuevo SW tome el control (Soluciona problemas de cache)
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            refreshing = true;
+            window.location.reload();
+        });
     }
 };
