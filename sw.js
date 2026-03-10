@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bellapro-v10';
+const CACHE_NAME = 'bellapro-v11';
 const ASSETS = [
     './',
     './app.html',
@@ -31,7 +31,7 @@ self.addEventListener('activate', (e) => {
             return Promise.all(keys.map(key => {
                 if (key !== CACHE_NAME) return caches.delete(key);
             }));
-        })
+        }).then(() => self.clients.claim())
     );
 });
 
