@@ -132,6 +132,68 @@ exports.processProvisioningTask = functions.https.onRequest(async (req, res) => 
 });
 
 /**
+ * Provisión Manual Administrativa (Bypass)
+ * Permite dar acceso gratuito a colaboradores o familiares eligiendo especialidad.
+ */
+exports.adminProvisionUser = functions.https.onRequest(async (req, res) => {
+    const { email, role, specialty, adminKey } = req.body;
+    const expectedKey = functions.config().admin ? functions.config().admin.key : "DEV_ADMIN_KEY";
+
+    if (adminKey !== expectedKey) {
+        logger.warn("Unauthorized manual provisioning attempt", { email });
+        return res.status(401).send("Unauthorized");
+    }
+
+    if (!email || !specialty) {
+        return res.status(400).send("Missing email or specialty");
+    }
+
+    try {
+        const tenantId = `tnt_manual_${crypto.randomBytes(3).toString("hex")}`;
+        const batch = db.batch();
+
+        // 1. Crear el Tenant con la especialidad bloqueada
+        const tenantRef = db.collection('tenants').doc(tenantId);
+        batch.set(tenantRef, {
+            owner: email,
+            status: "active",
+            specialty: specialty, // 'hair', 'nails', 'spa'
+            provisionedAt: admin.firestore.FieldValue.serverTimestamp(),
+            config: { encryption: "AES-256-GCM", manual: true }
+        });
+
+        // 2. Aprobar el Email
+        const approvedRef = db.collection('approved_emails').doc(email);
+        batch.set(approvedRef, {
+            approved: true,
+            role: role || "PREMIUM",
+            tenantId: tenantId,
+            specialty: specialty,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        // 3. Vincular si el usuario ya existe
+        const userSnapshot = await db.collection('users').where('config.email', '==', email).limit(1).get();
+        if (!userSnapshot.empty) {
+            batch.update(userSnapshot.docs[0].ref, {
+                "config.isApproved": true,
+                "config.role": role || "PREMIUM",
+                "config.tenantId": tenantId,
+                "config.licenseType": specialty
+            });
+        }
+
+        await batch.commit();
+        logger.info("Manual Provisioning Successful", { email, tenantId, specialty });
+        res.status(200).send({ status: 'success', tenantId });
+
+    } catch (error) {
+        logger.error("Manual Provisioning Failed", { email, error: error.message });
+        res.status(500).send("Internal Error");
+    }
+});
+
+/**
  * Backup Diario Automatizado de Firestore hacia GCS
  */
 exports.scheduledFirestoreBackup = functions.pubsub
