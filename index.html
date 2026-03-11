@@ -1515,6 +1515,36 @@
             document.getElementById('staff-modal').style.display = 'none';
         }
     </script>
+    <!-- Firebase for Auth Guard -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script>
+        (function() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyCCFp95pg8x4YAJ4prASufTIywvdbHksPE",
+                authDomain: "bellapro-d297f.firebaseapp.com",
+                projectId: "bellapro-d297f",
+                storageBucket: "bellapro-d297f.firebasestorage.app",
+                messagingSenderId: "634527697988",
+                appId: "1:634527697988:web:f2de382cf883b906dfc011"
+            };
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+            firebase.auth().onAuthStateChanged(user => {
+                if (user) {
+                    const specialty = localStorage.getItem('bp_specialty') || 'hair';
+                    const dashboard = {
+                        'hair': 'app.html',
+                        'nails': 'nails.html',
+                        'spa': 'spa.html',
+                        'master': 'app.html'
+                    }[specialty] || 'app.html';
+                    console.log("BellaPro: Authenticated user detected, redirecting to", dashboard);
+                    window.location.href = dashboard;
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>

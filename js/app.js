@@ -177,6 +177,8 @@ const app = {
                     }
 
                     console.log(`RBAC Active: Role=${userRole} | Tenant=${this.tenantId}`);
+                    // PERSISTENCIA: Guardar especialidad para redirección automática desde landing
+                    localStorage.setItem('bp_specialty', this.licenseType);
 
                     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
                     const authorizedPages = {
