@@ -36,6 +36,11 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+    // EXCLUIR endpoints de sesión dinámica para evitar caché corrupta en iOS
+    if (e.request.url.includes('createSessionCookie') || e.request.url.includes('restoreSessionData')) {
+        return; 
+    }
+
     e.respondWith(
         caches.match(e.request).then(response => {
             return response || fetch(e.request).catch(() => {

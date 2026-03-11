@@ -71,6 +71,9 @@ const app = {
     async init() {
         console.log("BellaPro: Initializing...");
 
+        // Lógica de recuperación proactiva para iOS (Safari Storage Purge)
+        await this.checkAndRestoreCache();
+
         // Lógica de limpieza forzada de caché por versión
         const currentVersion = localStorage.getItem('bp_app_version');
         if (currentVersion !== this.VERSION) {
@@ -163,6 +166,19 @@ const app = {
                             this.showPendingActivation();
                             return;
                         }
+                    }
+
+                    // ASEGURAR COOKIE DE SESIÓN (Persistencia en iOS)
+                    try {
+                        const idToken = await user.getIdToken();
+                        await fetch('/createSessionCookie', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ idToken })
+                        });
+                        console.log("BellaPro: Cookie de sesión actualizada.");
+                    } catch (cookieErr) {
+                        console.warn("BellaPro: Error al crear cookie de sesión (no crítico):", cookieErr);
                     }
 
                     // License & RBAC Enforcement (Soberanía Total)
@@ -276,6 +292,29 @@ const app = {
     toggleLoading(show) {
         // Implementation for a global loader if element exists
         console.log(`BellaPro: Loading ${show ? 'Start' : 'End'}`);
+    },
+
+    /**
+     * Recupera datos si LocalStorage fue purgado (iOS 7-day rule)
+     */
+    async checkAndRestoreCache() {
+        const isPurged = !localStorage.getItem('bp_specialty');
+        // Solo intentamos restaurar si NO hay datos pero PODRÍA haber una cookie
+        if (isPurged) {
+            console.warn("BellaPro: LocalStorage vacío. Intentando recuperación proactiva...");
+            try {
+                const res = await fetch('/restoreSessionData');
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('bp_specialty', data.specialty);
+                    localStorage.setItem('bp_salon_name', data.name);
+                    localStorage.setItem('bp_user_email', data.email);
+                    console.log("BellaPro: Estado restaurado desde sesión segura.");
+                }
+            } catch (e) {
+                console.log("BellaPro: No se encontró sesión previa para restaurar.");
+            }
+        }
     },
 
     authMode: 'login', // 'login' o 'register'

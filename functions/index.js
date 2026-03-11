@@ -97,3 +97,49 @@ exports.hotmartWebhook = functions.https.onRequest(async (req, res) => {
         return res.status(500).send("Infrastructure Orchestration Error");
     }
 });
+
+/**
+ * Crea una Cookie de Sesión HTTP-Only persistente (Survives iOS Storage Purge)
+ * Requiere un idToken de Firebase Auth.
+ */
+exports.createSessionCookie = functions.https.onRequest(async (req, res) => {
+    const idToken = req.body.idToken;
+    const expiresIn = 60 * 60 * 24 * 14 * 1000; // 14 días
+
+    try {
+        const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn });
+        const options = { maxAge: expiresIn, httpOnly: true, secure: true, sameSite: 'None' };
+        res.cookie('__session', sessionCookie, options);
+        res.status(200).send({ status: 'success' });
+    } catch (error) {
+        console.error("ERROR: createSessionCookie failed:", error);
+        res.status(401).send("Unauthorized");
+    }
+});
+
+/**
+ * Restaura los datos críticos del usuario si LocalStorage fue purgado.
+ * Valida la cookie __session.
+ */
+exports.restoreSessionData = functions.https.onRequest(async (req, res) => {
+    const sessionCookie = req.cookies.__session || '';
+    
+    try {
+        const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true);
+        const userDoc = await db.collection('users').doc(decodedClaims.uid).get();
+        
+        if (!userDoc.exists) {
+            return res.status(404).send("User not found");
+        }
+
+        const userData = userDoc.data();
+        res.status(200).send({
+            specialty: userData.config.licenseType || 'hair',
+            name: userData.config.name,
+            email: userData.config.email
+        });
+    } catch (error) {
+        console.error("ERROR: restoreSessionData failed:", error);
+        res.status(401).send("Unauthorized");
+    }
+});

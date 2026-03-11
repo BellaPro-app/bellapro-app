@@ -63,6 +63,16 @@
                     }
                 ]
             }
+        ],
+        "rewrites": [
+            {
+                "source": "/createSessionCookie",
+                "function": "createSessionCookie"
+            },
+            {
+                "source": "/restoreSessionData",
+                "function": "restoreSessionData"
+            }
         ]
     },
     "functions": {
