@@ -26,12 +26,6 @@ const app = {
         return 'hair'; // Default
     },
 
-    // PANEL MAESTRO: Solo visible para el dueño (Seguridad Nivel Banco)
-    ADMIN_EMAIL: 'sinfield.fabian@gmail.com',
-
-    get isAdmin() {
-        return this.user && this.user.email === this.ADMIN_EMAIL;
-    },
 
     applySpecialtyTheme() {
         const type = this.specialty;
@@ -227,7 +221,6 @@ const app = {
                     this.events();
                     this.render();
                     this.listenReservas();
-                    this.checkAdminPrivileges();
                     this.pullCloud();
                 } catch (e) {
                     console.error("BellaPro Setup Error:", e);
@@ -1375,51 +1368,6 @@ const app = {
         }, 3000);
     },
 
-    checkAdminPrivileges() {
-        const adminSection = document.getElementById('admin-panel-section');
-        if (this.isAdmin && adminSection) {
-            adminSection.style.display = 'block';
-            console.log("BellaPro Admin: Panel Maestro Activado.");
-        }
-    },
-
-    async manualActivateLicense() {
-        const email = document.getElementById('admin-activate-email').value.trim().toLowerCase();
-        const specialty = document.getElementById('admin-activate-specialty').value;
-        if (!email) return alert("Ingresa un email válido");
-
-        const btn = document.querySelector('.btn-admin-activate');
-        const oldText = btn.innerText;
-        btn.innerText = "Procesando...";
-        btn.disabled = true;
-
-        try {
-            await this.dbCloud.collection('approved_emails').doc(email).set({
-                approved: true,
-                specialty: specialty,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                source: 'Manual Activation (Master Panel)'
-            });
-            // Update user config if they already exist
-            const userRef = this.dbCloud.collection('users').where('config.email', '==', email);
-            const userSnap = await userRef.get();
-            if (!userSnap.empty) {
-                const uid = userSnap.docs[0].id;
-                await this.dbCloud.collection('users').doc(uid).update({
-                    'config.isApproved': true,
-                    'config.licenseType': specialty
-                });
-            }
-            alert(`¡Éxito! El email ${email} ha sido activado para ${specialty}.`);
-            document.getElementById('admin-activate-email').value = '';
-        } catch (err) {
-            console.error(err);
-            alert("Error al activar: " + err.message);
-        } finally {
-            btn.innerText = oldText;
-            btn.disabled = false;
-        }
-    }
 };
 
 window.onload = () => {
