@@ -41,13 +41,24 @@ self.addEventListener('fetch', (e) => {
         return; 
     }
 
+    // Estrategia Network First para HTML y Navegación
+    if (e.request.mode === 'navigate' || e.request.headers.get('accept').includes('text/html')) {
+        e.respondWith(
+            fetch(e.request)
+                .then(response => {
+                    const copy = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(e.request, copy));
+                    return response;
+                })
+                .catch(() => caches.match(e.request) || caches.match('./app.html'))
+        );
+        return;
+    }
+
+    // Estrategia Cache First para Assets (CSS, JS, Imágenes)
     e.respondWith(
         caches.match(e.request).then(response => {
-            return response || fetch(e.request).catch(() => {
-                if (e.request.mode === 'navigate') {
-                    return caches.match('./app.html');
-                }
-            });
+            return response || fetch(e.request);
         })
     );
 });
