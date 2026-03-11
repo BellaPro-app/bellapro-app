@@ -209,10 +209,16 @@ const app = {
                         return;
                     }
 
+                    const fallbacks = { 'hair': 'app.html', 'nails': 'nails.html', 'spa': 'spa.html', 'master': 'app.html' };
                     if (!isBasePage && !allowedForUser.includes(currentPage)) {
-                        const fallbacks = { 'hair': 'app.html', 'nails': 'nails.html', 'spa': 'spa.html', 'master': 'app.html' };
                         window.location.href = fallbacks[this.licenseType] || 'app.html';
                         return;
+                    }
+                    
+                    // Si el usuario está en index.html pero tiene licencia, mandarlo a su app
+                    if (isBasePage && currentPage !== 'reserva.html' && currentPage !== 'manual-usuario.html') {
+                         window.location.href = fallbacks[this.licenseType] || 'app.html';
+                         return;
                     }
 
                     this.showApp();
@@ -313,17 +319,20 @@ const app = {
     authMode: 'login', // 'login' o 'register'
 
     toggleAuthMode() {
-        // MODO BLOQUEADO: Solo se permite Login. Registro vía Hotmart Webhook únicamente.
-        this.authMode = 'login';
+        this.authMode = this.authMode === 'login' ? 'register' : 'login';
         const btn = document.getElementById('btn-auth');
         const toggle = document.getElementById('auth-toggle');
-        const forgot = document.getElementById('forgot-pass-link');
         const title = document.querySelector('#auth-container p');
 
-        btn.innerText = "Entrar al Salón";
-        toggle.style.display = 'none'; // Ocultar link de registro
-        forgot.style.display = 'inline-block';
-        if (title) title.innerText = "Gestión Premium para tu Salón. Ingresa para continuar.";
+        if (this.authMode === 'login') {
+            btn.innerText = "Entrar al Salón";
+            toggle.innerText = "¿Eres nuevo? Regístrate aquí";
+            if (title) title.innerText = "Gestión Premium para tu Salón. Ingresa para continuar.";
+        } else {
+            btn.innerText = "Crear mi Cuenta Profesional";
+            toggle.innerText = "Ya tengo cuenta, iniciar sesión";
+            if (title) title.innerText = "Elige tu propia contraseña para empezar a usar BellaPro.";
+        }
     },
 
     async handleAuthAction() {
