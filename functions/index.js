@@ -137,7 +137,8 @@ exports.processProvisioningTask = functions.https.onRequest(async (req, res) => 
  */
 exports.adminProvisionUser = functions.https.onRequest(async (req, res) => {
     const { email, role, specialty, adminKey } = req.body;
-    const expectedKey = functions.config().admin ? functions.config().admin.key : "DEV_ADMIN_KEY";
+    // Fallback por defecto para que el usuario no necesite configurar la CLI
+    const expectedKey = functions.config().admin ? functions.config().admin.key : "bellapro_admin_2026";
 
     if (adminKey !== expectedKey) {
         logger.warn("Unauthorized manual provisioning attempt", { email });
