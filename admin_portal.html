@@ -138,24 +138,26 @@
             statusDiv.innerText = 'Procesando...';
 
             try {
-                // He configurado la URL y la clave por defecto para ti
+                // He corregido el ID del proyecto a 'bellapro-d297f'
                 const response = await fetch('https://us-central1-bellapro-d297f.cloudfunctions.net/adminProvisionUser', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors', // Asegurar modo CORS
                     body: JSON.stringify({ email, specialty, adminKey, role: 'PREMIUM' })
                 });
 
                 if (response.ok) {
+                    const data = await response.json();
                     statusDiv.className = 'status success';
-                    statusDiv.innerText = '¡Éxito! Usuario provisionado correctamente.';
+                    statusDiv.innerText = '¡Éxito! Usuario ' + email + ' activado en ' + specialty;
                 } else {
                     const error = await response.text();
                     statusDiv.className = 'status error';
-                    statusDiv.innerText = 'Error: ' + error;
+                    statusDiv.innerText = 'Error del Servidor: ' + error + ' (Verifica si desplegaste las funciones)';
                 }
             } catch (err) {
                 statusDiv.className = 'status error';
-                statusDiv.innerText = 'Error de conexión: ' + err.message;
+                statusDiv.innerText = 'Error de conexión: No se pudo contactar al servidor. ¿Desplegaste las funciones de Firebase?';
             }
         }
     </script>
