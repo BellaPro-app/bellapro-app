@@ -1,639 +1,412 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual BellaPro | Centro de Ayuda</title>
-    <meta name="description" content="Guía completa sobre cómo usar BellaPro para gestionar tu salón de belleza.">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bellapro.site/manual-usuario.html">
-    <meta property="og:title" content="BellaPro | Manual de Usuario">
-    <meta property="og:description"
-        content="Aprende a usar todas las funciones de BellaPro con nuestro manual detallado.">
-    <meta property="og:image" content="https://bellapro.site/assets/logo/logo.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <title>BellaPro - Manual de Usuario Pro v3.3.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="shortcut icon" href="assets/logo/logo.png" type="image/x-icon">
     <style>
         :root {
-            --bg-color: #0a0506;
-            --surface-color: #1a1112;
-            --surface-light: #251a1b;
-            --primary-color: #EC4899;
-            --primary-gradient: linear-gradient(135deg, #EC4899 0%, #db271d 100%);
-            --text-primary: #ffffff;
-            --text-secondary: #fce7f3;
-            --border-radius: 24px;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #f43f5e;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --glass: rgba(30, 41, 59, 0.7);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
+        /* Glassmorphism Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 300px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            z-index: 100;
             display: flex;
             flex-direction: column;
         }
 
-        .container {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            flex: 1;
-            /* Esto empuja el footer hacia abajo */
-        }
-
-        /* Hero Header */
-        .hero {
+        .logo-container {
+            margin-bottom: 3rem;
             text-align: center;
-            padding: 80px 20px;
-            background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.15), transparent);
-            border-radius: var(--border-radius);
-            margin-bottom: 60px;
-            border: var(--glass-border);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-
-
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 48px;
+        .logo-container h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #818cf8, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -1px;
-            color: var(--text-primary);
         }
 
-        .subtitle {
-            color: var(--primary-color);
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        /* Sidebar / TOC */
-        .manual-grid {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 40px;
-        }
-
-        .toc {
-            position: sticky;
-            top: 40px;
-            height: fit-content;
-        }
-
-        .toc h4 {
-            margin-bottom: 20px;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
-        .toc ul {
+        .nav-links {
             list-style: none;
+            overflow-y: auto;
         }
 
-        .toc li {
-            margin-bottom: 12px;
+        .nav-links li {
+            margin-bottom: 0.5rem;
         }
 
-        .toc a {
-            color: var(--text-secondary);
+        .nav-links a {
+            color: var(--text-muted);
             text-decoration: none;
-            transition: 0.3s;
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding-left: 1.5rem;
+        }
+
+        .nav-links a.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            padding: 4rem;
+            max-width: 1200px;
+        }
+
+        .hero {
+            padding: 4rem 0;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 4rem;
+        }
+
+        .hero h2 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 800px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 1rem;
+            border-radius: 99px;
+            background: rgba(244, 63, 94, 0.1);
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+
+        section {
+            margin-bottom: 6rem;
+        }
+
+        h3 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: white;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 15px;
+            gap: 1rem;
         }
 
-        .toc a:hover {
-            color: var(--primary-color);
-            transform: translateX(5px);
+        h3 i {
+            color: var(--primary);
         }
 
-        /* Content */
-        .content section {
-            background: var(--surface-color);
-            padding: 40px;
-            border-radius: var(--border-radius);
-            margin-bottom: 40px;
-            border: var(--glass-border);
-            transition: 0.3s;
-        }
-
-        .content section:hover {
-            border-color: rgba(255, 45, 85, 0.3);
-        }
-
-        h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        h2 i {
-            color: var(--primary-color);
-        }
-
-        p {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            font-size: 16px;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
         .feature-card {
-            background: var(--surface-light);
-            padding: 24px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease;
         }
 
-        .feature-card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: var(--text-primary);
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
         }
 
-        .step {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 25px;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 20px;
-            border-radius: 16px;
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
         }
 
-        .step-num {
-            min-width: 36px;
-            height: 36px;
-            background: var(--primary-gradient);
+        .feature-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: steps;
+        }
+
+        .step-list li {
+            position: relative;
+            padding-left: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .step-list li::before {
+            counter-increment: steps;
+            content: counter(steps);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3rem;
+            height: 3rem;
+            background: var(--primary);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            box-shadow: 0 5px 15px rgba(255, 45, 85, 0.3);
+            font-weight: 700;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
         }
 
-        .pro-tip {
-            background: rgba(197, 160, 89, 0.1);
-            padding: 24px;
+        .screenshot-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #020617;
             border-radius: 20px;
-            margin-top: 30px;
-            border: 1px solid rgba(197, 160, 89, 0.2);
+            margin: 2rem 0;
             display: flex;
-            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border: 2px dashed var(--border);
+            position: relative;
+            overflow: hidden;
         }
 
-        .pro-tip i {
-            color: #c5a059;
-            font-size: 20px;
+        .screenshot-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .screenshot-box {
-            background: #000;
-            border-radius: 16px;
-            padding: 40px;
-            text-align: center;
-            margin-top: 20px;
-            border: 2px dashed rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary);
-            font-size: 14px;
+        .tech-specs {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 3rem;
+            border-radius: 32px;
+            margin-top: 4rem;
         }
 
-        .screenshot-box i {
-            font-size: 48px;
-            display: block;
-            margin-bottom: 15px;
-            opacity: 0.3;
-        }
-
-        footer {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            border-top: var(--glass-border);
-        }
-
+        /* Print Mode Override */
         @media print {
-            @page {
-                size: A4;
-                margin: 0;
-            }
-
-            body {
-                background-color: #0a0506 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .container {
-                max-width: 100% !important;
-                width: 100% !important;
-                padding: 10mm !important;
-                /* Margen de seguridad para PDF */
-                margin: 0 !important;
-            }
-
-            .manual-grid {
-                display: block !important;
-                width: 100% !important;
-            }
-
-            .toc {
-                display: none !important;
-            }
-
-            .content {
-                width: 100% !important;
-            }
-
-            .content section {
-                width: 100% !important;
-                break-inside: avoid;
-                margin-bottom: 30px !important;
-                padding: 40px !important;
-                border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            }
-
-            .hero {
-                padding: 40px 20px !important;
-                margin-bottom: 30px !important;
-                break-after: avoid;
-            }
-
-            footer {
-                padding: 20px !important;
-                break-before: avoid;
-            }
-
-            img {
-                max-width: 100% !important;
-            }
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 2rem; }
+            body { background: white; color: black; }
+            .hero h2 { color: black; }
+            .feature-card, section { break-inside: avoid; }
         }
 
-        @media (max-width: 992px) {
-            .manual-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .toc {
-                display: none;
-            }
-
-            h1 {
-                font-size: 36px;
-            }
-        }
-
-        /* Estilos de Impresión (PDF) - Mantenemos el tema oscuro */
-        @media print {
-            @page {
-                margin: 0;
-            }
-
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            body {
-                background-color: var(--bg-color) !important;
-                color: var(--text-primary) !important;
-                padding: 10mm !important;
-                margin: 0 !important;
-                display: block !important;
-                /* Reset para impresión */
-            }
-
-            .container {
-                max-width: 100% !important;
-                width: 100% !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
-            .hero {
-                background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.15), transparent) !important;
-                border: var(--glass-border) !important;
-                padding: 40px 20px !important;
-                /* Menos padding para evitar cortes */
-            }
-
-            .content section {
-                background: var(--surface-color) !important;
-                border: var(--glass-border) !important;
-                page-break-inside: avoid;
-            }
-
-            h2,
-            h3,
-            strong {
-                color: var(--text-primary) !important;
-            }
-
-            p,
-            li {
-                color: var(--text-secondary) !important;
-            }
-
-            .feature-card,
-            .step,
-            .pro-tip,
-            .screenshot-box {
-                background: rgba(255, 255, 255, 0.02) !important;
-                border: 1px solid rgba(255, 255, 255, 0.05) !important;
-                page-break-inside: avoid;
-            }
-
-            .pro-tip {
-                background: rgba(197, 160, 89, 0.1) !important;
-                border: 1px solid rgba(197, 160, 89, 0.2) !important;
-            }
-
-            .step-num {
-                background: var(--primary-gradient) !important;
-                color: white !important;
-            }
-
-            .toc {
-                display: none !important;
-            }
-
-            .manual-grid {
-                display: block !important;
-            }
-
-            footer {
-                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-                margin-top: 50px !important;
-                page-break-after: always;
-            }
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; padding: 2rem; }
+            .hero h2 { font-size: 3rem; }
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <!-- HERO -->
-        <header class="hero">
-            <img src="assets/logo/logo.png" alt="BellaPro Logo"
-                style="width: 150px; height: auto; margin-bottom: 20px;">
-            <p class="subtitle">Guía del Estilista Pro | Éxito en tu Salón</p>
+
+    <aside class="sidebar">
+        <div class="logo-container">
+            <h1>BellaPro <small style="font-size: 1rem; color: var(--text-muted);">SaaS</small></h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#bienvenida">Bienvenida</a></li>
+            <li><a href="#especialidades">Especialidades</a></li>
+            <li><a href="#pwa">Instalación PWA</a></li>
+            <li><a href="#agenda">Agenda Inteligente</a></li>
+            <li><a href="#servicios">Servicios Dinámicos</a></li>
+            <li><a href="#finanzas">Panel Financiero</a></li>
+            <li><a href="#equipo">Equipo Pro</a></li>
+            <li><a href="#config">Configuración</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <header id="bienvenida" class="hero">
+            <span class="badge">Novedades v3.3.1</span>
+            <h2>Domina el éxito de tu salón con BellaPro.</h2>
+            <p>Bienvenido a la nueva era de la gestión estética. BellaPro no es solo un software; es tu socio estratégico para escalar tu negocio de belleza desde 0 hasta el éxito profesional.</p>
         </header>
 
-        <div class="manual-grid">
-            <!-- NAV lateral (desktop) -->
-            <aside class="toc">
-                <h4>CONTENIDO</h4>
-                <ul>
-                    <li><a href="#instalacion"><i class="fas fa-mobile-alt"></i> Instalación PWA</a></li>
-                    <li><a href="#seguridad"><i class="fas fa-shield-alt"></i> Seguridad Cloud</a></li>
-                    <li><a href="#agenda"><i class="fas fa-calendar-check"></i> Gestión de Agenda</a></li>
-                    <li><a href="#whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp & Tickets</a></li>
-                    <li><a href="#finanzas"><i class="fas fa-chart-pie"></i> Control de Caja</a></li>
-                    <li><a href="#servicios"><i class="fas fa-concierge-bell"></i> Gestión de Servicios</a></li>
-                    <li><a href="#stock"><i class="fas fa-boxes"></i> Inventario Pro</a></li>
-                    <li><a href="#reservas-online"><i class="fas fa-globe"></i> Reservas Online</a></li>
-                    <li><a href="#equipo"><i class="fas fa-users-cog"></i> Gestión de Equipo</a></li>
-                    <li><a href="#backup"><i class="fas fa-cloud-download-alt"></i> Respaldos</a></li>
-                </ul>
-            </aside>
+        <!-- Especialidades Section -->
+        <section id="especialidades">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Tres Experiencias, Un Sistema</h3>
+            <p>Hemos rediseñado BellaPro para adaptarse quirúrgicamente a tu estilo de trabajo. Elige el tema que mejor te identifique:</p>
+            <div class="grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-scissors"></i>
+                    <h4>Peluquería (Classic)</h4>
+                    <p>Enfocado en cortes, tintura y tratamientos capilares. Interfaz elegante y limpia.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-hand-sparkles"></i>
+                    <h4>Nails Studio (Vibrant)</h4>
+                    <p>Diseñado para especialistas en manicura. Colores pop y flujo optimizado para servicios rápidos.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-spa"></i>
+                    <h4>Wellness & Spa (Calm)</h4>
+                    <p>Tonos tierra y atmósfera relajante para centros de estética, masajes y depilación.</p>
+                </div>
+            </div>
+            <div class="screenshot-placeholder" id="img-especialidades">
+                <img src="assets/especialidades.png" alt="Dashboard de Especialidades">
+            </div>
+        </section>
 
-            <!-- CONTENIDO PRINCIPAL -->
-            <main class="content">
-                <section id="instalacion">
-                    <h2><i class="fas fa-rocket"></i> Instalación Instantánea</h2>
-                    <p>BellaPro usa tecnología PWA. No necesitas descargar nada de la App Store; se instala directamente
-                        desde tu navegador.</p>
+        <!-- PWA Section -->
+        <section id="pwa">
+            <h3><i class="fa-solid fa-mobile-screen-button"></i> Tu App en todas partes</h3>
+            <p>BellaPro es una Progressive Web App (PWA). No necesitas descargar nada de la Play Store. Instálala en segundos:</p>
+            <ul class="step-list">
+                <li>
+                    <h4>Desde el Navegador (Chrome/Safari)</h4>
+                    <p>Haz clic en el icono de "Compartir" o los tres puntos y selecciona <strong>"Instalar aplicación"</strong> o <strong>"Añadir a pantalla de inicio"</strong>.</p>
+                </li>
+                <li>
+                    <h4>Sincronización Total</h4>
+                    <p>Todos tus datos se sincronizan instantáneamente. Empieza una reserva en la PC y termínala en tu móvil mientras caminas por el salón.</p>
+                </li>
+            </ul>
+        </section>
 
-                    <div class="feature-card">
-                        <h3>En tu PC (Chrome / Edge)</h3>
-                        <div class="step">
-                            <div class="step-num">1</div>
-                            <div>Haz clic en el icono de la computadora con flecha en la barra de direcciones.</div>
-                        </div>
-                        <div class="step">
-                            <div class="step-num">2</div>
-                            <div>Selecciona <strong>"Instalar"</strong> para crear un acceso directo en tu escritorio.
-                            </div>
-                        </div>
-                        <div class="screenshot-box" style="padding: 10px; border-style: solid; margin-top: 15px;">
-                            <img src="assets/manual/Inst%20en%20PC.png" alt="Instalación en PC"
-                                style="width: 100%; max-width: 800px; border-radius: 12px; display: block; margin: 0 auto;">
-                        </div>
-                    </div>
+        <!-- Agenda Section -->
+        <section id="agenda">
+            <h3><i class="fa-solid fa-calendar-check"></i> Agenda Inteligente</h3>
+            <p>El corazón de tu negocio. Ahora más rápida y visual que nunca.</p>
+            <div class="feature-card">
+                <h4>Filtro de Estado Instantáneo</h4>
+                <p>Usa los botones superiores (chips) para filtrar rápidamente: <strong>Pendientes</strong>, <strong>Confirmadas</strong>, <strong>Canceladas</strong> o <strong>Finalizadas</strong>. Colores semánticos para decisiones rápidas.</p>
+            </div>
+            <div class="screenshot-placeholder" id="img-agenda">
+                <img src="assets/agenda.png" alt="Agenda con Chips de Filtro">
+            </div>
+        </section>
 
-                    <div class="feature-card">
-                        <h3>En tu Smartphone</h3>
-                        <div class="step">
-                            <div class="step-num">A</div>
-                            <div><strong>Android:</strong> Menú `⋮` > "Añadir a pantalla de inicio".</div>
-                        </div>
-                        <div class="step">
-                            <div class="step-num">i</div>
-                            <div><strong>iPhone:</strong> Toca "Compartir" > "Añadir a pantalla de inicio".</div>
-                        </div>
-                        <div
-                            style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
-                            <div class="screenshot-box"
-                                style="padding: 10px; border-style: solid; flex: 1; min-width: 250px; max-width: 350px;">
-                                <p style="font-size: 12px; margin-bottom: 10px;">Paso 1: Abrir menú</p>
-                                <img src="assets/manual/Inst%20en%20celular%20paso%201.png" alt="Celular Paso 1"
-                                    style="width: 100%; border-radius: 12px; display: block;">
-                            </div>
-                            <div class="screenshot-box"
-                                style="padding: 10px; border-style: solid; flex: 1; min-width: 250px; max-width: 350px;">
-                                <p style="font-size: 12px; margin-bottom: 10px;">Paso 2: Instalar App</p>
-                                <img src="assets/manual/Inst%20en%20celular%20paso%202.png" alt="Celular Paso 2"
-                                    style="width: 100%; border-radius: 12px; display: block;">
-                            </div>
-                        </div>
-                    </div>
-                </section>
+        <!-- Servicios Section -->
+        <section id="servicios">
+            <h3><i class="fa-solid fa-list-check"></i> Servicios 100% Dinámicos</h3>
+            <p>Olvídate de listas de precios estáticas. Crea un catálogo profesional en minutos.</p>
+            <div class="grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-plus"></i>
+                    <h4>Creación Express</h4>
+                    <p>Añade nombre, duración, precio y el sistema calculará automáticamente los huecos en tu agenda.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <h4>Edición en Tiempo Real</h4>
+                    <p>Cambia precios o descripciones y se actualizarán instantáneamente para todos tus colaboradores.</p>
+                </div>
+            </div>
+        </section>
 
-                <section id="seguridad">
-                    <h2><i class="fas fa-user-lock"></i> Seguridad & Acceso</h2>
-                    <p>Tus datos son privados y están cifrados mediante Google Firebase.</p>
-                    <div class="pro-tip">
-                        <i class="fas fa-crown"></i>
-                        <div>
-                            <strong>Acceso Exclusivo:</strong> Tu cuenta es única para tu salón. Nadie externo puede ver
-                            tus finanzas o base de clientes aunque conozca el enlace. Tu Licencia Vitalicia garantiza
-                            acceso permanente sin suscripciones.
-                        </div>
-                    </div>
-                </section>
+        <!-- Finanzas Section -->
+        <section id="finanzas">
+            <h3><i class="fa-solid fa-chart-line"></i> Control Financiero Total</h3>
+            <p>No más fugas de dinero. Monitorea cada peso que entra y sale de tu salón.</p>
+            <div class="tech-specs">
+                <h4 style="margin-bottom: 1rem;"><i class="fa-solid fa-filter"></i> Filtros de Fecha Avanzados</h4>
+                <p>Analiza tu rentabilidad por <strong>Hoy</strong>, <strong>Esta Semana</strong>, <strong>Este Mes</strong> o rangos personalizados. El gráfico dinámico te mostrará la curva de crecimiento de tu empresa.</p>
+            </div>
+            <div class="screenshot-placeholder" id="img-finanzas">
+                <img src="assets/finanzas.png" alt="Gráfico de Ingresos BellaPro">
+            </div>
+        </section>
 
-                <section id="agenda">
-                    <h2><i class="fas fa-calendar-alt"></i> Agenda Inteligente</h2>
-                    <p>El sistema de turnos está diseñado para ser rápido. Puedes ver tus turnos del día en la pantalla
-                        de inicio o la agenda completa en la sección Turnos.</p>
-                    <div class="step">
-                        <div class="step-num">+</div>
-                        <div><strong>Nuevo Turno:</strong> Selecciona cliente, el servicio pre-cargado, elige día y hora
-                            en el selector visual y asigna el valor.</div>
-                    </div>
-                    <div class="screenshot-box" style="padding: 10px; border-style: solid;">
-                        <img src="assets/manual/agenda.png" alt="Captura de Agenda BellaPro"
-                            style="width: 100%; border-radius: 12px; display: block;">
-                    </div>
-                </section>
+        <!-- Equipo Section -->
+        <section id="equipo">
+            <h3><i class="fa-solid fa-users-gear"></i> Gestión de Colaboradores</h3>
+            <p>BellaPro crece contigo. Gestiona múltiples estilistas bajo una misma cuenta profesional.</p>
+            <div class="feature-card">
+                <h4>Perfiles Individuales</h4>
+                <p>Asigna servicios específicos a cada profesional y lleva una agenda separada para cada uno, integrando todo en el panel principal del salón.</p>
+            </div>
+        </section>
 
-                <section id="whatsapp">
-                    <h2><i class="fab fa-whatsapp"></i> Comunicación Directa</h2>
-                    <p>Automatizamos los mensajes comunes para que ahorres tiempo y reduzcas ausencias.</p>
-                    <div class="feature-card">
-                        <h3>Recordatorios</h3>
-                        <p>Toca el logo de WhatsApp en cualquier turno para enviar un mensaje con la fecha, hora y
-                            servicio a la clienta.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Tickets Digitales</h3>
-                        <p>Envía un comprobante profesional por WhatsApp al finalizar el trabajo, con el logo de tu
-                            salón y el detalle del costo.</p>
-                    </div>
-                </section>
+        <footer style="margin-top: 8rem; text-align: center; color: var(--text-muted); padding-bottom: 4rem;">
+            <p>&copy; 2026 BellaPro Technologies. El estándar de oro para el profesional de la belleza.</p>
+        </footer>
 
-                <section id="finanzas">
-                    <h2><i class="fas fa-hand-holding-usd"></i> Control Financiero</h2>
-                    <div class="feature-card">
-                        <h3>Filtro por Fechas</h3>
-                        <p>Además de los filtros rápidos (Día, Mes), puedes usar la opción <strong>Personalizado</strong> para ver el balance entre dos fechas específicas.</p>
-                    </div>
-                    <div class="screenshot-box" style="padding: 10px; border-style: solid;">
-                        <img src="assets/manual/finanzas.png" alt="Captura de Finanzas BellaPro"
-                            style="width: 100%; border-radius: 12px; display: block;">
-                    </div>
-                </section>
+    </main>
 
-                <section id="servicios">
-                    <h2><i class="fas fa-concierge-bell"></i> Gestión de Servicios</h2>
-                    <p>Personaliza tu catálogo de servicios para que sea más fácil agendar turnos y cobrar.</p>
-                    <div class="step">
-                        <div class="step-num">+</div>
-                        <div><strong>Crear / Editar:</strong> Ve a Ajustes > "Tus Servicios". Pulsa el botón "+" para uno nuevo o el icono del lápiz <i class="fas fa-edit"></i> para modificar uno existente.</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-num"><i class="fas fa-trash"></i></div>
-                        <div><strong>Eliminar:</strong> Pulsa el icono de la papelera roja para quitar servicios que ya no ofrezcas.</div>
-                    </div>
-                </section>
-
-                </section>
-
-                <section id="reservas-online">
-                    <h2><i class="fas fa-globe"></i> Reservas Online 24/7</h2>
-                    <p>Permite que tus clientes soliciten turnos directamente desde un enlace personalizado.</p>
-                    <div class="feature-card">
-                        <h3>Tu Link de Reserva</h3>
-                        <p>En la sección <strong>Ajustes</strong>, encontrarás el recuadro "Reservas Online" con tu
-                            enlace único. Cópialo y pégalo en tu biografía de Instagram o envíalo por WhatsApp.</p>
-                    </div>
-                    <div class="pro-tip">
-                        <i class="fas fa-magic"></i>
-                        <div>
-                            <strong>Identidad Automática:</strong> Al abrir el link, tus clientes verán automáticamente
-                            el nombre de tu salón y tu logo, brindando una experiencia 100% profesional.
-                        </div>
-                    </div>
-                </section>
-
-                <section id="equipo">
-                    <h2><i class="fas fa-users-cog"></i> Gestión de Equipo</h2>
-                    <p>Si tu salón cuenta con más de un profesional, BellaPro te permite organizar la agenda por
-                        colaborador.</p>
-                    <div class="step">
-                        <div class="step-num">1</div>
-                        <div><strong>Configuración:</strong> Ve a Ajustes > "Tu Equipo / Profesionales" y escribe los
-                            nombres separados por comas.</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-num">2</div>
-                        <div><strong>Uso:</strong> Al crear un turno manual o recibir una reserva, podrás seleccionar
-                            qué profesional realizará el servicio.</div>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Vista en Agenda</h3>
-                        <p>Los turnos asignados mostrarán el nombre del profesional entre paréntesis, facilitando la
-                            lectura rápida de la jornada.</p>
-                    </div>
-                </section>
-
-                <section id="backup">
-                    <h2><i class="fas fa-shield-alt"></i> Tus Datos, Tu Control</h2>
-                    <p>Aunque BellaPro sincroniza en la nube, siempre puedes tener una copia física de tus datos.</p>
-                    <div class="feature-card">
-                        <h3>Exportar</h3>
-                        <p>En Ajustes, usa "Exportar JSON" para descargar un archivo con todos tus clientes y turnos.
-                        </p>
-                        <div class="screenshot-box" style="padding: 10px; border-style: solid; margin-top: 15px;">
-                            <img src="assets/manual/respaldos.png" alt="Sección de Respaldos BellaPro"
-                                style="width: 100%; max-width: 800px; border-radius: 12px; display: block; margin: 0 auto;">
-                        </div>
-                    </div>
-                </section>
-            </main>
-        </div>
-    </div>
-
-    <footer
-        style="text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; opacity: 0.6;">
-        <p style="margin-bottom: 15px;">BellaPro Systems © 2026 | Desarrollado para la excelencia en estética</p>
-        <div style="display: flex; justify-content: center; gap: 20px;">
-            <a href="index.html" style="color: inherit; text-decoration: none;">Inicio</a>
-            <a href="legal.html#privacidad" style="color: inherit; text-decoration: none;">Privacidad</a>
-            <a href="legal.html#terminos" style="color: inherit; text-decoration: none;">Términos</a>
-            <a href="legal.html#eula" style="color: inherit; text-decoration: none;">Licencia</a>
-        </div>
-    </footer>
     <script>
-        // Forzar vista de impresión para capturas automáticas
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('print') === 'true') {
-            document.querySelector('.toc').style.display = 'none';
-            document.querySelector('.manual-grid').style.display = 'block';
-            document.querySelector('.container').style.maxWidth = '100%';
-            document.querySelector('.container').style.width = '100%';
-            document.querySelectorAll('.content section').forEach(s => {
-                s.style.width = '100%';
-                s.style.padding = '40px';
+        // Smooth scrolling active link highlight
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section, header');
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
             });
-        }
+
+            document.querySelectorAll('.nav-links a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
     </script>
 </body>
-
 </html>
