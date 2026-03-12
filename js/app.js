@@ -946,16 +946,30 @@ const app = {
 
     renderFinanzas() {
         const range = document.getElementById('fin-range')?.value || '7d';
+        const customControls = document.getElementById('fin-custom-controls');
         let startDate = new Date();
         const now = new Date();
+        let endDate = new Date();
         
+        if (customControls) {
+            customControls.style.display = (range === 'custom') ? 'flex' : 'none';
+        }
+
         if (range === '7d') startDate.setDate(now.getDate() - 6);
         else if (range === '30d') startDate.setDate(now.getDate() - 29);
         else if (range === 'month') startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         else if (range === 'year') startDate = new Date(now.getFullYear(), 0, 1);
+        else if (range === 'custom') {
+            const startVal = document.getElementById('fin-date-start').value;
+            const endVal = document.getElementById('fin-date-end').value;
+            if (startVal) startDate = new Date(startVal + 'T00:00:00');
+            if (endVal) endDate = new Date(endVal + 'T23:59:59');
+            else endDate = now;
+        }
 
         const startDateStr = startDate.toISOString().split('T')[0];
-        const filteredPagos = this.state.pagos.filter(p => p.dat >= startDateStr);
+        const endDateStr = endDate.toISOString().split('T')[0];
+        const filteredPagos = this.state.pagos.filter(p => p.dat >= startDateStr && p.dat <= endDateStr);
 
         const ingresos = filteredPagos.filter(p => !p.typ || p.typ === 'ingreso').reduce((acc, p) => acc + p.amt, 0);
         const gastos = filteredPagos.filter(p => p.typ === 'gasto').reduce((acc, p) => acc + p.amt, 0);
