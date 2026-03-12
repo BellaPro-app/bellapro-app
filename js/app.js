@@ -222,12 +222,8 @@ const app = {
                     await database.init();
                     await this.load();
 
-                    // MIGRACIÓN: Materializar servicios por defecto si la lista está vacía
-                    if (this.state.servicios.length === 0) {
-                        console.log("BellaPro: Detectada base de datos nueva o vacía. Materializando servicios...");
-                        await this.seedDefaultServices();
-                        await this.load(); // Recargar después de sembrar
-                    }
+                    // MIGRACIÓN/SEEDING: Asegurar que todos los servicios base existan en la DB del usuario
+                    await this.seedDefaultServices();
 
                     this.events();
                     this.render();
@@ -1450,6 +1446,9 @@ const app = {
     },
 
     async seedDefaultServices() {
+        // Obtenemos los servicios actuales para evitar duplicados exactos por nombre
+        const existingNames = this.state.servicios.map(s => s.nom.toLowerCase());
+        
         const type = this.specialty;
         const defaults = {
             hair: ['Corte Dama', 'Corte Caballero', 'Coloración', 'Mechas/Balayage', 'Peinado Evento', 'Baño de Crema', 'Alisado', 'Lavado & Secado'],
@@ -1457,16 +1456,25 @@ const app = {
             spa: ['Masaje Relajante', 'Masaje Descontracturante', 'Limpieza Facial Deep', 'Piedras Calientes', 'Drenaje Linfático', 'Tratamiento Corporal', 'Aromaterapia', 'Reflexología']
         };
 
-        const services = defaults[type] || defaults.hair;
+        const servicesToSeed = defaults[type] || defaults.hair;
+        let count = 0;
 
-        for (const serviceName of services) {
-            await database.add('servicios', {
-                nom: serviceName,
-                dur: 60,
-                val: 0
-            });
+        for (const serviceName of servicesToSeed) {
+            // Solo agragar si no existe ya un servicio con ese nombre
+            if (!existingNames.includes(serviceName.toLowerCase())) {
+                await database.add('servicios', {
+                    nom: serviceName,
+                    dur: 60,
+                    val: 0
+                });
+                count++;
+            }
         }
-        console.log(`BellaPro: Materializados ${services.length} servicios para ${type}`);
+        if (count > 0) {
+            console.log(`BellaPro: Materializados ${count} nuevos servicios para ${type}`);
+            // Recargar estado después del seeding para reflejar cambios inmediatamente
+            await this.load();
+        }
     },
 
     showUpdateToast() {
@@ -1481,7 +1489,7 @@ const app = {
     },
 
     renderServices() {
-        // 1. Renderizar selector en modal de turnos
+        // 1. Selector en modal de turnos (Chips)
         const chipGroup = document.getElementById('service-selector');
         if (chipGroup) {
             chipGroup.innerHTML = '';
@@ -1500,43 +1508,67 @@ const app = {
             });
         }
 
-        // 2. Renderizar catálogo en ajustes
-        const catalog = document.getElementById('cfg-srv-list');
-        if (catalog) {
-            catalog.innerHTML = '';
-            if (this.state.servicios.length === 0) {
-                catalog.innerHTML = '<p style="opacity:0.5; font-size:12px; text-align:center; padding:20px;">No hay servicios registrados.</p>';
-                return;
-            }
-
-            const sorted = [...this.state.servicios].sort((a, b) => a.nom.localeCompare(b.nom));
+        // 2. Dropdown en ajustes
+        const dropdown = document.getElementById('cfg-srv-dropdown');
+        if (dropdown) {
+            // Guardar selección actual para intentar restaurarla
+            const currentVal = dropdown.value;
+            dropdown.innerHTML = '<option value="">Seleccionar servicio para editar/eliminar...</option>';
             
+            const sorted = [...this.state.servicios].sort((a, b) => a.nom.localeCompare(b.nom));
             sorted.forEach(s => {
-                const item = document.createElement('div');
-                item.className = 'service-item';
-                item.style = "display:flex; align-items:center; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.03); border-radius:12px; margin-bottom:8px; border:1px solid rgba(255,255,255,0.05); transition:all 0.3s ease;";
-                
-                item.innerHTML = `
-                    <div style="flex:1;">
-                        <div style="font-weight:600; font-size:14px; color:white;">${s.nom}</div>
-                        <div style="font-size:11px; opacity:0.6;">${s.dur} min | ${this.formatMoney(s.val)}</div>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button onclick="app.prepEditService(${s.id})" style="background:none; border:none; color:var(--primary); cursor:pointer; padding:5px;"><i class="fas fa-edit"></i></button>
-                        <button onclick="app.delServiceInline(${s.id})" style="background:none; border:none; color:var(--error); cursor:pointer; padding:5px;"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                catalog.appendChild(item);
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.nom;
+                dropdown.appendChild(opt);
             });
+
+            // Intentar restaurar selección
+            if (currentVal && dropdown.querySelector(`option[value="${currentVal}"]`)) {
+                dropdown.value = currentVal;
+            } else {
+                // Si no hay selección o la anterior desapareció, ocultar acciones
+                const actionContainer = document.getElementById('cfg-srv-actions');
+                if (actionContainer) actionContainer.style.display = 'none';
+            }
         }
     },
 
-    delServiceInline(id) {
-        if (confirm("¿Eliminar este servicio definitivamente?")) {
-            this.delItem('servicios', id);
-            this.load().then(() => this.render());
+    handleServiceSelectChange() {
+        const id = document.getElementById('cfg-srv-dropdown').value;
+        const actionContainer = document.getElementById('cfg-srv-actions');
+        if (!actionContainer) return;
+
+        if (id) {
+            actionContainer.style.display = 'flex';
+        } else {
+            actionContainer.style.display = 'none';
         }
     },
+
+    prepEditSelectedServiceV2() {
+        const id = document.getElementById('cfg-srv-dropdown').value;
+        if (!id) return;
+        this.prepEditService(Number(id));
+    },
+
+    async delSelectedServiceV2() {
+        const id = document.getElementById('cfg-srv-dropdown').value;
+        if (!id) return;
+
+        const s = this.state.servicios.find(x => x.id === Number(id));
+        if (!s) return;
+
+        if (confirm(`¿Eliminar definitivamente el servicio "${s.nom}"?`)) {
+            await this.delItem('servicios', Number(id));
+            await this.load();
+            this.render();
+            // Resetear el dropdown y ocultar acciones
+            document.getElementById('cfg-srv-dropdown').value = '';
+            this.handleServiceSelectChange();
+        }
+    },
+
 
     prepEditService(id) {
         const s = this.state.servicios.find(x => x.id === id);
