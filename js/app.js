@@ -224,6 +224,14 @@ const app = {
                     this.showApp();
                     await database.init();
                     await this.load();
+
+                    // MIGRACIÓN: Materializar servicios por defecto si la lista está vacía
+                    if (this.state.servicios.length === 0) {
+                        console.log("BellaPro: Detectada base de datos nueva o vacía. Materializando servicios...");
+                        await this.seedDefaultServices();
+                        await this.load(); // Recargar después de sembrar
+                    }
+
                     this.events();
                     this.render();
                     this.listenReservas();
@@ -665,24 +673,18 @@ const app = {
         }
 
         const config = this.specialtyConfig[this.specialty] || this.specialtyConfig.hair;
-        const defaultServices = config.services;
-        const customServices = this.state.servicios.map(s => s.nom);
-        const allServices = [...new Set([...defaultServices, ...customServices])];
+        const allServices = this.state.servicios;
 
         allServices.forEach(s => {
             const chip = document.createElement('div');
             chip.className = 'chip';
-            chip.innerText = s;
+            chip.innerText = s.nom;
             chip.onclick = () => {
                 document.querySelectorAll('#service-selector .chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
-                this.state.selSrv = s;
-                // Auto-set duration if custom service
-                const found = this.state.servicios.find(sv => sv.nom === s);
-                if (found) {
-                    const costInput = document.getElementById('ft-val');
-                    if (costInput && found.val) costInput.value = found.val;
-                }
+                this.state.selSrv = s.nom;
+                const costInput = document.getElementById('ft-val');
+                if (costInput && s.val) costInput.value = s.val;
             };
             srvCon.appendChild(chip);
         });
@@ -1444,6 +1446,21 @@ const app = {
             typ: 'ingreso'
         });
         await this.load();
+    },
+
+    async seedDefaultServices() {
+        const type = this.specialty;
+        const config = this.specialtyConfig[type] || this.specialtyConfig.hair;
+        const services = config.services;
+
+        for (const serviceName of services) {
+            await database.add('servicios', {
+                nom: serviceName,
+                dur: 60,
+                val: 0
+            });
+        }
+        console.log(`BellaPro: Materializados ${services.length} servicios para ${type}`);
     },
 
     showUpdateToast() {

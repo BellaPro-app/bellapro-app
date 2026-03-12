@@ -386,34 +386,27 @@
 
         async function loadServices() {
             const grid = document.getElementById('service-grid');
-            const config = state.salon.config || {};
-            const defSrv = specialtyConfig[config.specialty]?.srv || specialtyConfig.hair.srv;
+            const data = state.salon.data || {};
+            const services = data.servicios || [];
             
-            // Fetch custom services from subcollection or state.salon?
-            // For now, let's look at a possible subcollection or if it was saved in the doc
-            // In app.js we added 'servicios' to IDB, but also to Cloud? 
-            // The current DB.js logic pushes the whole store to `users/UID/data/STORE_NAME`.
-            
-            let customSrv = [];
-            try {
-                const customSnap = await db.collection('users').doc(salonId).collection('servicios').get();
-                customSrv = customSnap.docs.map(d => d.data());
-            } catch(e) {}
+            grid.innerHTML = '';
 
-            const merged = [...new Set([...defSrv, ...customSrv.map(s => s.nom)])];
+            if (services.length === 0) {
+                grid.innerHTML = '<p style="opacity:0.5; font-size:13px;">No hay servicios disponibles.</p>';
+                return;
+            }
 
-            merged.forEach(s => {
+            services.forEach(s => {
                 const chip = document.createElement('div');
                 chip.className = 'chip';
-                const custom = customSrv.find(x => x.nom === s);
                 chip.innerHTML = `
-                    <span>${s}</span>
-                    ${custom ? `<span class="price-tag">$${custom.val}</span>` : ''}
+                    <span>${s.nom}</span>
+                    <span class="price-tag">${s.val > 0 ? '$' + s.val : ''}</span>
                 `;
                 chip.onclick = () => {
                     document.querySelectorAll('#service-grid .chip').forEach(c => c.classList.remove('active'));
                     chip.classList.add('active');
-                    state.selSrv = s;
+                    state.selSrv = s.nom;
                     document.getElementById('btn-srv-next').disabled = false;
                 };
                 grid.appendChild(chip);
