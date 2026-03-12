@@ -43,19 +43,16 @@ const app = {
         hair: {
             title: 'BellaPro | Hair Salon',
             icon: 'fa-cut',
-            services: ['Corte Dama', 'Corte Caballero', 'Coloración', 'Mechas/Balayage', 'Peinado Evento', 'Baño de Crema', 'Alisado', 'Lavado & Secado'],
             welcome: 'Agenda de Peluquería'
         },
         nails: {
             title: 'BellaPro | Nails & Lashes',
             icon: 'fa-hand-sparkles',
-            services: ['Esmaltado Semipermanente', 'Uñas Esculpidas', 'Kapping Gel', 'Service Uñas', 'Diseño Advanced', 'Limpieza de Cutículas', 'Perfilado de Cejas', 'Lifting de Pestañas'],
             welcome: 'Agenda de Manicuría'
         },
         spa: {
             title: 'BellaPro | Spa & Wellness',
             icon: 'fa-spa',
-            services: ['Masaje Relajante', 'Masaje Descontracturante', 'Limpieza Facial Deep', 'Piedras Calientes', 'Drenaje Linfático', 'Tratamiento Corporal', 'Aromaterapia', 'Reflexología'],
             welcome: 'Agenda de Bienestar'
         }
     },
@@ -1454,8 +1451,13 @@ const app = {
 
     async seedDefaultServices() {
         const type = this.specialty;
-        const config = this.specialtyConfig[type] || this.specialtyConfig.hair;
-        const services = config.services;
+        const defaults = {
+            hair: ['Corte Dama', 'Corte Caballero', 'Coloración', 'Mechas/Balayage', 'Peinado Evento', 'Baño de Crema', 'Alisado', 'Lavado & Secado'],
+            nails: ['Esmaltado Semipermanente', 'Uñas Esculpidas', 'Kapping Gel', 'Service Uñas', 'Diseño Advanced', 'Limpieza de Cutículas', 'Perfilado de Cejas', 'Lifting de Pestañas'],
+            spa: ['Masaje Relajante', 'Masaje Descontracturante', 'Limpieza Facial Deep', 'Piedras Calientes', 'Drenaje Linfático', 'Tratamiento Corporal', 'Aromaterapia', 'Reflexología']
+        };
+
+        const services = defaults[type] || defaults.hair;
 
         for (const serviceName of services) {
             await database.add('servicios', {
@@ -1479,34 +1481,61 @@ const app = {
     },
 
     renderServices() {
-        const select = document.getElementById('cfg-srv-select');
-        if (!select) return;
-        
-        // Mantener la opción por defecto
-        select.innerHTML = '<option value="">Seleccionar servicio...</option>';
-        
-        if (this.state.servicios.length === 0) {
-            return;
+        // 1. Renderizar selector en modal de turnos
+        const chipGroup = document.getElementById('service-selector');
+        if (chipGroup) {
+            chipGroup.innerHTML = '';
+            this.state.servicios.forEach(s => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'chip';
+                btn.textContent = s.nom;
+                btn.onclick = () => {
+                    document.querySelectorAll('#service-selector .chip').forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('ft-srv').value = s.nom;
+                    document.getElementById('ft-val').value = s.val;
+                };
+                chipGroup.appendChild(btn);
+            });
         }
 
-        // Ordenar alfabéticamente para una mejor experiencia
-        const sorted = [...this.state.servicios].sort((a, b) => a.nom.localeCompare(b.nom));
+        // 2. Renderizar catálogo en ajustes
+        const catalog = document.getElementById('cfg-srv-list');
+        if (catalog) {
+            catalog.innerHTML = '';
+            if (this.state.servicios.length === 0) {
+                catalog.innerHTML = '<p style="opacity:0.5; font-size:12px; text-align:center; padding:20px;">No hay servicios registrados.</p>';
+                return;
+            }
 
-        sorted.forEach(s => {
-            const opt = document.createElement('option');
-            opt.value = s.id;
-            opt.textContent = `${s.nom} (${s.dur} min - ${this.formatMoney(s.val)})`;
-            select.appendChild(opt);
-        });
+            const sorted = [...this.state.servicios].sort((a, b) => a.nom.localeCompare(b.nom));
+            
+            sorted.forEach(s => {
+                const item = document.createElement('div');
+                item.className = 'service-item';
+                item.style = "display:flex; align-items:center; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.03); border-radius:12px; margin-bottom:8px; border:1px solid rgba(255,255,255,0.05); transition:all 0.3s ease;";
+                
+                item.innerHTML = `
+                    <div style="flex:1;">
+                        <div style="font-weight:600; font-size:14px; color:white;">${s.nom}</div>
+                        <div style="font-size:11px; opacity:0.6;">${s.dur} min | ${this.formatMoney(s.val)}</div>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="app.prepEditService(${s.id})" style="background:none; border:none; color:var(--primary); cursor:pointer; padding:5px;"><i class="fas fa-edit"></i></button>
+                        <button onclick="app.delServiceInline(${s.id})" style="background:none; border:none; color:var(--error); cursor:pointer; padding:5px;"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                catalog.appendChild(item);
+            });
+        }
     },
 
-    prepEditSelectedService() {
-        const id = document.getElementById('cfg-srv-select').value;
-        if (!id) {
-            alert("Por favor, selecciona un servicio para editar.");
-            return;
+    delServiceInline(id) {
+        if (confirm("¿Eliminar este servicio definitivamente?")) {
+            this.delItem('servicios', id);
+            this.load().then(() => this.render());
         }
-        this.prepEditService(Number(id));
     },
 
     prepEditService(id) {

@@ -341,14 +341,8 @@
                         
                         <button class="btn-full" onclick="app.openModal('m-serv')" style="background: var(--surface-light); border: 1px dashed var(--primary); color: var(--primary); margin-bottom: 20px;">+ Agregar Servicio Personalizado</button>
 
-                        <div class="form-group" style="margin-top: 10px;">
-                            <label>Gestionar servicios existentes</label>
-                            <select id="cfg-srv-select" class="btn-full" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; margin-bottom: 10px; text-align: left; -webkit-appearance: none;">
-                                <option value="">Seleccionar servicio...</option>
-                            </select>
-                            <button class="btn-full" onclick="app.prepEditSelectedService()" style="background: var(--surface-light); color: white; border: 1px solid rgba(255,255,255,0.1);">
-                                <i class="fas fa-edit"></i> Editar/Eliminar servicio
-                            </button>
+                        <div id="cfg-srv-list" class="service-catalog-container">
+                            <!-- Rendereado dinámicamente por app.js -->
                         </div>
                     </div>
 
