@@ -338,10 +338,18 @@
                         <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">
                             Define tus servicios y sus duraciones para que la agenda se bloquee correctamente.
                         </p>
-                        <div id="cfg-services-list" style="margin-bottom: 15px;">
-                            <!-- Dynamic list of services -->
+                        
+                        <button class="btn-full" onclick="app.openModal('m-serv')" style="background: var(--surface-light); border: 1px dashed var(--primary); color: var(--primary); margin-bottom: 20px;">+ Agregar Servicio Personalizado</button>
+
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label>Gestionar servicios existentes</label>
+                            <select id="cfg-srv-select" class="btn-full" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; margin-bottom: 10px; text-align: left; -webkit-appearance: none;">
+                                <option value="">Seleccionar servicio...</option>
+                            </select>
+                            <button class="btn-full" onclick="app.prepEditSelectedService()" style="background: var(--surface-light); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                                <i class="fas fa-edit"></i> Editar/Eliminar servicio
+                            </button>
                         </div>
-                        <button class="btn-full" onclick="app.openModal('m-serv')" style="background: var(--surface-light); border: 1px dashed var(--primary); color: var(--primary);">+ Agregar Servicio Personalizado</button>
                     </div>
 
                     <button class="btn-full" onclick="app.logout()"
@@ -561,6 +569,9 @@
                     <div class="form-group"><label>Duración (minutos)</label><input type="number" id="fs-dur" value="60" required></div>
                     <div class="form-group"><label>Precio Sugerido</label><input type="number" id="fs-val" value="0"></div>
                     <button type="submit" class="btn-full">Guardar Servicio</button>
+                    <button type="button" id="btn-del-serv" class="btn-full" style="display:none; margin-top:10px; background:rgba(255,68,68,0.1); color:#ff4444; border:1px solid rgba(255,68,68,0.2);" onclick="app.delCurrentService()">
+                        <i class="fas fa-trash"></i> Eliminar Servicio Definitivamente
+                    </button>
                 </form>
             </div>
         </div>

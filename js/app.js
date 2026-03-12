@@ -1446,6 +1446,10 @@ const app = {
             typ: 'ingreso'
         });
         await this.load();
+        if (this.state.servicios.length === 0) {
+            await this.seedDefaultServices();
+            await this.load();
+        }
     },
 
     async seedDefaultServices() {
@@ -1475,37 +1479,34 @@ const app = {
     },
 
     renderServices() {
-        // Corrected ID from full-services-list to cfg-services-list
-        const l = document.getElementById('cfg-services-list');
-        if (!l) return;
-        l.innerHTML = '';
+        const select = document.getElementById('cfg-srv-select');
+        if (!select) return;
+        
+        // Mantener la opción por defecto
+        select.innerHTML = '<option value="">Seleccionar servicio...</option>';
+        
         if (this.state.servicios.length === 0) {
-            l.innerHTML = '<p style="opacity:0.3; text-align:center; padding:20px;">No has creado servicios personalizados aún.</p>';
             return;
         }
-        this.state.servicios.forEach(s => {
-            const row = document.createElement('div');
-            row.className = 'list-item';
-            row.style.padding = '12px';
-            row.style.marginBottom = '8px';
-            row.innerHTML = `
-                <div class="list-item-info">
-                    <h4 style="font-size: 15px; margin:0;">${s.nom}</h4>
-                    <p style="font-size: 12px; margin:0; opacity:0.7;">${s.dur} min - ${this.formatMoney(s.val)}</p>
-                </div>
-                <div style="display:flex; gap: 8px;">
-                    <button onclick="app.prepEditService(${s.id})" title="Editar" 
-                        style="background:rgba(212,175,55,0.1); border:none; color:var(--primary); padding:8px; border-radius:8px; cursor:pointer;">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="app.delItem('servicios', ${s.id})" title="Eliminar" 
-                        style="background:rgba(255,68,68,0.1); border:none; color:var(--error); padding:8px; border-radius:8px; cursor:pointer;">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            l.appendChild(row);
+
+        // Ordenar alfabéticamente para una mejor experiencia
+        const sorted = [...this.state.servicios].sort((a, b) => a.nom.localeCompare(b.nom));
+
+        sorted.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = `${s.nom} (${s.dur} min - ${this.formatMoney(s.val)})`;
+            select.appendChild(opt);
         });
+    },
+
+    prepEditSelectedService() {
+        const id = document.getElementById('cfg-srv-select').value;
+        if (!id) {
+            alert("Por favor, selecciona un servicio para editar.");
+            return;
+        }
+        this.prepEditService(Number(id));
     },
 
     prepEditService(id) {
@@ -1515,7 +1516,21 @@ const app = {
         document.getElementById('fs-nom').value = s.nom;
         document.getElementById('fs-dur').value = s.dur;
         document.getElementById('fs-val').value = s.val;
+        
+        // Mostrar botón de eliminar solo cuando editamos
+        document.getElementById('btn-del-serv').style.display = 'block';
+        
         this.openModal('m-serv');
+    },
+
+    delCurrentService() {
+        const id = Number(document.getElementById('fs-id').value);
+        if (!id) return;
+        
+        if (confirm("¿Estás seguro de eliminar este servicio? Esto no afectará a los turnos ya agendados.")) {
+            this.delItem('servicios', id);
+            this.closeModal('m-serv');
+        }
     },
 
     listenReservas() {
