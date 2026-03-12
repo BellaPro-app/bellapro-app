@@ -1458,24 +1458,33 @@ const app = {
     },
 
     renderServices() {
-        const l = document.getElementById('full-services-list');
+        // Corrected ID from full-services-list to cfg-services-list
+        const l = document.getElementById('cfg-services-list');
         if (!l) return;
         l.innerHTML = '';
         if (this.state.servicios.length === 0) {
-            l.innerHTML = '<p style="opacity:0.3; text-align:center; padding:40px;">No has creado servicios personalizados aún.</p>';
+            l.innerHTML = '<p style="opacity:0.3; text-align:center; padding:20px;">No has creado servicios personalizados aún.</p>';
             return;
         }
         this.state.servicios.forEach(s => {
             const row = document.createElement('div');
             row.className = 'list-item';
+            row.style.padding = '12px';
+            row.style.marginBottom = '8px';
             row.innerHTML = `
                 <div class="list-item-info">
-                    <h4>${s.nom}</h4>
-                    <p>${s.dur} min - ${this.formatMoney(s.val)}</p>
+                    <h4 style="font-size: 15px; margin:0;">${s.nom}</h4>
+                    <p style="font-size: 12px; margin:0; opacity:0.7;">${s.dur} min - ${this.formatMoney(s.val)}</p>
                 </div>
-                <div style="display:flex;">
-                    <button onclick="app.prepEditService(${s.id})" title="Editar" style="background:none; border:none; color:var(--text-secondary); margin-right:10px;"><i class="fas fa-edit"></i></button>
-                    <button onclick="app.delItem('servicios', ${s.id})" title="Eliminar" style="background:none; border:none; color:var(--error);"><i class="fas fa-trash"></i></button>
+                <div style="display:flex; gap: 8px;">
+                    <button onclick="app.prepEditService(${s.id})" title="Editar" 
+                        style="background:rgba(212,175,55,0.1); border:none; color:var(--primary); padding:8px; border-radius:8px; cursor:pointer;">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="app.delItem('servicios', ${s.id})" title="Eliminar" 
+                        style="background:rgba(255,68,68,0.1); border:none; color:var(--error); padding:8px; border-radius:8px; cursor:pointer;">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             `;
             l.appendChild(row);
