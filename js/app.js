@@ -945,8 +945,20 @@ const app = {
     },
 
     renderFinanzas() {
-        const ingresos = this.state.pagos.filter(p => !p.typ || p.typ === 'ingreso').reduce((acc, p) => acc + p.amt, 0);
-        const gastos = this.state.pagos.filter(p => p.typ === 'gasto').reduce((acc, p) => acc + p.amt, 0);
+        const range = document.getElementById('fin-range')?.value || '7d';
+        let startDate = new Date();
+        const now = new Date();
+        
+        if (range === '7d') startDate.setDate(now.getDate() - 6);
+        else if (range === '30d') startDate.setDate(now.getDate() - 29);
+        else if (range === 'month') startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        else if (range === 'year') startDate = new Date(now.getFullYear(), 0, 1);
+
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const filteredPagos = this.state.pagos.filter(p => p.dat >= startDateStr);
+
+        const ingresos = filteredPagos.filter(p => !p.typ || p.typ === 'ingreso').reduce((acc, p) => acc + p.amt, 0);
+        const gastos = filteredPagos.filter(p => p.typ === 'gasto').reduce((acc, p) => acc + p.amt, 0);
         const neto = ingresos - gastos;
 
         const ingEl = document.getElementById('fin-ing');
@@ -961,10 +973,18 @@ const app = {
         if (!chartCon) return;
 
         chartCon.innerHTML = '';
+        
+        // Dynamic day generation for the chart
         const days = [];
-        for (let i = 6; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
+        const diffTime = Math.abs(now - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        // Limit chart to 14 bars for month/year to avoid clutter
+        const step = diffDays > 14 ? Math.ceil(diffDays / 14) : 1;
+        
+        for (let i = 0; i <= diffDays; i += step) {
+            const d = new Date(startDate);
+            d.setDate(d.getDate() + i);
             days.push(d.toISOString().split('T')[0]);
         }
 
@@ -980,7 +1000,9 @@ const app = {
         chartData.forEach(d => {
             const height = (d.total / maxVal) * 100;
             const dateObj = new Date(d.day + 'T00:00:00');
-            const label = dateObj.toLocaleDateString('es', { weekday: 'short' }).replace('.', '');
+            const label = diffDays > 31 
+                ? dateObj.toLocaleDateString('es', { month: 'short', day: 'numeric' })
+                : dateObj.toLocaleDateString('es', { weekday: 'short' }).replace('.', '');
 
             const barWrap = document.createElement('div');
             barWrap.className = 'chart-bar-wrap';

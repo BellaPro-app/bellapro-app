@@ -146,11 +146,11 @@
 
                 <div class="section-header">Acciones Rápidas</div>
                 <div class="action-grid">
-                    <button class="action-btn primary" onclick="app.openModal('m-turno')" aria-label="Crear nuevo turno">
+                    <button class="action-btn primary" onclick="app.openModal('m-turno')" aria-label="Crear nuevo turno" style="background:var(--primary-gradient); color:white; border:none;">
                         <i class="fas fa-calendar-plus"></i> Nuevo Turno
                     </button>
-                    <button class="action-btn" onclick="app.openModal('m-fin')" aria-label="Registrar nuevo pago">
-                        <i class="fas fa-wallet" style="color:var(--primary-color)"></i> Registrar Pago
+                    <button class="action-btn" onclick="app.openModal('m-fin')" aria-label="Registrar nuevo pago" style="background:var(--primary-gradient); color:white; border:none;">
+                        <i class="fas fa-wallet" style="color:white"></i> Registrar Pago
                     </button>
                 </div>
 
@@ -197,9 +197,15 @@
             </section>
 
             <section id="finanzas" class="section">
-                <div class="section-header">
-                    <h2 style="font-size: 24px;">Rendimiento</h2>
-                    <span class="btn-small" onclick="app.openModal('m-fin')">+ Movimiento</span>
+                <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2 style="font-size: 24px; margin:0;">Rendimiento</h2>
+                    <select id="fin-range" onchange="app.renderFinanzas()" 
+                        style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; padding:5px 10px; border-radius:8px; outline:none; font-size:12px; font-family:inherit;">
+                        <option value="7d">Últimos 7 días</option>
+                        <option value="30d">Últimos 30 días</option>
+                        <option value="month">Este Mes</option>
+                        <option value="year">Este Año</option>
+                    </select>
                 </div>
 
                 <div class="action-grid" style="margin-bottom: 20px;">
