@@ -22,6 +22,7 @@
             --text-s: #fce7f3;
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --success: #10b981;
         }
 
         * {
@@ -45,27 +46,121 @@
             background: var(--surface);
             width: 100%;
             max-width: 500px;
-            padding: 40px;
+            padding: 30px;
             border-radius: 32px;
             border: var(--glass-border);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            margin-bottom: 30px;
         }
 
         .logo {
-            width: 80px;
-            margin-bottom: 20px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 2px solid var(--primary);
+            padding: 2px;
         }
 
         h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 5px;
         }
 
-        p {
-            color: var(--text-s);
-            opacity: 0.7;
+        .salon-specialty {
+            font-size: 14px;
+            opacity: 0.6;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .steps-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 30px;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--glass);
+            transition: 0.3s;
+        }
+
+        .step-dot.active {
+            background: var(--primary);
+            width: 25px;
+            border-radius: 4px;
+        }
+
+        .step-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .chip {
+            background: var(--glass);
+            border: var(--glass-border);
+            padding: 15px 10px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .chip:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chip.active {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2);
+        }
+
+        .chip-time {
+            background: var(--glass);
+            border: var(--glass-border);
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+
+        .chip-time.active {
+            background: var(--primary);
+            border-color: transparent;
         }
 
         .form-group {
@@ -81,119 +176,142 @@
             opacity: 0.8;
         }
 
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 14px;
-            background: var(--glass);
-            border: var(--glass-border);
-            border-radius: 12px;
-            color: white;
-            font-size: 15px;
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        select option {
-            background-color: var(--surface);
-            color: white;
-            padding: 10px;
-        }
-
-        .btn-reserve {
-            background: var(--primary-gradient);
-            color: white;
+        input {
             width: 100%;
             padding: 16px;
-            border: none;
-            border-radius: 50px;
+            background: var(--glass);
+            border: var(--glass-border);
+            border-radius: 14px;
+            color: white;
             font-size: 16px;
-            font-weight: 700;
+            outline: none;
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 50px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
-            margin-top: 10px;
         }
 
-        .btn-reserve:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3);
+        .btn-next {
+            background: var(--primary-gradient);
+            color: white;
         }
 
-        .status-msg {
-            margin-top: 20px;
-            font-size: 14px;
+        .btn-back {
+            background: var(--glass);
+            border: var(--glass-border);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .success-screen {
             display: none;
+            padding: 40px 0;
+        }
+
+        .success-screen i {
+            font-size: 60px;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        .price-tag {
+            font-size: 12px;
+            opacity: 0.7;
         }
     </style>
-    <!-- Meta Pixel Code -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '1867733084052554');
-        fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=1867733084052554&ev=PageView&noscript=1" /></noscript>
-    <!-- End Meta Pixel Code -->
 </head>
 
 <body>
-    <div class="booking-card">
-        <img src="assets/logo/logo.png" alt="BellaPro" class="logo" id="salon-logo">
-        <h1 id="salon-name">Reserva tu Turno</h1>
-        <p>Selecciona el servicio y horario que prefieras.</p>
+    <div class="booking-card" id="booking-container">
+        <div id="main-flow">
+            <div class="header">
+                <img src="assets/logo/logo.png" alt="BellaPro" class="logo" id="salon-logo">
+                <h1 id="salon-name">Cargando Salón...</h1>
+                <div class="salon-specialty" id="salon-specialty">Cargando...</div>
+            </div>
 
-        <form id="booking-form">
-            <div class="form-group">
-                <label>Nombre y Apellido</label>
-                <input type="text" id="cust-name" placeholder="Tu nombre completo" required>
+            <div class="steps-nav">
+                <div class="step-dot active" data-step="1"></div>
+                <div class="step-dot" data-step="2"></div>
+                <div class="step-dot" data-step="3"></div>
             </div>
-            <div class="form-group">
-                <label>WhatsApp (con código de área)</label>
-                <input type="tel" id="cust-tel" placeholder="Ej: 5491144201180" required>
-            </div>
-            <div class="form-group">
-                <label>Servicio</label>
-                <select id="cust-srv" required>
-                    <option value="">Seleccionar...</option>
-                    <option value="Corte Dama">Corte Dama</option>
-                    <option value="Corte Caballero">Corte Caballero</option>
-                    <option value="Coloración">Coloración</option>
-                    <option value="Mechas/Balayage">Mechas/Balayage</option>
-                    <option value="Peinado Evento">Peinado Evento</option>
-                    <option value="Baño de Crema">Baño de Crema</option>
-                    <option value="Alisado">Alisado</option>
-                    <option value="Lavado & Secado">Lavado & Secado</option>
-                    <option value="Manicura">Manicura</option>
-                    <option value="Depilación Rostro">Depilación Rostro</option>
-                </select>
-            </div>
-            <div class="form-group" id="prof-group" style="display:none">
-                <label>Profesional / Estilista</label>
-                <select id="cust-prof">
-                    <option value="">Cualquier profesional</option>
-                </select>
-            </div>
-            <button type="submit" class="btn-reserve">Solicitar Reserva</button>
-        </form>
-        <div id="status" class="status-msg"></div>
 
-        <div
-            style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11px; opacity: 0.5;">
-            <p style="margin-bottom: 10px;">2026 © BellaPro | Al reservar aceptas nuestros <a href="legal.html#terminos"
-                    style="color: var(--primary); text-decoration: none;">Términos</a> y <a href="legal.html#privacidad"
-                    style="color: var(--primary); text-decoration: none;">Privacidad</a>.</p>
+            <!-- Paso 1: Servicio -->
+            <div class="step-panel active" id="step1">
+                <p style="margin-bottom: 20px;">¿Qué servicio deseas hoy?</p>
+                <div class="grid-selector" id="service-grid">
+                    <!-- Dinámico -->
+                </div>
+                <div class="nav-btns">
+                    <button class="btn btn-next" onclick="nextStep(2)" id="btn-srv-next" disabled>Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 2: Fecha y Hora -->
+            <div class="step-panel" id="step2">
+                <p style="margin-bottom: 20px;">¿Cuándo quieres venir?</p>
+                <div id="day-grid" class="grid-selector" style="margin-bottom:20px;">
+                    <!-- Dinámico -->
+                </div>
+                <div id="time-grid" class="grid-selector" style="max-height: 200px; overflow-y: auto; padding-right: 5px;">
+                    <!-- Dinámico -->
+                </div>
+                <div class="nav-btns">
+                    <button class="btn btn-back" onclick="nextStep(1)">Volver</button>
+                    <button class="btn btn-next" onclick="nextStep(3)" id="btn-dt-next" disabled>Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 3: Contacto -->
+            <div class="step-panel" id="step3">
+                <p style="margin-bottom: 20px;">Casi listo, tus datos de contacto.</p>
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="cust-name" placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp (con código de área)</label>
+                    <input type="tel" id="cust-tel" placeholder="54911...">
+                </div>
+                <div class="form-group" id="prof-group" style="display:none">
+                    <label>Profesional (Opcional)</label>
+                    <select id="cust-prof" style="width:100%; padding:14px; background:var(--glass); border:var(--glass-border); border-radius:12px; color:white;">
+                        <option value="">Cualquier profesional</option>
+                    </select>
+                </div>
+                <div class="nav-btns">
+                    <button class="btn btn-back" onclick="nextStep(2)">Volver</button>
+                    <button class="btn btn-next" onclick="confirmReserva()" id="btn-finalize">Confirmar Reserva</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="success-screen" id="success-screen">
+            <i class="fas fa-check-circle"></i>
+            <h2>¡Reserva Solicitada!</h2>
+            <p style="margin: 15px 0;">Hemos enviado tu solicitud al salón. Te contactaremos por WhatsApp para confirmar.</p>
+            <button class="btn btn-next" onclick="location.reload()">Nueva Reserva</button>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11px; opacity: 0.5;">
+            <p>2026 © BellaPro | Al reservar aceptas nuestros Términos.</p>
         </div>
     </div>
 
@@ -202,7 +320,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <script>
-        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCCFp95pg8x4YAJ4prASufTIywvdbHksPE",
             authDomain: "bellapro-d297f.firebaseapp.com",
@@ -214,99 +331,184 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Identificar Salón por URL
         const urlParams = new URLSearchParams(window.location.search);
         const salonId = urlParams.get('s');
 
-        async function loadSalon() {
+        const state = {
+            selSrv: '',
+            selDay: '',
+            selTime: '',
+            salon: null
+        };
+
+        const specialtyConfig = {
+            hair: { title: 'Peluquería', srv: ['Corte Dama', 'Corte Caballero', 'Coloración', 'Balayage'] },
+            nails: { title: 'Manicura', srv: ['Semipermanente', 'Esculpidas', 'Kapping', 'Nail Art'] },
+            spa: { title: 'Spa & Relax', srv: ['Masaje', 'Facial', 'Tratamiento Corporal'] }
+        };
+
+        async function init() {
             if (!salonId) {
-                document.querySelector('.booking-card').innerHTML = `
-                    <img src="assets/logo/logo.png" class="logo" style="opacity:0.3">
-                    <h1>Link Inválido</h1>
-                    <p>Por favor, solicita el link de reserva correcto a tu salón o estética.</p>
-                `;
+                document.getElementById('booking-container').innerHTML = "<h1>Link Incorrecto</h1>";
                 return;
             }
 
-            try {
-                const doc = await db.collection('users').doc(salonId).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    const config = data.config || {};
-                    document.getElementById('salon-name').innerText = config.name || "Reserva tu Turno";
-                    if (config.logo) document.getElementById('salon-logo').src = config.logo;
-
-                    // Cargar servicios dinámicamente según especialidad
-                    const specialty = config.specialty || 'hair';
-                    const specialtyConfig = {
-                        hair: ['Corte Dama', 'Corte Caballero', 'Coloración', 'Mechas/Balayage', 'Peinado Evento', 'Baño de Crema', 'Alisado', 'Lavado & Secado'],
-                        nails: ['Esmaltado Semipermanente', 'Uñas Esculpidas', 'Kapping Gel', 'Service Uñas', 'Diseño Advanced', 'Limpieza de Cutículas', 'Perfilado de Cejas', 'Lifting de Pestañas'],
-                        spa: ['Masaje Relajante', 'Masaje Descontracturante', 'Limpieza Facial Deep', 'Piedras Calientes', 'Drenaje Linfático', 'Tratamiento Corporal', 'Aromaterapia', 'Reflexología']
-                    };
-
-                    const services = specialtyConfig[specialty] || specialtyConfig.hair;
-                    const sSelect = document.getElementById('cust-srv');
-                    sSelect.innerHTML = '<option value="">Seleccionar...</option>';
-                    services.forEach(s => {
-                        sSelect.innerHTML += `<option value="${s}">${s}</option>`;
-                    });
-
-                    // Cargar profesionales
-                    if (config.professionals) {
-                        const profs = config.professionals.split(',').map(x => x.trim()).filter(x => x);
-                        if (profs.length > 0) {
-                            const pSelect = document.getElementById('cust-prof');
-                            pSelect.innerHTML = '<option value="">Cualquier profesional</option>';
-                            profs.forEach(p => {
-                                pSelect.innerHTML += `<option value="${p}">${p}</option>`;
-                            });
-                            document.getElementById('prof-group').style.display = 'block';
-                        }
-                    }
-                } else {
-                    document.querySelector('.booking-card').innerHTML = "<h1>Error</h1><p>El salón no existe o no está registrado.</p>";
-                }
-            } catch (e) {
-                console.error("Error loading salon:", e);
-                document.querySelector('.booking-card').innerHTML = "<h1>Error de Conexión</h1><p>No pudimos cargar la información del salón.</p>";
+            const doc = await db.collection('users').doc(salonId).get();
+            if (doc.exists) {
+                state.salon = doc.data();
+                renderSalon();
+                loadServices();
+                genCalendar();
+            } else {
+                document.getElementById('booking-container').innerHTML = "<h1>Salón no encontrado</h1>";
             }
         }
 
-        loadSalon();
+        function renderSalon() {
+            const config = state.salon.config || {};
+            document.getElementById('salon-name').innerText = config.name || "Reserva";
+            if (config.logo) document.getElementById('salon-logo').src = config.logo;
+            
+            const spec = specialtyConfig[config.specialty] || specialtyConfig.hair;
+            document.getElementById('salon-specialty').innerText = spec.title;
 
-        document.getElementById('booking-form').onsubmit = async function (e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const status = document.getElementById('status');
+            if (config.professionals) {
+                const ps = config.professionals.split(',').map(x => x.trim()).filter(x => x);
+                const sel = document.getElementById('cust-prof');
+                ps.forEach(p => {
+                    const o = document.createElement('option');
+                    o.value = p; o.innerText = p;
+                    sel.appendChild(o);
+                });
+                document.getElementById('prof-group').style.display = 'block';
+            }
+        }
+
+        async function loadServices() {
+            const grid = document.getElementById('service-grid');
+            const config = state.salon.config || {};
+            const defSrv = specialtyConfig[config.specialty]?.srv || specialtyConfig.hair.srv;
+            
+            // Fetch custom services from subcollection or state.salon?
+            // For now, let's look at a possible subcollection or if it was saved in the doc
+            // In app.js we added 'servicios' to IDB, but also to Cloud? 
+            // The current DB.js logic pushes the whole store to `users/UID/data/STORE_NAME`.
+            
+            let customSrv = [];
+            try {
+                const customSnap = await db.collection('users').doc(salonId).collection('servicios').get();
+                customSrv = customSnap.docs.map(d => d.data());
+            } catch(e) {}
+
+            const merged = [...new Set([...defSrv, ...customSrv.map(s => s.nom)])];
+
+            merged.forEach(s => {
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                const custom = customSrv.find(x => x.nom === s);
+                chip.innerHTML = `
+                    <span>${s}</span>
+                    ${custom ? `<span class="price-tag">$${custom.val}</span>` : ''}
+                `;
+                chip.onclick = () => {
+                    document.querySelectorAll('#service-grid .chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    state.selSrv = s;
+                    document.getElementById('btn-srv-next').disabled = false;
+                };
+                grid.appendChild(chip);
+            });
+        }
+
+        function genCalendar() {
+            const dayGrid = document.getElementById('day-grid');
+            const now = new Date();
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(now.getDate() + i);
+                const iso = d.toISOString().split('T')[0];
+                const label = d.toLocaleDateString('es', { weekday: 'short', day: 'numeric' });
+                
+                const chip = document.createElement('div');
+                chip.className = 'chip-time';
+                chip.innerText = label;
+                chip.onclick = () => {
+                    document.querySelectorAll('#day-grid .chip-time').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    state.selDay = iso;
+                    checkDT();
+                };
+                dayGrid.appendChild(chip);
+            }
+
+            const timeGrid = document.getElementById('time-grid');
+            const hStart = 9, hEnd = 20;
+            for (let h = hStart; h < hEnd; h++) {
+                ['00', '30'].forEach(m => {
+                    const t = `${h.toString().padStart(2,'0')}:${m}`;
+                    const chip = document.createElement('div');
+                    chip.className = 'chip-time';
+                    chip.innerText = t;
+                    chip.onclick = () => {
+                        document.querySelectorAll('#time-grid .chip-time').forEach(c => c.classList.remove('active'));
+                        chip.classList.add('active');
+                        state.selTime = t;
+                        checkDT();
+                    };
+                    timeGrid.appendChild(chip);
+                });
+            }
+        }
+
+        function checkDT() {
+            if (state.selDay && state.selTime) {
+                document.getElementById('btn-dt-next').disabled = false;
+            }
+        }
+
+        function nextStep(s) {
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('step' + s).classList.add('active');
+            document.querySelectorAll('.step-dot').forEach((d, i) => {
+                d.classList.toggle('active', i + 1 === s);
+            });
+        }
+
+        async function confirmReserva() {
+            const name = document.getElementById('cust-name').value;
+            const tel = document.getElementById('cust-tel').value;
+            const prof = document.getElementById('cust-prof').value;
+
+            if (!name || !tel) return alert("Completa tus datos");
+
+            const btn = document.getElementById('btn-finalize');
+            btn.disabled = true;
+            btn.innerText = "Procesando...";
 
             const reserva = {
-                client: document.getElementById('cust-name').value,
-                phone: document.getElementById('cust-tel').value,
-                service: document.getElementById('cust-srv').value,
-                professional: document.getElementById('cust-prof').value || '',
-                status: 'pendiente',
+                salonId: salonId,
+                cname: name,
+                ctel: tel,
+                srv: state.selSrv,
+                dat: state.selDay + 'T' + state.selTime,
+                prof: prof || '',
+                status: 'pending',
+                val: 0, 
                 createdAt: new Date().toISOString()
             };
 
-            btn.innerText = "Procesando...";
-            btn.disabled = true;
-
             try {
-                await db.collection('users').doc(salonId).collection('reservas_publicas').add(reserva);
-                status.innerText = "¡Solicitud enviada! Te contactaremos por WhatsApp para confirmar.";
-                status.style.display = "block";
-                status.style.color = "#00ffcc";
-                btn.innerText = "Solicitud Enviada";
-            } catch (err) {
-                console.error(err);
-                status.innerText = "Error: " + err.message;
-                status.style.display = "block";
-                status.style.color = "#ff4444";
-                btn.innerText = "Reintentar";
+                await db.collection('reservas').add(reserva);
+                document.getElementById('main-flow').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'block';
+            } catch (e) {
+                alert("Error: " + e.message);
                 btn.disabled = false;
+                btn.innerText = "Confirmar Reserva";
             }
-        };
+        }
+
+        init();
     </script>
 </body>
-
 </html>

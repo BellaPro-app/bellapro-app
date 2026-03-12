@@ -3,7 +3,7 @@
 const database = new DB();
 
 const app = {
-    state: { turnos: [], clientes: [], productos: [], pagos: [], selDay: '', selTime: '', selSrv: '' },
+    state: { turnos: [], clientes: [], productos: [], pagos: [], servicios: [], selDay: '', selTime: '', selSrv: '' },
     user: null,
 
     get currency() {
@@ -452,17 +452,19 @@ const app = {
     },
 
     async load() {
-        const [turnos, clientes, productos, pagos] = await Promise.all([
+        const [turnos, clientes, productos, pagos, servicios] = await Promise.all([
             database.getAll('turnos'),
             database.getAll('clientes'),
             database.getAll('productos'),
-            database.getAll('pago')
+            database.getAll('pago'),
+            database.getAll('servicios')
         ]);
 
         this.state.turnos = turnos;
         this.state.clientes = clientes;
         this.state.productos = productos;
         this.state.pagos = pagos;
+        this.state.servicios = servicios;
     },
 
     events() {
@@ -575,6 +577,27 @@ const app = {
             await this.load();
             this.render();
         };
+
+        document.getElementById('f-serv').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('fs-id').value;
+            const serv = {
+                nom: document.getElementById('fs-nom').value,
+                dur: Number(document.getElementById('fs-dur').value),
+                val: Number(document.getElementById('fs-val').value)
+            };
+            if (id) {
+                serv.id = Number(id);
+                await database.put('servicios', serv);
+            } else {
+                await database.add('servicios', serv);
+            }
+            await this.pushCloud();
+            this.closeModal('m-serv');
+            e.target.reset();
+            await this.load();
+            this.render();
+        };
     },
 
     navTo(id) {
@@ -642,8 +665,11 @@ const app = {
         }
 
         const config = this.specialtyConfig[this.specialty] || this.specialtyConfig.hair;
-        const services = config.services;
-        services.forEach(s => {
+        const defaultServices = config.services;
+        const customServices = this.state.servicios.map(s => s.nom);
+        const allServices = [...new Set([...defaultServices, ...customServices])];
+
+        allServices.forEach(s => {
             const chip = document.createElement('div');
             chip.className = 'chip';
             chip.innerText = s;
@@ -651,6 +677,12 @@ const app = {
                 document.querySelectorAll('#service-selector .chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
                 this.state.selSrv = s;
+                // Auto-set duration if custom service
+                const found = this.state.servicios.find(sv => sv.nom === s);
+                if (found) {
+                    const costInput = document.getElementById('ft-val');
+                    if (costInput && found.val) costInput.value = found.val;
+                }
             };
             srvCon.appendChild(chip);
         });
@@ -716,6 +748,7 @@ const app = {
         this.renderClientes();
         this.renderStock();
         this.renderFinanzas();
+        this.renderServices();
         this.populateClients();
 
         const name = localStorage.getItem('bp_name') || 'BellaPro';
@@ -825,11 +858,22 @@ const app = {
         const l = document.getElementById('full-turnos-list');
         if (!l) return;
         l.innerHTML = '';
-        if (this.state.turnos.length === 0) {
-            l.innerHTML = '<p style="opacity:0.3; text-align:center; padding:40px;">No hay turnos registrados aún.</p>';
+        
+        const q = (document.getElementById('filter-search')?.value || '').toLowerCase();
+        const dateFilter = document.getElementById('filter-date')?.value || '';
+
+        const filtered = this.state.turnos.filter(t => {
+            const matchSearch = t.cname.toLowerCase().includes(q) || t.srv.toLowerCase().includes(q);
+            const matchDate = !dateFilter || t.dat.startsWith(dateFilter);
+            return matchSearch && matchDate;
+        });
+
+        if (filtered.length === 0) {
+            l.innerHTML = '<p style="opacity:0.3; text-align:center; padding:40px;">No hay turnos que coincidan.</p>';
             return;
         }
-        [...this.state.turnos].sort((a, b) => b.dat.localeCompare(a.dat)).forEach(t => {
+
+        [...filtered].sort((a, b) => b.dat.localeCompare(a.dat)).forEach(t => {
             const row = document.createElement('div');
             row.className = 'list-item';
             row.innerHTML = `
@@ -1376,6 +1420,71 @@ const app = {
             location.reload();
         }, 3000);
     },
+
+    renderServices() {
+        const l = document.getElementById('full-services-list');
+        if (!l) return;
+        l.innerHTML = '';
+        if (this.state.servicios.length === 0) {
+            l.innerHTML = '<p style="opacity:0.3; text-align:center; padding:40px;">No has creado servicios personalizados aún.</p>';
+            return;
+        }
+        this.state.servicios.forEach(s => {
+            const row = document.createElement('div');
+            row.className = 'list-item';
+            row.innerHTML = `
+                <div class="list-item-info">
+                    <h4>${s.nom}</h4>
+                    <p>${s.dur} min - ${this.formatMoney(s.val)}</p>
+                </div>
+                <div style="display:flex;">
+                    <button onclick="app.prepEditService(${s.id})" title="Editar" style="background:none; border:none; color:var(--text-secondary); margin-right:10px;"><i class="fas fa-edit"></i></button>
+                    <button onclick="app.delItem('servicios', ${s.id})" title="Eliminar" style="background:none; border:none; color:var(--error);"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            l.appendChild(row);
+        });
+    },
+
+    prepEditService(id) {
+        const s = this.state.servicios.find(x => x.id === id);
+        if (!s) return;
+        document.getElementById('fs-id').value = s.id;
+        document.getElementById('fs-nom').value = s.nom;
+        document.getElementById('fs-dur').value = s.dur;
+        document.getElementById('fs-val').value = s.val;
+        this.openModal('m-serv');
+    },
+
+    listenReservas() {
+        if (!this.user || !this.dbCloud) return;
+        this.dbCloud.collection('reservas')
+            .where('salonId', '==', this.user.uid)
+            .where('status', '==', 'pending')
+            .onSnapshot(snap => {
+                let newReserva = false;
+                snap.docChanges().forEach(change => {
+                    if (change.type === 'added') {
+                        newReserva = true;
+                        const data = change.doc.data();
+                        console.log("Nueva reserva detectada:", data);
+                    }
+                });
+
+                if (newReserva) {
+                    const audio = document.getElementById('notification-sound');
+                    if (audio) {
+                        audio.play().catch(e => console.warn("Audio play blocked:", e));
+                    }
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("BellaPro: Nueva Reserva!", {
+                            body: "Tienes un nuevo turno pendiente de revisión.",
+                            icon: "https://bellapro.app/img/logo.png"
+                        });
+                    }
+                }
+            });
+    }
 
 };
 

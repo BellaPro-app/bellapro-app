@@ -166,6 +166,17 @@
                     <h2 style="font-size: 24px;">Agenda</h2>
                     <span class="btn-small" onclick="app.openModal('m-turno')">+ Nuevo</span>
                 </div>
+                
+                <!-- Filters -->
+                <div class="glass-card" style="padding: 15px; margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 150px;">
+                        <input type="text" id="filter-search" placeholder="Buscar cliente..." oninput="app.renderTurnos()" style="margin: 0; padding: 10px;">
+                    </div>
+                    <div style="width: 150px;">
+                        <input type="date" id="filter-date" onchange="app.renderTurnos()" style="margin: 0; padding: 10px;">
+                    </div>
+                </div>
+
                 <div id="full-turnos-list"></div>
             </section>
 
@@ -295,13 +306,28 @@
                         Tus clientes pueden reservar turnos directamente desde este link. Cópialo y ponlo en tu
                         Instagram o WhatsApp.
                     </p>
-                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                         <input type="text" id="cfg-booking-link" readonly
                             style="flex: 1; font-size: 12px; background: rgba(255,255,255,0.03);">
                         <button class="btn-small" onclick="app.copyBookingLink()"
-                            style="background: var(--primary-gradient); white-space: nowrap; color: #fff; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Copiar
-                            Link</button>
+                            style="padding: 10px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;"><i
+                                class="fas fa-copy"></i></button>
                     </div>
+
+                    <div class="section-header" style="margin-top: 30px;">Servicios y Duraciones</div>
+                    <div class="glass-card">
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">
+                            Define tus servicios y sus duraciones para que la agenda se bloquee correctamente.
+                        </p>
+                        <div id="cfg-services-list" style="margin-bottom: 15px;">
+                            <!-- Dynamic list of services -->
+                        </div>
+                        <button class="btn-full" onclick="app.openModal('m-serv')" style="background: var(--surface-light); border: 1px dashed var(--primary); color: var(--primary);">+ Agregar Servicio Personalizado</button>
+                    </div>
+
+                    <button class="btn-full" onclick="app.logout()"
+                        style="margin-top: 40px; background: rgba(255,68,68,0.1); color: #ff4444; border: 1px solid rgba(255,68,68,0.2);">Cerrar
+                        Sesión</button>
                 </div>
 
                 <div class="section-header" style="margin-top: 30px;">Copia de Seguridad</div>
@@ -501,6 +527,26 @@
         </div>
     </div>
 
+    <div class="modal" id="m-serv">
+        <div class="modal-body">
+            <div class="modal-header">
+                <button onclick="app.closeModal('m-serv')"
+                    style="background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i
+                        class="fas fa-arrow-left"></i></button>
+                <h2 style="margin:0;">Servicio</h2>
+            </div>
+            <div class="modal-content">
+                <form id="f-serv">
+                    <input type="hidden" id="fs-id">
+                    <div class="form-group"><label>Nombre del Servicio</label><input type="text" id="fs-nom" placeholder="Ej: Corte Dama" required></div>
+                    <div class="form-group"><label>Duración (minutos)</label><input type="number" id="fs-dur" value="60" required></div>
+                    <div class="form-group"><label>Precio Sugerido</label><input type="number" id="fs-val" value="0"></div>
+                    <button type="submit" class="btn-full">Guardar Servicio</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- PANEL MAESTRO (ADMIN ONLY) -->
     <div id="admin-panel-section"
         style="display:none; padding: 20px; background: rgba(255,255,255,0.05); margin: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
@@ -525,6 +571,9 @@
             style="background:var(--primary-gradient); border:none; color:white; padding:10px; border-radius:8px; cursor:pointer; font-weight:700;">Activar
             Ahora</button>
     </div>
+
+    <!-- NOTIFICATIONS -->
+    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>
 
     <!-- SCRIPTS -->
     <script src="js/db.js"></script>

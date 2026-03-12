@@ -1,5 +1,5 @@
 const DB_NAME = 'BellaProV1';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 class DB {
     constructor() { this.db = null; }
@@ -8,7 +8,7 @@ class DB {
             const req = indexedDB.open(DB_NAME, DB_VERSION);
             req.onupgradeneeded = (e) => {
                 const db = e.target.result;
-                ['turnos', 'clientes', 'productos', 'pago'].forEach(s => {
+                ['turnos', 'clientes', 'productos', 'pago', 'servicios'].forEach(s => {
                     if (!db.objectStoreNames.contains(s)) {
                         db.createObjectStore(s, { keyPath: 'id', autoIncrement: true });
                     }
@@ -44,7 +44,7 @@ class DB {
     }
     async dump() {
         const data = {};
-        const stores = ['turnos', 'clientes', 'productos', 'pago'];
+        const stores = ['turnos', 'clientes', 'productos', 'pago', 'servicios'];
         for (const s of stores) {
             data[s] = await this.getAll(s);
         }
