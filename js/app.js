@@ -3,8 +3,11 @@
 const database = new DB();
 
 const app = {
-    state: { turnos: [], clientes: [], productos: [], pagos: [], servicios: [], selDay: '', selTime: '', selSrv: '' },
+    state: { turnos: [], clientes: [], productos: [], pagos: [], servicios: [], selDay: '', selTime: '', selSrv: '', section: 'dashboard' },
     user: null,
+    audioEnabled: false, // Flag for user interaction requirement
+    searchTimeout: null, // For debouncing
+    _unsubscribes: [], // Store Firestore unsubscribe functions
 
     get currency() {
         return localStorage.getItem('bp_currency') || '$';
@@ -299,6 +302,24 @@ const app = {
         console.log(`BellaPro: Loading ${show ? 'Start' : 'End'}`);
     },
 
+    cleanup() {
+        console.log("BellaPro: Cleaning up state and listeners...");
+        // 1. Unsubscribe from all Firestore listeners
+        this._unsubscribes.forEach(unsub => {
+            if (typeof unsub === 'function') unsub();
+        });
+        this._unsubscribes = [];
+
+        // 2. Reset UI state
+        this.state = { turnos: [], clientes: [], productos: [], pagos: [], servicios: [], selDay: '', selTime: '', selSrv: '', section: 'dashboard' };
+        
+        // 3. Close any open modals
+        document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        
+        // 4. Clear intervals or timeouts if we had any (none currently identified globally)
+        console.log("BellaPro: Cleanup complete.");
+    },
+
     /**
      * Recupera datos si LocalStorage fue purgado (iOS 7-day rule)
      */
@@ -453,6 +474,7 @@ const app = {
 
     async logout() {
         if (confirm("¿Cerrar sesión en BellaPro?")) {
+            this.cleanup(); // Clean before logout
             await firebase.auth().signOut();
         }
     },
@@ -1340,17 +1362,20 @@ const app = {
     listenReservas() {
         if (!this.user || !this.dbCloud) return;
 
-        this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas')
+        console.log("BellaPro: Starting Unified Reserva Watcher...");
+
+        // Consolidamos ambos listeners en la estructura de _unsubscribes para limpieza
+        
+        // 1. Canal de Reservas Públicas (Fast booking)
+        const unsubPublic = this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas')
             .where('status', '==', 'pendiente')
             .onSnapshot(async (snapshot) => {
                 for (const change of snapshot.docChanges()) {
                     if (change.type === "added") {
                         const data = change.doc.data();
                         const resId = change.doc.id;
+                        console.log("BellaPro: Nueva reserva pública detectada:", data.client);
 
-                        console.log("BellaPro: Nueva reserva detectada:", data.client);
-
-                        // 1. Buscar o Crear Cliente
                         let cli = this.state.clientes.find(c => c.tel === data.phone);
                         if (!cli) {
                             const newCli = { nom: data.client, tel: data.phone, not: 'Creado desde reserva online' };
@@ -1359,8 +1384,6 @@ const app = {
                             this.state.clientes.push(cli);
                         }
 
-                        // 2. Crear Turno
-                        // Usamos la fecha actual + 1 hora como fallback si no hay fecha definida en la reserva rápida
                         const now = new Date();
                         now.setHours(now.getHours() + 1);
                         const turno = {
@@ -1375,21 +1398,48 @@ const app = {
 
                         await database.add('turnos', turno);
                         this.state.turnos.push(turno);
-
-                        // 3. Marcar como procesada en la nube
                         await this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas').doc(resId).update({ status: 'procesada' });
-
                         this.render();
-
-                        // Notificación visual discreta
-                        const toast = document.createElement('div');
-                        toast.style = "position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--primary-gradient); color:white; padding:15px 25px; border-radius:50px; z-index:10000; box-shadow:0 10px 20px rgba(0,0,0,0.3); font-weight:700;";
-                        toast.innerText = `🔔 Nueva reserva de ${data.client}`;
-                        document.body.appendChild(toast);
-                        setTimeout(() => toast.remove(), 5000);
+                        this.showNotification(`🔔 Nueva reserva de ${data.client}`);
                     }
                 }
             });
+
+        // 2. Canal de Reservas General (Estructura extendida)
+        const unsubGeneral = this.dbCloud.collection('reservas')
+            .where('salonId', '==', this.user.uid)
+            .where('status', '==', 'pending')
+            .onSnapshot(snap => {
+                let newReserva = false;
+                snap.docChanges().forEach(change => {
+                    if (change.type === 'added') {
+                        newReserva = true;
+                        const data = change.doc.data();
+                        console.log("BellaPro: Nueva reserva general detectada:", data);
+                        this.showNotification(`📅 Nuevo turno pendiente de revisión: ${data.clientName || 'Cliente'}`);
+                    }
+                });
+            });
+
+        this._unsubscribes.push(unsubPublic, unsubGeneral);
+    },
+
+    showNotification(text) {
+        // Audio notification
+        const audio = document.getElementById('notification-sound');
+        if (audio) audio.play().catch(e => console.warn("Audio play blocked:", e));
+
+        // Browser Native Notification
+        if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("BellaPro", { body: text, icon: "./favicon.png" });
+        }
+
+        // Toast visual UI
+        const toast = document.createElement('div');
+        toast.style = "position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--primary-gradient); color:white; padding:15px 25px; border-radius:50px; z-index:10000; box-shadow:0 10px 20px rgba(0,0,0,0.3); font-weight:700; text-align:center;";
+        toast.innerText = text;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
     },
 
     async resetDB() {
@@ -1600,35 +1650,7 @@ const app = {
         }
     },
 
-    listenReservas() {
-        if (!this.user || !this.dbCloud) return;
-        this.dbCloud.collection('reservas')
-            .where('salonId', '==', this.user.uid)
-            .where('status', '==', 'pending')
-            .onSnapshot(snap => {
-                let newReserva = false;
-                snap.docChanges().forEach(change => {
-                    if (change.type === 'added') {
-                        newReserva = true;
-                        const data = change.doc.data();
-                        console.log("Nueva reserva detectada:", data);
-                    }
-                });
-
-                if (newReserva) {
-                    const audio = document.getElementById('notification-sound');
-                    if (audio) {
-                        audio.play().catch(e => console.warn("Audio play blocked:", e));
-                    }
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("BellaPro: Nueva Reserva!", {
-                            body: "Tienes un nuevo turno pendiente de revisión.",
-                            icon: "https://bellapro.app/img/logo.png"
-                        });
-                    }
-                }
-            });
-    }
+    // Unified Reserva system handled in single function above
 
 };
 
