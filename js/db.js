@@ -21,13 +21,18 @@ class DB {
     getAll(s) {
         return new Promise((res) => {
             const tx = this.db.transaction(s, 'readonly');
-            tx.objectStore(s).getAll().onsuccess = (e) => res(e.target.result);
+            tx.objectStore(s).getAll().onsuccess = (e) => {
+                const results = e.target.result || [];
+                const filtered = results.filter(item => item.appType === window.SPECIALTY || !item.appType);
+                res(filtered);
+            };
         });
     }
     add(s, item) {
         return new Promise((res) => {
             const tx = this.db.transaction(s, 'readwrite');
-            tx.objectStore(s).add(item).onsuccess = (e) => res(e.target.result);
+            const itemWithApp = { ...item, appType: window.SPECIALTY || 'hair' };
+            tx.objectStore(s).add(itemWithApp).onsuccess = (e) => res(e.target.result);
         });
     }
     del(s, id) {
@@ -39,7 +44,8 @@ class DB {
     put(s, item) {
         return new Promise((res) => {
             const tx = this.db.transaction(s, 'readwrite');
-            tx.objectStore(s).put(item).onsuccess = (e) => res(e.target.result);
+            const itemWithApp = { ...item, appType: window.SPECIALTY || 'hair' };
+            tx.objectStore(s).put(itemWithApp).onsuccess = (e) => res(e.target.result);
         });
     }
     async dump() {
@@ -49,5 +55,19 @@ class DB {
             data[s] = await this.getAll(s);
         }
         return data;
+    }
+    async clearAppData(specialty) {
+        const stores = ['turnos', 'clientes', 'productos', 'pago', 'servicios'];
+        const tx = this.db.transaction(stores, 'readwrite');
+        for (const s of stores) {
+            const store = tx.objectStore(s);
+            store.getAll().onsuccess = (e) => {
+                const items = e.target.result;
+                items.forEach(item => {
+                    if (item.appType === specialty) store.delete(item.id);
+                });
+            };
+        }
+        return new Promise(res => tx.oncomplete = () => res());
     }
 }

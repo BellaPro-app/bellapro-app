@@ -106,17 +106,17 @@ exports.processProvisioningTask = functions.https.onRequest(async (req, res) => 
         const approvedRef = db.collection('approved_emails').doc(email);
         batch.set(approvedRef, {
             approved: true,
-            role: role,
+            roles: admin.firestore.FieldValue.arrayUnion(role),
             tenantId: tenantId,
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             hotmart_id: transactionId
-        });
+        }, { merge: true });
 
         const userSnapshot = await db.collection('users').where('config.email', '==', email).limit(1).get();
         if (!userSnapshot.empty) {
             batch.update(userSnapshot.docs[0].ref, {
                 "config.isApproved": true,
-                "config.role": role,
+                "config.roles": admin.firestore.FieldValue.arrayUnion(role),
                 "config.tenantId": tenantId,
                 "config.hotmart_transaction": transactionId
             });
@@ -169,20 +169,21 @@ exports.adminProvisionUser = functions.https.onRequest((req, res) => {
             const approvedRef = db.collection('approved_emails').doc(email);
             batch.set(approvedRef, {
                 approved: true,
-                role: role || "PREMIUM",
+                roles: admin.firestore.FieldValue.arrayUnion(role || "PREMIUM"),
                 tenantId: tenantId,
-                specialty: specialty,
+                specialties: admin.firestore.FieldValue.arrayUnion(specialty),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp()
-            });
+            }, { merge: true });
 
             // 3. Vincular si el usuario ya existe
             const userSnapshot = await db.collection('users').where('config.email', '==', email).limit(1).get();
             if (!userSnapshot.empty) {
                 batch.update(userSnapshot.docs[0].ref, {
                     "config.isApproved": true,
-                    "config.role": role || "PREMIUM",
+                    "config.roles": admin.firestore.FieldValue.arrayUnion(role || "PREMIUM"),
                     "config.tenantId": tenantId,
-                    "config.licenseType": specialty
+                    "config.specialties": admin.firestore.FieldValue.arrayUnion(specialty),
+                    "config.licenseType": specialty // Mantener por compatibilidad legacy si es necesario, pero usar specialties
                 });
             }
 
