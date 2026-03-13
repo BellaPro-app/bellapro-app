@@ -551,31 +551,54 @@
             btn.style.opacity = '0.7';
             btn.style.pointerEvents = 'none';
 
-            // Seleccionamos el contenedor que queremos capturar (main-content aisla la side-bar)
-            const element = document.querySelector('.main-content');
+            // Contenedor temporal para no afectar la interfaz visual del usuario durante la foto
+            const tempContainer = document.createElement('div');
+            tempContainer.style.width = '1000px'; 
+            tempContainer.style.padding = '40px 60px'; 
+            tempContainer.style.backgroundColor = '#020617';
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '-9999px';
+            tempContainer.style.top = '0';
             
-            // Opciones obligatorias de alta resolución requeridas por diseño
-            // Reducimos scale a 2 para evitar errores de Canvas Memory Limit en documentos muy largos
+            // Clonamos todo el main-content
+            const contentClone = document.querySelector('.main-content').cloneNode(true);
+            
+            // Eliminamos el botón de PDF en el clon para que no salga impreso
+            const btnClone = contentClone.querySelector('#btn-export-pdf');
+            if (btnClone) btnClone.remove();
+
+            // Eliminamos el margen izquierdo salvaje de 300px (la sidebar) y el padding %. 
+            // Ésta era la causa principal de que saliera movido al costado.
+            contentClone.style.marginLeft = '0';
+            contentClone.style.padding = '0';
+
+            // Agregamos el clon al contenedor temporal y al body para que se calcule el layout
+            tempContainer.appendChild(contentClone);
+            document.body.appendChild(tempContainer);
+
             const opt = {
-                margin:       [15, 15, 15, 15], 
+                margin:       10, 
                 filename:     'manual-bellapro.pdf',
                 image:        { type: 'jpeg', quality: 0.98 }, 
                 html2canvas:  { 
                     scale: 2,               
                     useCORS: true,
-                    logging: false
+                    backgroundColor: '#020617', // Fuerza fondo oscuro estricto vs el blanco por defecto
+                    windowWidth: 1000
                 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'], before: 'section' } // Cortes de página perfectos
             };
 
-            // Ejecuta el render engine
-            html2pdf().set(opt).from(element).save().then(() => {
+            html2pdf().set(opt).from(tempContainer).save().then(() => {
+                document.body.removeChild(tempContainer);
                 btn.innerHTML = iconOriginal;
                 btn.style.opacity = '1';
                 btn.style.pointerEvents = 'auto';
             }).catch(err => {
+                document.body.removeChild(tempContainer);
                 console.error("Error al exportar PDF: ", err);
-                alert("Hubo un problema procesando el PDF. Si estás abriendo el archivo localmente, intenta subirlo a un servidor.");
+                alert("Hubo un problema procesando el PDF.");
                 btn.innerHTML = iconOriginal;
                 btn.style.pointerEvents = 'auto';
                 btn.style.opacity = '1';
