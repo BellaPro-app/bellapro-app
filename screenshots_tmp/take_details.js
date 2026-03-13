@@ -29,7 +29,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         // ==== SCREENSHOT: Nuevo Turno ====
         console.log('Abriendo modal Nuevo Turno...');
         await page.evaluate(() => {
-            document.getElementById('btn-nuevo-turno').click();
+            app.openModal('m-turno');
         });
         await delay(500); // esperar animación
 
@@ -53,7 +53,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         console.log('Abriendo modal Finanzas...');
         await page.evaluate(() => {
             document.getElementById('dash-money').innerText = '$60,000';
-            document.getElementById('btn-finanzas').click();
+            app.navTo('finanzas');
         });
         await delay(500); // esperar
         
