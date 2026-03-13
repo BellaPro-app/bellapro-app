@@ -57,7 +57,8 @@ const app = {
         }
     },
 
-    VERSION: '3.3.1', // Incrementar para forzar limpieza total de caché en clientes
+    ADMIN_EMAIL: 'sinfield.fabian@gmail.com',
+    VERSION: '3.3.2', // Forzar limpieza de caché para aplicar cambios de esquema y roles
 
     async init() {
         console.log("BellaPro: Initializing...");
@@ -174,16 +175,20 @@ const app = {
 
                     // License & RBAC Enforcement (Soberanía Total)
                     this.isAdmin = (user.email === this.ADMIN_EMAIL);
-                    const userRole = (userData && userData.config) ? userData.config.role : 'FREE_STUDENT';
-                    this.licenseType = userRole === 'PREMIUM' ? (userData.config.licenseType || 'hair') : 'hair';
+                    
+                    // Soporte para array de roles
+                    const userRoles = (userData && userData.config) ? (userData.config.roles || [userData.config.role || 'FREE_STUDENT']) : ['FREE_STUDENT'];
+                    const isPremium = userRoles.includes('PREMIUM') || userRoles.includes('ADMIN');
+                    
+                    this.licenseType = isPremium ? (userData.config.licenseType || 'hair') : 'hair';
                     this.tenantId = (userData && userData.config) ? userData.config.tenantId : 'default';
 
-                    if (this.isAdmin) {
+                    if (this.isAdmin || userRoles.includes('ADMIN')) {
                         this.licenseType = 'master';
                         this.tenantId = 'master_system';
                     }
 
-                    console.log(`RBAC Active: Role=${userRole} | Tenant=${this.tenantId}`);
+                    console.log(`RBAC Active: Roles=${userRoles.join(', ')} | Tenant=${this.tenantId}`);
                     // PERSISTENCIA: Guardar especialidad para redirección automática desde landing
                     localStorage.setItem('bp_specialty', this.licenseType);
 
@@ -200,7 +205,7 @@ const app = {
 
                     // Protección de Rutas Financieras/Premium
                     const isPremiumArea = (this.state.section === 'pagos');
-                    if (isPremiumArea && userRole !== 'PREMIUM' && !this.isAdmin) {
+                    if (isPremiumArea && !isPremium) {
                         alert("Acceso Restringido: Tu suscripción actual no incluye el Panel Financiero.");
                         this.navTo('turnos');
                         return;
@@ -1122,12 +1127,14 @@ const app = {
             specialty: this.specialty
         };
         try {
-            await this.dbCloud.collection('users').doc(this.user.uid).set({
-                data,
-                config,
-                lastSync: new Date().toISOString()
-            });
-            console.log("Cloud Sync: Push success");
+            // Sincronización segmentada: Datos guardados por especialidad
+            await this.dbCloud.collection('users').doc(this.user.uid)
+                .collection('specialties').doc(this.specialty).set({
+                    data,
+                    config,
+                    lastSync: new Date().toISOString()
+                });
+            console.log(`Cloud Sync [${this.specialty}]: Push success`);
         } catch (e) {
             console.error("Cloud Sync: Push failed", e);
         }
@@ -1136,39 +1143,38 @@ const app = {
     async pullCloud() {
         if (!this.user) return;
         try {
-            const doc = await this.dbCloud.collection('users').doc(this.user.uid).get();
+            // Pull segmentado por especialidad
+            const doc = await this.dbCloud.collection('users').doc(this.user.uid)
+                .collection('specialties').doc(this.specialty).get();
+            
             if (doc.exists) {
                 const cloud = doc.data();
-                // Check if cloud data is newer or if local is empty
                 if (cloud.data) {
-                    const stores = ['turnos', 'clientes', 'productos', 'pago'];
+                    const stores = ['turnos', 'clientes', 'productos', 'pago', 'servicios'];
                     for (const s of stores) {
                         const items = cloud.data[s] || [];
-                        await new Promise((resolve, reject) => {
-                            const tx = database.db.transaction(s, 'readwrite');
-                            const store = tx.objectStore(s);
-                            store.clear();
-                            items.forEach(item => store.add(item));
-                            tx.oncomplete = () => resolve();
-                            tx.onerror = (err) => reject(err);
+                        // Solo cargamos items que pertenezcan a esta especialidad o no tengan appType
+                        const tx = database.db.transaction(s, 'readwrite');
+                        const store = tx.objectStore(s);
+                        
+                        // En lugar de clear(), eliminamos solo los de esta especialidad para soportar multi-storage local parcial
+                        const allLocal = await database.getAll(s);
+                        allLocal.forEach(async item => {
+                          if (item.appType === this.specialty) await database.del(s, item.id);
                         });
+                        
+                        items.forEach(item => store.add({ ...item, appType: this.specialty }));
                     }
                 }
                 if (cloud.config) {
                     localStorage.setItem('bp_name', cloud.config.name);
                     if (cloud.config.currency) localStorage.setItem('bp_currency', cloud.config.currency);
                     if (cloud.config.logo) localStorage.setItem('bp_logo', cloud.config.logo);
-                    if (cloud.config.specialty) {
-                        localStorage.setItem('bp_specialty', cloud.config.specialty);
-                        this.applySpecialtyTheme();
-                    }
                 }
 
-                // CRITICAL: Refresh local state and UI after pull
                 await this.load();
                 this.render();
-
-                console.log("Cloud Sync: Pull success and UI refreshed");
+                console.log(`Cloud Sync [${this.specialty}]: Pull success`);
             }
         } catch (e) {
             console.error("Cloud Sync: Pull failed", e);
