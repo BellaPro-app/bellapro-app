@@ -91,6 +91,12 @@ const app = {
 
         this.applySpecialtyTheme();
 
+        // Audio activation listener
+        window.addEventListener('click', () => {
+            this.audioEnabled = true;
+            console.log("BellaPro: Audio context enabled by user gesture");
+        }, { once: true });
+
         const firebaseConfig = {
             apiKey: "AIzaSyCCFp95pg8x4YAJ4prASufTIywvdbHksPE",
             authDomain: "bellapro-d297f.firebaseapp.com",
@@ -876,6 +882,13 @@ const app = {
     },
 
 
+    debounceSearch() {
+        if (this.searchTimeout) clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => {
+            this.renderTurnos();
+        }, 300); // 300ms delay
+    },
+
     renderTurnos() {
         const l = document.getElementById('full-turnos-list');
         if (!l) return;
@@ -1362,11 +1375,9 @@ const app = {
     listenReservas() {
         if (!this.user || !this.dbCloud) return;
 
-        console.log("BellaPro: Starting Unified Reserva Watcher...");
+        console.log("BellaPro: Starting Unified Reserva Watcher (Auto-Process)...");
 
-        // Consolidamos ambos listeners en la estructura de _unsubscribes para limpieza
-        
-        // 1. Canal de Reservas Públicas (Fast booking)
+        // 1. Canal de Reservas Públicas (Fast booking / Local specialty)
         const unsubPublic = this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas')
             .where('status', '==', 'pendiente')
             .onSnapshot(async (snapshot) => {
@@ -1374,72 +1385,101 @@ const app = {
                     if (change.type === "added") {
                         const data = change.doc.data();
                         const resId = change.doc.id;
-                        console.log("BellaPro: Nueva reserva pública detectada:", data.client);
+                        
+                        // Prevent duplicates and only process if same specialty (optional, usually these are generic)
+                        console.log("BellaPro: Procesando reserva pública:", data.client);
 
+                        // Find or Create Client
                         let cli = this.state.clientes.find(c => c.tel === data.phone);
                         if (!cli) {
-                            const newCli = { nom: data.client, tel: data.phone, not: 'Creado desde reserva online' };
+                            const newCli = { 
+                                nom: data.client, 
+                                tel: data.phone, 
+                                not: 'Creado desde reserva online',
+                                appType: this.specialty 
+                            };
                             const id = await database.add('clientes', newCli);
                             cli = { ...newCli, id };
                             this.state.clientes.push(cli);
                         }
 
+                        // Create Turno
                         const now = new Date();
-                        now.setHours(now.getHours() + 1);
+                        now.setHours(now.getHours() + 1); // Default to one hour from now
+                        const formatTime = (d) => `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+                        
                         const turno = {
                             cid: cli.id,
                             cname: cli.nom,
                             srv: data.service,
                             prof: data.professional || '',
-                            dat: now.toISOString().split(':')[0] + ':00',
+                            dat: now.toISOString().split('T')[0] + 'T' + formatTime(now),
                             val: 0,
-                            pagado: false
+                            pagado: false,
+                            appType: this.specialty
                         };
 
                         await database.add('turnos', turno);
                         this.state.turnos.push(turno);
+                        
+                        // Mark as processed in Cloud
                         await this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas').doc(resId).update({ status: 'procesada' });
+                        
+                        this.showNotification(`🔔 Confirmado: ${data.client} (${data.service})`);
                         this.render();
-                        this.showNotification(`🔔 Nueva reserva de ${data.client}`);
                     }
                 }
             });
 
-        // 2. Canal de Reservas General (Estructura extendida)
+        // 2. Canal de Reservas General (Estructura extendida - Multiapp)
         const unsubGeneral = this.dbCloud.collection('reservas')
             .where('salonId', '==', this.user.uid)
             .where('status', '==', 'pending')
-            .onSnapshot(snap => {
-                let newReserva = false;
-                snap.docChanges().forEach(change => {
+            .onSnapshot(async (snap) => {
+                for (const change of snap.docChanges()) {
                     if (change.type === 'added') {
-                        newReserva = true;
                         const data = change.doc.data();
+                        const resId = change.doc.id;
+                        
+                        // We skip auto-processing here as it might be from another app 
+                        // unless we check data.appType if it exists
                         console.log("BellaPro: Nueva reserva general detectada:", data);
-                        this.showNotification(`📅 Nuevo turno pendiente de revisión: ${data.clientName || 'Cliente'}`);
+                        
+                        if (data.appType === this.specialty || !data.appType) {
+                            this.showNotification(`📅 Turno Pendiente: ${data.clientName || 'Cliente'}`);
+                        }
                     }
-                });
+                }
             });
 
         this._unsubscribes.push(unsubPublic, unsubGeneral);
     },
 
     showNotification(text) {
-        // Audio notification
-        const audio = document.getElementById('notification-sound');
-        if (audio) audio.play().catch(e => console.warn("Audio play blocked:", e));
+        // Audio notification - Only if enabled by user
+        if (this.audioEnabled) {
+            const audio = document.getElementById('notification-sound');
+            if (audio) audio.play().catch(e => console.warn("Audio play failed:", e));
+        } else {
+            console.log("BellaPro: Audio suppressed (User gesture required)");
+        }
 
         // Browser Native Notification
         if ("Notification" in window && Notification.permission === "granted") {
-            new Notification("BellaPro", { body: text, icon: "./favicon.png" });
+            new Notification("BellaPro", { body: text, icon: "./assets/logo/logo.png" });
         }
 
         // Toast visual UI
         const toast = document.createElement('div');
-        toast.style = "position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--primary-gradient); color:white; padding:15px 25px; border-radius:50px; z-index:10000; box-shadow:0 10px 20px rgba(0,0,0,0.3); font-weight:700; text-align:center;";
+        toast.className = 'toast-notification';
+        toast.style = "position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--primary-gradient); color:white; padding:15px 25px; border-radius:50px; z-index:10000; box-shadow:0 10px 20px rgba(0,0,0,0.3); font-weight:700; text-align:center; animation: slideUp 0.3s ease-out;";
         toast.innerText = text;
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 5000);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.5s';
+            setTimeout(() => toast.remove(), 500);
+        }, 5000);
     },
 
     async resetDB() {
