@@ -517,35 +517,10 @@
         </main>
     </div>
 
+    <!-- Librería html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <script>
-        function descargarPDF() {
-            const btn = document.getElementById('btn-export-pdf');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando PDF...';
-            btn.style.opacity = '0.7';
-
-            // Seleccionamos el contenido ignorando el sidebar
-            const element = document.querySelector('.main-content');
-            
-            // Configuración ESTRICTA de alta fidelidad según requerimientos
-            const opt = {
-                margin:       [15, 15, 15, 15], 
-                filename:     'Manual-BellaPro.pdf',
-                image:        { type: 'jpeg', quality: 1 }, // Máxima calidad
-                html2canvas:  { 
-                    scale: 4,               // Escala *4 para evitar texto borroso
-                    letterRendering: true,  // Textos súper nítidos
-                    useCORS: true           // Permitir cargar las tipografías
-                },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            // Ejecutamos exportación
-            html2pdf().set(opt).from(element).save().then(() => {
-                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Descargar PDF';
-                btn.style.opacity = '1';
-            });
-        }
-
         const sections = document.querySelectorAll('section, header');
         const navLinks = document.querySelectorAll('.nav-links a');
 
