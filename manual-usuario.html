@@ -339,6 +339,42 @@
                 max-width: 100%;
             }
         }
+
+        /* --- PDF EXPORT PRINT STYLES --- */
+        @media print {
+            body { 
+                background: #ffffff !important; 
+                color: #000000 !important; 
+            }
+            .wrapper { margin: 0; padding: 0; display: block; }
+            .sidebar, .mobile-nav-toggle, #btn-export-pdf { display: none !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; }
+            
+            h2, h3, h4, p, li { color: #000000 !important; }
+            .section-desc, .step-content p { color: #333333 !important; }
+            
+            /* Preservar acentos de marca pero legibles */
+            .badge { border-color: #000; color: #000; }
+            .instruction-list li { background: transparent; border: 1px solid #ccc; color: #000; }
+            
+            .glass-card, .tutorial-step, .theme-card {
+                background: transparent !important;
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+            }
+
+            /* Forzar saltos de página para secciones limpias */
+            section { page-break-before: always; margin-bottom: 2rem !important; }
+            .tutorial-step, .glass-card, .step-image img, .theme-card {
+                page-break-inside: avoid;
+            }
+            
+            /* Evitar páginas en blanco o margenes extraños */
+            .hero { padding: 1rem 0; margin-bottom: 2rem; border-bottom: 2px solid #000; }
+            
+            /* Mantener imágenes centradas y sin sombra */
+            .step-image img { border: 1px solid #eee; box-shadow: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -362,7 +398,10 @@
         </aside>
 
         <main class="main-content">
-            <header id="bienvenida" class="hero">
+            <header id="bienvenida" class="hero" style="position:relative;">
+                <button id="btn-export-pdf" onclick="descargarPDF()" style="position: absolute; right: 0; top: 20px; background: var(--primary-gradient); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-family: var(--font-display); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(212,175,55,0.3); transition: all 0.3s ease;">
+                    <i class="fas fa-file-pdf"></i> Descargar PDF
+                </button>
                 <span class="badge">Capacitación Paso a Paso</span>
                 <h2>Aprende a usar<br>tu nuevo sistema.</h2>
                 <p>Esta guía está diseñada para que cualquier persona del equipo aprenda a utilizar BellaPro en menos de 5 minutos. Con instrucciones claras e imágenes reales de la aplicación en funcionamiento.</p>
@@ -479,6 +518,34 @@
     </div>
 
     <script>
+        function descargarPDF() {
+            const btn = document.getElementById('btn-export-pdf');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando PDF...';
+            btn.style.opacity = '0.7';
+
+            // Seleccionamos el contenido ignorando el sidebar
+            const element = document.querySelector('.main-content');
+            
+            // Configuración ESTRICTA de alta fidelidad según requerimientos
+            const opt = {
+                margin:       [15, 15, 15, 15], 
+                filename:     'Manual-BellaPro.pdf',
+                image:        { type: 'jpeg', quality: 1 }, // Máxima calidad
+                html2canvas:  { 
+                    scale: 4,               // Escala *4 para evitar texto borroso
+                    letterRendering: true,  // Textos súper nítidos
+                    useCORS: true           // Permitir cargar las tipografías
+                },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Ejecutamos exportación
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Descargar PDF';
+                btn.style.opacity = '1';
+            });
+        }
+
         const sections = document.querySelectorAll('section, header');
         const navLinks = document.querySelectorAll('.nav-links a');
 
