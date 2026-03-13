@@ -2,70 +2,92 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BellaPro - Manual de Usuario Pro v3.3.1</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>BellaPro - Manual de Usuario Premium</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --accent: #f43f5e;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --glass: rgba(30, 41, 59, 0.7);
+            /* Colores Base */
+            --bg-color: #020617;
+            --surface: rgba(30, 41, 59, 0.4);
+            --surface-hover: rgba(30, 41, 59, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            
+            /* Colores Especialidades */
+            --color-hair: #D4AF37;
+            --color-nails: #c084fc;
+            --color-spa: #4ade80;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-main);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-body);
             line-height: 1.6;
-            overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
-        /* Glassmorphism Sidebar */
+        h1, h2, h3, h4, .font-display {
+            font-family: var(--font-display);
+        }
+
+        /* Nav & Layout responsive */
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
         .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
             width: 300px;
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            border-right: 1px solid var(--border);
-            padding: 2rem;
-            z-index: 100;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
+            z-index: 50;
         }
 
-        .logo-container {
-            margin-bottom: 3rem;
+        .sidebar-header {
+            padding: 2.5rem 2rem;
             text-align: center;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .logo-container h1 {
+        .sidebar-header h1 {
             font-size: 1.8rem;
-            background: linear-gradient(to right, #818cf8, #f43f5e);
+            font-weight: 700;
+            background: linear-gradient(135deg, #f8fafc, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 700;
+            margin-bottom: 0.5rem;
         }
 
         .nav-links {
+            padding: 2rem 1rem;
             list-style: none;
-            overflow-y: auto;
+            flex: 1;
         }
 
         .nav-links li {
@@ -73,331 +95,368 @@
         }
 
         .nav-links a {
-            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
             text-decoration: none;
-            display: block;
-            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            padding: 12px 20px;
             border-radius: 12px;
             transition: all 0.3s ease;
             font-weight: 500;
+            border: 1px solid transparent;
         }
 
-        .nav-links a:hover {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-            padding-left: 1.5rem;
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-primary);
+            background: var(--surface);
+            border-color: var(--border-color);
+            transform: translateX(5px);
         }
 
-        .nav-links a.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        .nav-links a i {
+            width: 20px;
+            text-align: center;
         }
 
-        /* Main Content */
         .main-content {
+            flex: 1;
             margin-left: 300px;
-            padding: 4rem;
-            max-width: 1200px;
+            padding: 4rem 10%;
         }
 
         .hero {
-            padding: 4rem 0;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 4rem;
+            padding: 5rem 0 3rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 3rem;
         }
 
         .hero h2 {
-            font-size: 4rem;
+            font-size: 3.5rem;
             line-height: 1.1;
+            letter-spacing: -1px;
             margin-bottom: 1.5rem;
-            letter-spacing: -2px;
         }
 
         .hero p {
             font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 800px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            font-weight: 300;
         }
 
         .badge {
             display: inline-block;
-            padding: 0.25rem 1rem;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 16px;
             border-radius: 99px;
-            background: rgba(244, 63, 94, 0.1);
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            font-family: var(--font-display);
+            font-size: 0.9rem;
             margin-bottom: 1rem;
-            border: 1px solid rgba(244, 63, 94, 0.2);
+            font-weight: 500;
         }
 
         section {
             margin-bottom: 6rem;
+            scroll-margin-top: 2rem;
         }
 
-        h3 {
-            font-size: 2.5rem;
+        .section-title {
+            font-size: 2.2rem;
             margin-bottom: 2rem;
-            color: white;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 15px;
+            font-weight: 600;
         }
 
-        h3 i {
-            color: var(--primary);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .feature-card {
-            background: var(--card-bg);
-            padding: 2rem;
+        /* Glass Cards */
+        .glass-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
             border-radius: 24px;
-            border: 1px solid var(--border);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-        }
-
-        .feature-card i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card h4 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-        }
-
-        .step-list {
-            list-style: none;
-            counter-reset: steps;
-        }
-
-        .step-list li {
-            position: relative;
-            padding-left: 4rem;
-            margin-bottom: 3rem;
-        }
-
-        .step-list li::before {
-            counter-increment: steps;
-            content: counter(steps);
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 3rem;
-            height: 3rem;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.25rem;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-        }
-
-        .screenshot-placeholder {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #020617;
-            border-radius: 20px;
-            margin: 2rem 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            border: 2px dashed var(--border);
+            padding: 2.5rem;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .screenshot-placeholder img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
         }
 
-        .tech-specs {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            padding: 3rem;
+        .glass-card:hover {
+            background: var(--surface-hover);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Especialidades Showcase */
+        .theme-showcase {
+            display: grid;
+            gap: 4rem;
+            margin-top: 3rem;
+        }
+
+        .theme-item {
+            display: flex;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
             border-radius: 32px;
-            margin-top: 4rem;
+            padding: 3rem;
+            gap: 3rem;
+            align-items: center;
         }
 
-        /* Print Mode Override */
-        @media print {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 2rem; }
-            body { background: white; color: black; }
-            .hero h2 { color: black; }
-            .feature-card, section { break-inside: avoid; }
+        .theme-content {
+            flex: 1;
         }
 
-        /* Mobile Responsive */
+        .theme-content h4 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .theme-mockup {
+            flex: 1;
+            max-width: 320px;
+            border-radius: 40px;
+            padding: 10px;
+            background: #1e293b;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .theme-mockup img {
+            width: 100%;
+            border-radius: 30px;
+            display: block;
+        }
+
+        /* Specific colors */
+        .theme-hair .icon-box { color: var(--color-hair); border-color: rgba(212, 175, 55, 0.3); background: rgba(212, 175, 55, 0.05); }
+        .theme-hair h4 { color: var(--color-hair); }
+        .theme-hair .theme-mockup { box-shadow: 0 20px 40px rgba(212, 175, 55, 0.1); }
+
+        .theme-nails .icon-box { color: var(--color-nails); border-color: rgba(192, 132, 252, 0.3); background: rgba(192, 132, 252, 0.05); }
+        .theme-nails h4 { color: var(--color-nails); }
+        .theme-nails .theme-mockup { box-shadow: 0 20px 40px rgba(192, 132, 252, 0.1); }
+
+        .theme-spa .icon-box { color: var(--color-spa); border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.05); }
+        .theme-spa h4 { color: var(--color-spa); }
+        .theme-spa .theme-mockup { box-shadow: 0 20px 40px rgba(74, 222, 128, 0.1); }
+
+        /* Responsive */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
         @media (max-width: 1024px) {
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .main-content { margin-left: 0; padding: 2rem; }
-            .hero h2 { font-size: 3rem; }
+            .mobile-nav-toggle { display: block; }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 5%;
+            }
+
+            .theme-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            .theme-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="logo-container">
-            <h1>BellaPro <small style="font-size: 1rem; color: var(--text-muted);">SaaS</small></h1>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#bienvenida">Bienvenida</a></li>
-            <li><a href="#especialidades">Especialidades</a></li>
-            <li><a href="#pwa">Instalación PWA</a></li>
-            <li><a href="#agenda">Agenda Inteligente</a></li>
-            <li><a href="#servicios">Servicios Dinámicos</a></li>
-            <li><a href="#finanzas">Panel Financiero</a></li>
-            <li><a href="#equipo">Equipo Pro</a></li>
+    <button class="mobile-nav-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+        <i class="fas fa-bars"></i>
+    </button>
 
-        </ul>
-    </aside>
-
-    <main class="main-content">
-        
-        <header id="bienvenida" class="hero">
-            <span class="badge">Novedades v3.3.1</span>
-            <h2>Domina el éxito de tu salón con BellaPro.</h2>
-            <p>Bienvenido a la nueva era de la gestión estética. BellaPro no es solo un software; es tu socio estratégico para escalar tu negocio de belleza desde 0 hasta el éxito profesional.</p>
-        </header>
-
-        <!-- Especialidades Section -->
-        <section id="especialidades">
-            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Tres Experiencias, Un Sistema</h3>
-            <p>Hemos rediseñado BellaPro para adaptarse quirúrgicamente a tu estilo de trabajo. Elige el tema que mejor te identifique:</p>
-            <div class="grid">
-                <div class="feature-card">
-                    <i class="fa-solid fa-scissors"></i>
-                    <h4>Peluquería (Classic)</h4>
-                    <p>Enfocado en cortes, tintura y tratamientos capilares. Interfaz elegante y limpia.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fa-solid fa-hand-sparkles"></i>
-                    <h4>Nails Studio (Vibrant)</h4>
-                    <p>Diseñado para especialistas en manicura. Colores pop y flujo optimizado para servicios rápidos.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fa-solid fa-spa"></i>
-                    <h4>Wellness & Spa (Calm)</h4>
-                    <p>Tonos tierra y atmósfera relajante para centros de estética, masajes y depilación.</p>
-                </div>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>BellaPro<span style="font-weight:300; opacity:0.7;">.</span></h1>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); letter-spacing: 2px;">MANUAL OFICIAL</p>
             </div>
-
-        </section>
-
-        <!-- PWA Section -->
-        <section id="pwa">
-            <h3><i class="fa-solid fa-mobile-screen-button"></i> Tu App en todas partes</h3>
-            <p>BellaPro es una Progressive Web App (PWA). No necesitas descargar nada de la Play Store. Instálala en segundos:</p>
-            <ul class="step-list">
-                <li>
-                    <h4>Desde el Navegador (Chrome/Safari)</h4>
-                    <p>Haz clic en el icono de "Compartir" o los tres puntos y selecciona <strong>"Instalar aplicación"</strong> o <strong>"Añadir a pantalla de inicio"</strong>.</p>
-                </li>
-                <li>
-                    <h4>Sincronización Total</h4>
-                    <p>Todos tus datos se sincronizan instantáneamente. Empieza una reserva en la PC y termínala en tu móvil mientras caminas por el salón.</p>
-                </li>
+            <ul class="nav-links">
+                <li><a href="#bienvenida" class="active"><i class="fas fa-sparkles"></i> Inicio</a></li>
+                <li><a href="#especialidades"><i class="fas fa-magic"></i> Especialidades</a></li>
+                <li><a href="#pwa"><i class="fas fa-mobile-screen"></i> Instalación App</a></li>
+                <li><a href="#agenda"><i class="fas fa-calendar-alt"></i> Agenda Smart</a></li>
+                <li><a href="#finanzas"><i class="fas fa-chart-line"></i> Finanzas</a></li>
             </ul>
-        </section>
+        </aside>
 
-        <!-- Agenda Section -->
-        <section id="agenda">
-            <h3><i class="fa-solid fa-calendar-check"></i> Agenda Inteligente</h3>
-            <p>El corazón de tu negocio. Ahora más rápida y visual que nunca.</p>
-            <div class="feature-card">
-                <h4>Filtro de Estado Instantáneo</h4>
-                <p>Usa los botones superiores (chips) para filtrar rápidamente: <strong>Pendientes</strong>, <strong>Confirmadas</strong>, <strong>Canceladas</strong> o <strong>Finalizadas</strong>. Colores semánticos para decisiones rápidas.</p>
-            </div>
+        <main class="main-content">
+            <header id="bienvenida" class="hero">
+                <span class="badge">Versión 4.0 - Premium Edition</span>
+                <h2>Gestión que se adapta<br>a tu salón.</h2>
+                <p>Descubre cómo aprovechar al máximo tu centro de estética, barbería, o spa con BellaPro. Rediseñado de cero para la excelencia visual y operativa.</p>
+            </header>
 
-        </section>
+            <section id="especialidades">
+                <h3 class="section-title"><i class="fas fa-palette" style="opacity: 0.5;"></i> Experiencias a Medida</h3>
+                <p style="color: var(--text-secondary); max-width: 600px; font-size: 1.1rem;">La interfaz de BellaPro muta y se colorea para acompañar perfectamente el clima de tu área de negocio.</p>
 
-        <!-- Servicios Section -->
-        <section id="servicios">
-            <h3><i class="fa-solid fa-list-check"></i> Servicios 100% Dinámicos</h3>
-            <p>Olvídate de listas de precios estáticas. Crea un catálogo profesional en minutos.</p>
-            <div class="grid">
-                <div class="feature-card">
-                    <i class="fa-solid fa-plus"></i>
-                    <h4>Creación Express</h4>
-                    <p>Añade nombre, duración, precio y el sistema calculará automáticamente los huecos en tu agenda.</p>
+                <div class="theme-showcase">
+                    
+                    <!-- Tema Hair -->
+                    <div class="theme-item theme-hair">
+                        <div class="theme-content">
+                            <div class="icon-box"><i class="fas fa-scissors"></i></div>
+                            <h4>Peluquería / Barbería</h4>
+                            <p style="color: var(--text-secondary);">El tono <strong>Oro Elegante</strong> (Gold) inunda tu dashboard. Diseñado para salones clásicos, peluquerías profesionales y barberías de alto nivel.</p>
+                            <br>
+                            <span class="badge" style="color: var(--color-hair); border-color: rgba(212, 175, 55, 0.3);">Especialidad: 'hair'</span>
+                        </div>
+                        <div class="theme-mockup">
+                            <img src="assets/screenshot-hair.png" alt="Demo Hair">
+                        </div>
+                    </div>
+
+                    <!-- Tema Nails -->
+                    <div class="theme-item theme-nails">
+                        <div class="theme-mockup" style="order: -1;"> <!-- Invert for desktop -->
+                            <img src="assets/screenshot-nails.png" alt="Demo Nails">
+                        </div>
+                        <div class="theme-content" style="text-align: right;">
+                            <div class="icon-box" style="margin-left: auto;"><i class="fas fa-hand-sparkles"></i></div>
+                            <h4>Nails Studio</h4>
+                            <p style="color: var(--text-secondary);">Vibra con un púrpura (Violet/Amethyst) estimulante e intenso. Pensado para ambientes joviales de manicura y estética facial.</p>
+                            <br>
+                            <span class="badge" style="color: var(--color-nails); border-color: rgba(192, 132, 252, 0.3);">Especialidad: 'nails'</span>
+                        </div>
+                    </div>
+
+                    <!-- Tema Spa -->
+                    <div class="theme-item theme-spa">
+                        <div class="theme-content">
+                            <div class="icon-box"><i class="fas fa-spa"></i></div>
+                            <h4>Wellness & Spa</h4>
+                            <p style="color: var(--text-secondary);">Una interfaz en verde naturaleza (Emerald) que invita a la relajación. Excelente para spas, masajes y centros de depilación.</p>
+                            <br>
+                            <span class="badge" style="color: var(--color-spa); border-color: rgba(74, 222, 128, 0.3);">Especialidad: 'spa'</span>
+                        </div>
+                        <div class="theme-mockup">
+                            <img src="assets/screenshot-spa.png" alt="Demo Spa">
+                        </div>
+                    </div>
+
                 </div>
-                <div class="feature-card">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    <h4>Edición en Tiempo Real</h4>
-                    <p>Cambia precios o descripciones y se actualizarán instantáneamente para todos tus colaboradores.</p>
+            </section>
+
+            <section id="pwa">
+                <h3 class="section-title"><i class="fab fa-apple" style="opacity: 0.5;"></i> App en tu Teléfono</h3>
+                <div class="grid-2">
+                    <div class="glass-card">
+                        <div class="icon-box"><i class="fas fa-download"></i></div>
+                        <h4 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Cero Descargas Complejas</h4>
+                        <p style="color: var(--text-secondary);">BellaPro es una Progressive Web App. Entra desde Safari o Chrome, toca 'Compartir' y elige <strong>'Añadir a Pantalla de Inicio'</strong>. Se instalará como cualquier otra App nativa.</p>
+                    </div>
+                    <div class="glass-card">
+                        <div class="icon-box"><i class="fas fa-wifi"></i></div>
+                        <h4 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Velocidad Extrema</h4>
+                        <p style="color: var(--text-secondary);">El renderizado de turnos ocurre 100% en tu dispositivo con JavaScript puro sin recargas de página. Tu clínica jamás se sentirá lenta.</p>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Finanzas Section -->
-        <section id="finanzas">
-            <h3><i class="fa-solid fa-chart-line"></i> Control Financiero Total</h3>
-            <p>No más fugas de dinero. Monitorea cada peso que entra y sale de tu salón.</p>
-            <div class="tech-specs">
-                <h4 style="margin-bottom: 1rem;"><i class="fa-solid fa-filter"></i> Filtros de Fecha Avanzados</h4>
-                <p>Analiza tu rentabilidad por <strong>Hoy</strong>, <strong>Esta Semana</strong>, <strong>Este Mes</strong> o rangos personalizados. El gráfico dinámico te mostrará la curva de crecimiento de tu empresa.</p>
-            </div>
+            <section id="agenda">
+                <h3 class="section-title"><i class="fas fa-calendar-check" style="opacity: 0.5;"></i> Agenda Inteligente</h3>
+                <div class="glass-card">
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">El núcleo de tu negocio. Diseñado para manejar flujos altos de clientes con filtros fluidos e instantáneos.</p>
+                    
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.5rem;">
+                        <li style="display: flex; gap: 1rem;">
+                            <div style="color: var(--color-hair);"><i class="fas fa-check-circle"></i></div>
+                            <div>
+                                <strong style="display: block; margin-bottom: 0.2rem;">Sincronización Cloud y Local</strong>
+                                <span style="color: var(--text-secondary);">Las citas que cambian en otro celular o PC aparecen ante ti en tiempo real, junto con una cálida alerta sonora de cortesía.</span>
+                            </div>
+                        </li>
+                        <li style="display: flex; gap: 1rem;">
+                            <div style="color: var(--color-hair);"><i class="fas fa-check-circle"></i></div>
+                            <div>
+                                <strong style="display: block; margin-bottom: 0.2rem;">Filtros Potentes</strong>
+                                <span style="color: var(--text-secondary);">Escribe partes de un nombre y la agenda colapsará dinámicamente mostrándote exactamente quién quieres ver, sin cargar de nuevo la base de datos.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
 
-        </section>
+            <footer style="margin-top: 5rem; padding-top: 3rem; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+                <p>2026 Reservados todos los derechos. BellaPro System Architecture.</p>
+            </footer>
+        </main>
+    </div>
 
-        <!-- Equipo Section -->
-        <section id="equipo">
-            <h3><i class="fa-solid fa-users-gear"></i> Gestión de Colaboradores</h3>
-            <p>BellaPro crece contigo. Gestiona múltiples estilistas bajo una misma cuenta profesional.</p>
-            <div class="feature-card">
-                <h4>Perfiles Individuales</h4>
-                <p>Asigna servicios específicos a cada profesional y lleva una agenda separada para cada uno, integrando todo en el panel principal del salón.</p>
-            </div>
-        </section>
-
-        <footer style="margin-top: 8rem; text-align: center; color: var(--text-muted); padding-bottom: 4rem;">
-            <p>&copy; 2026 BellaPro Technologies. El estándar de oro para el profesional de la belleza.</p>
-        </footer>
-
-    </main>
-
+    <!-- Active Menu Highlight Script -->
     <script>
-        // Smooth scrolling active link highlight
+        const sections = document.querySelectorAll('section, header');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
         window.addEventListener('scroll', () => {
-            let current = '';
-            const sections = document.querySelectorAll('section, header');
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 150) {
-                    current = section.getAttribute('id');
+            let current = 'bienvenida';
+            sections.forEach(sec => {
+                const secTop = sec.offsetTop;
+                if (pageYOffset >= secTop - 100) {
+                    current = sec.getAttribute('id');
                 }
             });
 
-            document.querySelectorAll('.nav-links a').forEach(a => {
-                a.classList.remove('active');
-                if (a.getAttribute('href').includes(current)) {
-                    a.classList.add('active');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
                 }
             });
         });
