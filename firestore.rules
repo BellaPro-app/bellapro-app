@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── USER DOCUMENTS ────────────────────────────────────────────────────────
+    // Each salon owner owns their own user document.
+    match /users/{userId} {
+      // Authenticated owner can fully manage their own document.
+      allow write: if request.auth != null && request.auth.uid == userId;
+
+      // Public (unauthenticated) can read the root user doc to get publicBookingConfig
+      // for the booking page (reserva.html) — only public-safe fields are stored here.
+      allow read: if true;
+
+      // ─── SPECIALTY DATA (private sub-collection) ──────────────────────────
+      // Contains all salon data (clients, services, finances). Owner-only.
+      match /specialties/{specialty} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+
+        // Turnos within a specialty (managed by the salon owner)
+        match /turnos/{turnoId} {
+          allow read, write: if request.auth != null && request.auth.uid == userId;
+        }
+      }
+
+      // ─── RESERVAS PÚBLICAS (public booking sub-collection) ────────────────
+      // reserva.html writes here without auth. listenReservas() reads from here.
+      match /turnos/{turnoId} {
+        // Owner can read and manage all bookings (confirm, delete, etc.)
+        allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+
+        // Anyone can create a booking request — validated to prevent abuse.
+        allow create: if request.resource.data.keys().hasAll(['cname', 'ctel', 'srv', 'dat', 'status'])
+                      && request.resource.data.status == 'pending'
+                      && request.resource.data.cname is string
+                      && request.resource.data.cname.size() > 0
+                      && request.resource.data.ctel is string
+                      && request.resource.data.ctel.size() > 0
+                      && request.resource.data.srv is string
+                      && request.resource.data.srv.size() > 0;
+      }
+    }
+
+    // ─── APPROVED EMAILS (admin-controlled license whitelist) ────────────────
+    match /approved_emails/{email} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.email == 'sinfield.fabian@gmail.com';
+    }
+  }
+}

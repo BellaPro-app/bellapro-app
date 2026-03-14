@@ -23,7 +23,10 @@ class DB {
             const tx = this.db.transaction(s, 'readonly');
             tx.objectStore(s).getAll().onsuccess = (e) => {
                 const results = e.target.result || [];
-                const filtered = results.filter(item => item.appType === window.SPECIALTY || !item.appType);
+                // Use app.specialty (dynamic getter) so the filter always reflects the
+                // current specialty — resolves from localStorage > window.SPECIALTY > URL.
+                const currentSpecialty = (typeof app !== 'undefined' && app.specialty) ? app.specialty : (window.SPECIALTY || 'hair');
+                const filtered = results.filter(item => item.appType === currentSpecialty || !item.appType);
                 res(filtered);
             };
         });
@@ -31,7 +34,8 @@ class DB {
     add(s, item) {
         return new Promise((res) => {
             const tx = this.db.transaction(s, 'readwrite');
-            const itemWithApp = { ...item, appType: window.SPECIALTY || 'hair' };
+            const currentSpecialty = (typeof app !== 'undefined' && app.specialty) ? app.specialty : (window.SPECIALTY || 'hair');
+            const itemWithApp = { ...item, appType: currentSpecialty };
             tx.objectStore(s).add(itemWithApp).onsuccess = (e) => res(e.target.result);
         });
     }
@@ -44,7 +48,8 @@ class DB {
     put(s, item) {
         return new Promise((res) => {
             const tx = this.db.transaction(s, 'readwrite');
-            const itemWithApp = { ...item, appType: window.SPECIALTY || 'hair' };
+            const currentSpecialty = (typeof app !== 'undefined' && app.specialty) ? app.specialty : (window.SPECIALTY || 'hair');
+            const itemWithApp = { ...item, appType: currentSpecialty };
             tx.objectStore(s).put(itemWithApp).onsuccess = (e) => res(e.target.result);
         });
     }

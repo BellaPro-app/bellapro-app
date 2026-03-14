@@ -365,15 +365,23 @@
         }
 
         function renderSalon() {
-            const config = state.salon.config || {};
-            document.getElementById('salon-name').innerText = config.name || "Reserva";
-            if (config.logo) document.getElementById('salon-logo').src = config.logo;
-            
-            const spec = specialtyConfig[config.specialty] || specialtyConfig.hair;
+            // Prefer new publicBookingConfig, fallback to legacy config field
+            const pubCfg = state.salon.publicBookingConfig || null;
+            const legacyCfg = state.salon.config || {};
+
+            const name = (pubCfg && pubCfg.name) || legacyCfg.name || 'BellaPro';
+            const logo = (pubCfg && pubCfg.logo) || legacyCfg.logo || '';
+            const specialty = (pubCfg && pubCfg.specialty) || legacyCfg.specialty || legacyCfg.licenseType || 'hair';
+            const professionals = (pubCfg && pubCfg.professionals) || legacyCfg.professionals || '';
+
+            document.getElementById('salon-name').innerText = name;
+            if (logo) document.getElementById('salon-logo').src = logo;
+
+            const spec = specialtyConfig[specialty] || specialtyConfig.hair;
             document.getElementById('salon-specialty').innerText = spec.title;
 
-            if (config.professionals) {
-                const ps = config.professionals.split(',').map(x => x.trim()).filter(x => x);
+            if (professionals) {
+                const ps = professionals.split(',').map(x => x.trim()).filter(x => x);
                 const sel = document.getElementById('cust-prof');
                 ps.forEach(p => {
                     const o = document.createElement('option');
@@ -386,13 +394,18 @@
 
         async function loadServices() {
             const grid = document.getElementById('service-grid');
-            const data = state.salon.data || {};
-            const services = data.servicios || [];
-            
+
+            // Prefer new publicBookingConfig.services (written by pushCloud fix).
+            // Fall back to legacy data.servicios for older salon accounts.
+            const pubCfg = state.salon.publicBookingConfig || null;
+            const services = (pubCfg && pubCfg.services && pubCfg.services.length > 0)
+                ? pubCfg.services
+                : (state.salon.data && state.salon.data.servicios) || [];
+
             grid.innerHTML = '';
 
             if (services.length === 0) {
-                grid.innerHTML = '<p style="opacity:0.5; font-size:13px;">No hay servicios disponibles.</p>';
+                grid.innerHTML = '<p style="opacity:0.5; font-size:13px;">No hay servicios disponibles en este momento.</p>';
                 return;
             }
 
@@ -478,8 +491,9 @@
             btn.disabled = true;
             btn.innerText = "Procesando...";
 
+            const idStr = 'res_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
             const reserva = {
-                salonId: salonId,
+                id: idStr,
                 cname: name,
                 ctel: tel,
                 srv: state.selSrv,
@@ -491,7 +505,7 @@
             };
 
             try {
-                await db.collection('reservas').add(reserva);
+                await db.collection('users').doc(salonId).collection('turnos').doc(idStr).set(reserva);
                 document.getElementById('main-flow').style.display = 'none';
                 document.getElementById('success-screen').style.display = 'block';
             } catch (e) {

@@ -1154,6 +1154,11 @@ const app = {
     async pushCloud() {
         if (!this.user || this.demoMode) return;
         const data = await database.dump();
+        
+        // Remove turnos from monolithic data payload
+        const turnos = data.turnos || [];
+        delete data.turnos;
+
         const config = {
             name: localStorage.getItem('bp_name') || 'BellaPro',
             currency: this.currency,
@@ -1163,12 +1168,35 @@ const app = {
         };
         try {
             // Sincronización segmentada: Datos guardados por especialidad
-            await this.dbCloud.collection('users').doc(this.user.uid)
-                .collection('specialties').doc(this.specialty).set({
+            const specialtyRef = this.dbCloud.collection('users').doc(this.user.uid)
+                .collection('specialties').doc(this.specialty);
+
+            await specialtyRef.set({
                     data,
                     config,
                     lastSync: new Date().toISOString()
-                });
+                }, { merge: true }); // Use merge just in case
+            
+            // Sync turnos to subcollection
+            const turnosRef = specialtyRef.collection('turnos');
+            const promises = turnos.map(t => turnosRef.doc(String(t.id)).set(t));
+            await Promise.all(promises);
+
+            // BUG #2 FIX: Write a public booking snapshot to the root user doc.
+            // reserva.html reads this without auth to show services + salon info.
+            const publicBookingConfig = {
+                specialty: this.specialty,
+                name: config.name,
+                logo: config.logo,
+                professionals: config.professionals,
+                currency: this.currency,
+                services: (this.state.servicios || []).map(s => ({ nom: s.nom, val: s.val, dur: s.dur }))
+            };
+            await this.dbCloud.collection('users').doc(this.user.uid).set(
+                { publicBookingConfig },
+                { merge: true }
+            );
+
             console.log(`Cloud Sync [${this.specialty}]: Push success`);
         } catch (e) {
             console.error("Cloud Sync: Push failed", e);
@@ -1179,13 +1207,27 @@ const app = {
         if (!this.user) return;
         try {
             // Pull segmentado por especialidad
-            const doc = await this.dbCloud.collection('users').doc(this.user.uid)
-                .collection('specialties').doc(this.specialty).get();
+            const specialtyRef = this.dbCloud.collection('users').doc(this.user.uid)
+                .collection('specialties').doc(this.specialty);
+            const doc = await specialtyRef.get();
             
             if (doc.exists) {
                 const cloud = doc.data();
                 if (cloud.data) {
-                    const stores = ['turnos', 'clientes', 'productos', 'pago', 'servicios'];
+                    // MIGRATION: Move old turnos to the new subcollection
+                    if (cloud.data.turnos && cloud.data.turnos.length > 0) {
+                        console.log(`Cloud Sync [${this.specialty}]: Migrating turnos to subcollection...`);
+                        const turnosRef = specialtyRef.collection('turnos');
+                        const migratePromises = cloud.data.turnos.map(t => turnosRef.doc(String(t.id)).set(t));
+                        await Promise.all(migratePromises);
+                        
+                        // Remove from the monolithic document
+                        await specialtyRef.update({ 'data.turnos': firebase.firestore.FieldValue.delete() });
+                        delete cloud.data.turnos;
+                        console.log(`Cloud Sync [${this.specialty}]: Migration complete.`);
+                    }
+
+                    const stores = ['clientes', 'productos', 'pago', 'servicios'];
                     for (const s of stores) {
                         const items = cloud.data[s] || [];
                         // Solo cargamos items que pertenezcan a esta especialidad o no tengan appType
@@ -1200,6 +1242,20 @@ const app = {
                         
                         items.forEach(item => store.add({ ...item, appType: this.specialty }));
                     }
+
+                    // Pull turnos from subcollection
+                    const turnosSnap = await specialtyRef.collection('turnos').get();
+                    const cloudTurnos = turnosSnap.docs.map(d => d.data());
+                    
+                    const txTurnos = database.db.transaction('turnos', 'readwrite');
+                    const storeTurnos = txTurnos.objectStore('turnos');
+                    
+                    const allLocalTurnos = await database.getAll('turnos');
+                    allLocalTurnos.forEach(async item => {
+                        if (item.appType === this.specialty) await database.del('turnos', item.id);
+                    });
+                    
+                    cloudTurnos.forEach(item => storeTurnos.add({ ...item, appType: this.specialty }));
                 }
                 if (cloud.config) {
                     localStorage.setItem('bp_name', cloud.config.name);
@@ -1219,6 +1275,16 @@ const app = {
     async delItem(s, id) {
         if (confirm("¿Seguro que deseas eliminar este elemento?")) {
             await database.del(s, id);
+            
+            // If it's a turno, delete from cloud subcollection directly
+            if (s === 'turnos' && this.user && !this.demoMode) {
+                try {
+                    await this.dbCloud.collection('users').doc(this.user.uid)
+                        .collection('specialties').doc(this.specialty)
+                        .collection('turnos').doc(String(id)).delete();
+                } catch(e) { console.error("Error deleting turno from cloud", e); }
+            }
+            
             await this.pushCloud();
             await this.load();
             this.render();
@@ -1377,82 +1443,31 @@ const app = {
 
         console.log("BellaPro: Starting Unified Reserva Watcher (Auto-Process)...");
 
-        // 1. Canal de Reservas Públicas (Fast booking / Local specialty)
-        const unsubPublic = this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas')
-            .where('status', '==', 'pendiente')
-            .onSnapshot(async (snapshot) => {
-                for (const change of snapshot.docChanges()) {
-                    if (change.type === "added") {
-                        const data = change.doc.data();
-                        const resId = change.doc.id;
-                        
-                        // Prevent duplicates and only process if same specialty (optional, usually these are generic)
-                        console.log("BellaPro: Procesando reserva pública:", data.client);
-
-                        // Find or Create Client
-                        let cli = this.state.clientes.find(c => c.tel === data.phone);
-                        if (!cli) {
-                            const newCli = { 
-                                nom: data.client, 
-                                tel: data.phone, 
-                                not: 'Creado desde reserva online',
-                                appType: this.specialty 
-                            };
-                            const id = await database.add('clientes', newCli);
-                            cli = { ...newCli, id };
-                            this.state.clientes.push(cli);
-                        }
-
-                        // Create Turno
-                        const now = new Date();
-                        now.setHours(now.getHours() + 1); // Default to one hour from now
-                        const formatTime = (d) => `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-                        
-                        const turno = {
-                            cid: cli.id,
-                            cname: cli.nom,
-                            srv: data.service,
-                            prof: data.professional || '',
-                            dat: now.toISOString().split('T')[0] + 'T' + formatTime(now),
-                            val: 0,
-                            pagado: false,
-                            appType: this.specialty
-                        };
-
-                        await database.add('turnos', turno);
-                        this.state.turnos.push(turno);
-                        
-                        // Mark as processed in Cloud
-                        await this.dbCloud.collection('users').doc(this.user.uid).collection('reservas_publicas').doc(resId).update({ status: 'procesada' });
-                        
-                        this.showNotification(`🔔 Confirmado: ${data.client} (${data.service})`);
-                        this.render();
-                    }
-                }
-            });
-
-        // 2. Canal de Reservas General (Estructura extendida - Multiapp)
-        const unsubGeneral = this.dbCloud.collection('reservas')
-            .where('salonId', '==', this.user.uid)
+        // Canal de Reservas General (en turnos con status pending)
+        const unsubGeneral = this.dbCloud.collection('users').doc(this.user.uid).collection('turnos')
             .where('status', '==', 'pending')
             .onSnapshot(async (snap) => {
                 for (const change of snap.docChanges()) {
                     if (change.type === 'added') {
                         const data = change.doc.data();
-                        const resId = change.doc.id;
-                        
-                        // We skip auto-processing here as it might be from another app 
-                        // unless we check data.appType if it exists
+                        const docId = change.doc.id;
                         console.log("BellaPro: Nueva reserva general detectada:", data);
                         
-                        if (data.appType === this.specialty || !data.appType) {
-                            this.showNotification(`📅 Turno Pendiente: ${data.clientName || 'Cliente'}`);
+                        // Prevent duplicates if already in local
+                        const exists = this.state.turnos.find(t => t.id === docId);
+                        if (!exists) {
+                            // Insert locally
+                            await database.add('turnos', data);
+                            this.state.turnos.push(data);
+                            this.render(); // Refrescar UI (p. ej. calendario)
                         }
+
+                        this.showNotification(`📅 Turno Pendiente: ${data.cname || 'Cliente'} - ${data.srv || 'Servicio'}`);
                     }
                 }
             });
 
-        this._unsubscribes.push(unsubPublic, unsubGeneral);
+        this._unsubscribes.push(unsubGeneral);
     },
 
     showNotification(text) {
