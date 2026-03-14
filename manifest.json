@@ -4,8 +4,8 @@
     "description": "Gestión inteligente para salones de belleza con soberanía de datos.",
     "start_url": "/index.html",
     "display": "standalone",
-    "background_color": "#0a0506",
-    "theme_color": "#EC4899",
+    "background_color": "#020617",
+    "theme_color": "#D4AF37",
     "icons": [
         {
             "src": "assets/logo/logo.png",
