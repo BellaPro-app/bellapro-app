@@ -348,19 +348,33 @@
         };
 
         async function init() {
+            console.log('[BellaPro:reserva] init() start. salonId:', salonId);
             if (!salonId) {
-                document.getElementById('booking-container').innerHTML = "<h1>Link Incorrecto</h1>";
+                console.error('[BellaPro:reserva] ERROR: No salonId in URL (?s=UID)');
+                document.getElementById('booking-container').innerHTML = '<h1>Link Incorrecto</h1><p>Falta el parámetro del salón en la URL.</p>';
                 return;
             }
 
-            const doc = await db.collection('users').doc(salonId).get();
-            if (doc.exists) {
-                state.salon = doc.data();
-                renderSalon();
-                loadServices();
-                genCalendar();
-            } else {
-                document.getElementById('booking-container').innerHTML = "<h1>Salón no encontrado</h1>";
+            try {
+                console.log('[BellaPro:reserva] Leyendo Firestore: users/' + salonId);
+                const doc = await db.collection('users').doc(salonId).get();
+                console.log('[BellaPro:reserva] Doc existe:', doc.exists, '| Datos:', JSON.stringify(doc.data()));
+
+                if (doc.exists) {
+                    state.salon = doc.data();
+                    const hasPubCfg = !!(state.salon.publicBookingConfig);
+                    const hasLegacyData = !!(state.salon.data && state.salon.data.servicios);
+                    console.log('[BellaPro:reserva] publicBookingConfig presente:', hasPubCfg, '| legacy data.servicios presente:', hasLegacyData);
+                    renderSalon();
+                    loadServices();
+                    genCalendar();
+                } else {
+                    console.error('[BellaPro:reserva] ERROR: Documento del salón no encontrado en Firestore.');
+                    document.getElementById('booking-container').innerHTML = '<h1>Salón no encontrado</h1>';
+                }
+            } catch (e) {
+                console.error('[BellaPro:reserva] ERROR al leer Firestore:', e.code, e.message, e.toString());
+                document.getElementById('booking-container').innerHTML = `<h1>Error de conexión</h1><p>No se pudo cargar el salón. Error: ${e.code || e.message}</p>`;
             }
         }
 
@@ -485,11 +499,17 @@
             const tel = document.getElementById('cust-tel').value;
             const prof = document.getElementById('cust-prof').value;
 
-            if (!name || !tel) return alert("Completa tus datos");
+            console.log('[BellaPro:reserva] confirmReserva() llamado.');
+            console.log('[BellaPro:reserva] name:', name, '| tel:', tel, '| prof:', prof);
+            console.log('[BellaPro:reserva] state.selSrv:', state.selSrv, '| selDay:', state.selDay, '| selTime:', state.selTime);
+
+            if (!name || !tel) return alert('Completa tus datos');
+            if (!state.selSrv) return alert('Seleccioná un servicio');
+            if (!state.selDay || !state.selTime) return alert('Seleccioná día y horario');
 
             const btn = document.getElementById('btn-finalize');
             btn.disabled = true;
-            btn.innerText = "Procesando...";
+            btn.innerText = 'Procesando...';
 
             const idStr = 'res_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
             const reserva = {
@@ -500,18 +520,40 @@
                 dat: state.selDay + 'T' + state.selTime,
                 prof: prof || '',
                 status: 'pending',
-                val: 0, 
+                val: 0,
                 createdAt: new Date().toISOString()
             };
 
+            const firestorePath = `users/${salonId}/turnos/${idStr}`;
+            console.log('[BellaPro:reserva] Escribiendo en Firestore path:', firestorePath);
+            console.log('[BellaPro:reserva] Payload completo:', JSON.stringify(reserva));
+
             try {
                 await db.collection('users').doc(salonId).collection('turnos').doc(idStr).set(reserva);
+                console.log('[BellaPro:reserva] ✅ Escritura exitosa en Firestore.');
                 document.getElementById('main-flow').style.display = 'none';
                 document.getElementById('success-screen').style.display = 'block';
             } catch (e) {
-                alert("Error: " + e.message);
+                // Log completo del error — code, message y toString para no perder nada
+                console.error('[BellaPro:reserva] ❌ ERROR escribiendo en Firestore:');
+                console.error('  code:', e.code);
+                console.error('  message:', e.message);
+                console.error('  toString:', e.toString());
+                console.error('  stack:', e.stack);
+
+                // Mostrar el error VISIBLE en pantalla (no solo alert) para poder reportarlo
+                const errorHtml = `
+                    <div style="background:#7f1d1d;padding:20px;border-radius:12px;margin-top:20px;font-size:13px;">
+                        <strong>❌ Error al guardar la reserva</strong><br><br>
+                        <b>Código:</b> ${e.code || 'desconocido'}<br>
+                        <b>Mensaje:</b> ${e.message || 'sin mensaje'}<br>
+                        <b>Detalle:</b> ${e.toString()}<br><br>
+                        <small>Capturá esta pantalla y envíala al administrador.</small>
+                    </div>`;
+                document.getElementById('step3').insertAdjacentHTML('beforeend', errorHtml);
+
                 btn.disabled = false;
-                btn.innerText = "Confirmar Reserva";
+                btn.innerText = 'Intentar de nuevo';
             }
         }
 

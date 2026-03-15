@@ -243,6 +243,12 @@ const app = {
                     this.render();
                     this.listenReservas();
                     this.pullCloud();
+
+                    // GARANTÍA: Forzar escritura de publicBookingConfig en cada inicio de sesión.
+                    // Esto asegura que reserva.html siempre tenga servicios actualizados,
+                    // incluso si el dueño nunca tocó la configuración manualmente.
+                    setTimeout(() => this.pushCloud(), 3000);
+
                 } catch (e) {
                     console.error("BellaPro Setup Error:", e);
                     this.showAuthError("Error de conexión. Reintenta.");
@@ -1439,32 +1445,41 @@ const app = {
     },
 
     listenReservas() {
-        if (!this.user || !this.dbCloud) return;
+        if (!this.user || !this.dbCloud) {
+            console.warn('[BellaPro] listenReservas() abortado: user=' + (this.user ? this.user.uid : 'null') + ', dbCloud=' + !!this.dbCloud);
+            return;
+        }
 
-        console.log("BellaPro: Starting Unified Reserva Watcher (Auto-Process)...");
+        console.log('[BellaPro] listenReservas() iniciado. Escuchando UID:', this.user.uid);
 
         // Canal de Reservas General (en turnos con status pending)
         const unsubGeneral = this.dbCloud.collection('users').doc(this.user.uid).collection('turnos')
             .where('status', '==', 'pending')
             .onSnapshot(async (snap) => {
+                console.log('[BellaPro] listenReservas snapshot recibido. Total cambios:', snap.docChanges().length);
                 for (const change of snap.docChanges()) {
+                    const data = change.doc.data();
+                    const docId = change.doc.id;
+                    console.log(`[BellaPro] Cambio tipo '${change.type}' en turno:`, docId, '| data:', JSON.stringify(data));
+
                     if (change.type === 'added') {
-                        const data = change.doc.data();
-                        const docId = change.doc.id;
-                        console.log("BellaPro: Nueva reserva general detectada:", data);
-                        
                         // Prevent duplicates if already in local
                         const exists = this.state.turnos.find(t => t.id === docId);
                         if (!exists) {
+                            console.log('[BellaPro] Turno nuevo — agregando localmente:', docId);
                             // Insert locally
                             await database.add('turnos', data);
                             this.state.turnos.push(data);
                             this.render(); // Refrescar UI (p. ej. calendario)
+                        } else {
+                            console.log('[BellaPro] Turno ya existía localmente, omitiendo duplicado:', docId);
                         }
 
                         this.showNotification(`📅 Turno Pendiente: ${data.cname || 'Cliente'} - ${data.srv || 'Servicio'}`);
                     }
                 }
+            }, (err) => {
+                console.error('[BellaPro] listenReservas ERROR en snapshot:', err.code, err.message, err.toString());
             });
 
         this._unsubscribes.push(unsubGeneral);
